@@ -206,10 +206,12 @@ def main():
     hab_extra = ", ".join(esc(en_title(x["title"])) for x in hab["methods"]["Hybrid (LGBM)"]["top5"] if not x["hit"])
     words = {1: "one", 2: "two", 3: "three", 4: "four", 5: "five"}
 
-    shot = REP / "fig" / "leaderboard.png"
-    shot_html = (f'<img src="fig/leaderboard.png" style="width:100%">' if shot.exists() else
-                 '<div style="border:1px dashed #000;padding:14pt;text-align:center">Screenshot of the Kaggle Submissions page '
-                 '(returned private score of the designated final submission) &mdash; to be inserted</div>')
+    def shot(fn, what):
+        return (f'<img src="fig/{fn}" style="width:100%">' if (REP / "fig" / fn).exists() else
+                f'<div style="border:1px dashed #000;padding:14pt;text-align:center">{what} &mdash; to be inserted</div>')
+
+    shot_a = shot("leaderboard.png", "Kaggle details of the designated final submission")
+    shot_b = shot("submissions_page.png", "Kaggle Submissions page")
 
     hp_close = (hp["mixed_12_14_20_24"]["map5_evalB"] - hp["recent_skip_worst_17_24"]["map5_evalB"],
                 hp["mixed_12_14_20_24"]["map5_evalB_sub"] - hp["recent_skip_worst_17_24"]["map5_evalB_sub"])
@@ -377,8 +379,11 @@ only {f3(by_nov[3]['map5'])}, against {f3(by_nov[0]['map5'])} when nothing is ne
 <p class="cap">Table 2. All five submissions (<code>kaggle_submissions.csv</code>). &dagger; F1 has one history window, so 3&ndash;5 share the
 CV of the label ensemble. Final file: <code>submissions/{FINAL}.csv</code>, SHA-256 {repF['sha256_submitted'][:16]}&hellip;</p>
 </div>
-<div class="avoid">{shot_html}<p class="cap">Fig. 2. Kaggle Submissions page with the returned scores; the designated final submission is #4.</p></div>
-<p>Submission 1, sent early as a calibration point, scored {f5(pub['sub01_ranker_v1'])} public against a CV of {f5(cv1['map5_sub'])}.
+<div class="avoid"><div class="two" style="justify-content:center"><div style="flex:0 0 40%">{shot_a}</div>
+<div style="flex:0 0 40%">{shot_b}</div></div>
+<p class="cap">Fig. 2. Kaggle screenshots. (a) Details of the designated final submission #4 (<code>{FINAL}.csv</code>): public
+{f5(pub[FINAL])}, returned private score {f5(prv[FINAL])}. (b) Submissions page with all five returned scores, newest first (#5, #4, #3, #2, #1).</p></div>
+<div><div><p>Submission 1, sent early as a calibration point, scored {f5(pub['sub01_ranker_v1'])} public against a CV of {f5(cv1['map5_sub'])}.
 Later CV gains shrank on the test: submission 2 gained {f4(cv2['map5_sub'] - cv1['map5_sub'])} on CV but
 {f4((pub['sub02_hybrid_lr31_r250_s5'] + prv['sub02_hybrid_lr31_r250_s5'] - pub['sub01_ranker_v1'] - prv['sub01_ranker_v1']) / 2)} on the whole test,
 and each 630-user half moves a file by several thousandths. History D lost on both halves (#3 vs #5:
@@ -388,7 +393,7 @@ and because of the logging gap {hb['weeks_20_24']['submission_users_without_full
 (against {hb['weeks_15_19']['submission_users_without_full_view']} in weeks 15&ndash;19). Averaging both histories (#4) gave the
 best private score. The truth's tie-break is undocumented and matters: the same out-of-fold predictions score
 {f3(tbh['id_asc']['map5_all'])} with ties broken by ascending id, {f3(min(rnd_all))}&ndash;{f3(max(rnd_all))} with random ties and
-{f3(tbh['id_desc']['map5_all'])} with descending id; I train with ascending id.</p>
+{f3(tbh['id_desc']['map5_all'])} with descending id; I train with ascending id.</p></div></div>
 
 <h3>4.3 Verification</h3>
 <ul>
