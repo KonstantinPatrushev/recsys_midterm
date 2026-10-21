@@ -26,7 +26,8 @@ from ranker import CATS, PARAMS, feature_cols, to_pandas, top5_from_scores  # no
 
 TEST_HIST = [15, 16, 17, 18, 19, 28, 29, 30]
 TEST_HISTS = {"clean8": TEST_HIST, "last8": list(range(23, 31)),
-              # recent weeks without the worst logging gap (25-27); supported by evidence/history_proxy.json
+              # recent weeks without the worst logging gap (25-27). A bet, not a validated gain: the proxy in
+              # evidence/history_proxy.json favours recent windows, but its closest analogue of A vs D is a tie
               "recent8": [20, 21, 22, 23, 24, 28, 29, 30]}
 TEST_TARGET = list(range(31, 43))
 F1_HIST, F1_TARGET = list(range(11, 19)), list(range(19, 31))

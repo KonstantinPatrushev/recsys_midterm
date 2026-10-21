@@ -1,0 +1,14 @@
+{
+  "name": "sub01_ranker_v1",
+  "ensemble": "v1",
+  "seeds": 5,
+  "table": "base",
+  "variant": "sum",
+  "cols_file": "sub01_ranker_v1_info.json",
+  "agg": "global",
+  "map5_all": 0.41725,
+  "map5_sub": 0.44625,
+  "n_all": 4254,
+  "n_sub": 1199,
+  "users_without_candidates": 39
+}

@@ -137,12 +137,15 @@ def build(views: pl.DataFrame, sched: pl.DataFrame, hist_weeks: list[int], targe
     # show-specific slot habit: user's full-view rate of this show in each (c, dow, hour) slot
     # times the number of future airings of the show in that slot
     air_slot_h = sh.with_columns(*dow_hour(pl.col("start_ts"))).group_by(["tv_show_id", "c", "dow", "hour"]).len("n_air_slot")
+    # rows are sorted before the float sum: hash joins return rows in a run-dependent order, and a
+    # different summation order changed the last bits of exp_show_slot between runs
     show_slot = (
         dh.group_by(["u", "tv_show_id", "c", "dow", "hour"]).len("f_slot")
         .join(air_slot_h, on=["tv_show_id", "c", "dow", "hour"], how="left")
         .join(fut_slots, on=["tv_show_id", "c", "dow", "hour"], how="left").fill_null(0)
         .with_columns((pl.col("f_slot") / pl.col("n_air_slot").clip(1, None)).alias("r_slot"))
-        .group_by(["u", "tv_show_id"]).agg(
+        .sort(["u", "tv_show_id", "c", "dow", "hour"])
+        .group_by(["u", "tv_show_id"], maintain_order=True).agg(
             (pl.col("r_slot") * pl.col("n_fut")).sum().alias("exp_show_slot"),
             pl.col("n_fut").sum().alias("fut_in_user_slots"),
             pl.col("r_slot").max().alias("r_slot_max"),

@@ -1,0 +1,26 @@
+{
+  "name": "det_ens_D",
+  "parts": [
+    "det_sum_recent8",
+    "det_max_recent8"
+  ],
+  "users_filled_from_pop": 2,
+  "overlap": {
+    "sub01_ranker_v1": {
+      "identical_sets": 332,
+      "mean_overlap_of_5": 3.968
+    },
+    "sub02_hybrid_lr31_r250_s5": {
+      "identical_sets": 372,
+      "mean_overlap_of_5": 4.016
+    },
+    "sub02_rebuilt_after_fix": {
+      "identical_sets": 361,
+      "mean_overlap_of_5": 4.014
+    },
+    "sub03_hybrid_recent8": {
+      "identical_sets": 999,
+      "mean_overlap_of_5": 4.792
+    }
+  }
+}

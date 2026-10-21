@@ -104,7 +104,7 @@ def main():
     top_imp = sorted(imp.items(), key=lambda kv: -kv[1])[:25]
     for k_, v in top_imp:
         print(f"  {k_:22s} {v:12.1f}")
-    (ROOT / "evidence" / "ranker_v1.json").write_text(json.dumps({"scores": res, "importance_top25": top_imp}, indent=2))
+    (ROOT / "evidence" / "ranker_cv_v2_features.json").write_text(json.dumps({"scores": res, "importance_top25": top_imp}, indent=2))
 
 
 if __name__ == "__main__":
