@@ -1,0 +1,134 @@
+{
+  "matching": {
+    "schedule_rows_all": 2435992,
+    "schedule_rows_id0": 2054100,
+    "share_schedule_rows_id0": 0.8432,
+    "session_seconds_total": 8619636424,
+    "share_session_time_on_nonzero_airings": 0.5308,
+    "share_session_time_on_id0_airings": 0.4098,
+    "share_session_time_without_schedule": 0.0594,
+    "sessions_on_channels_without_any_nonzero_airing": 1103935,
+    "sessions_total": 5821987
+  },
+  "common_pool": {
+    "F1": {
+      "Popularity (reference)": {
+        "map5_all": 0.27415,
+        "map5_sub": 0.29094
+      },
+      "Repeat own history (reference)": {
+        "map5_all": 0.35948,
+        "map5_sub": 0.39225
+      },
+      "CBF": {
+        "map5_all": 0.24404,
+        "map5_sub": 0.25926
+      },
+      "Association rules": {
+        "map5_all": 0.3153,
+        "map5_sub": 0.33589
+      },
+      "MF (implicit ALS)": {
+        "map5_all": 0.3585,
+        "map5_sub": 0.38411
+      },
+      "PPR": {
+        "map5_all": 0.36947,
+        "map5_sub": 0.40396
+      },
+      "Hybrid LightGBM ranker (sum label)": {
+        "map5_all": 0.42268,
+        "map5_sub": 0.45458
+      },
+      "_pool": {
+        "rows": 417915,
+        "median_candidates_per_user": 96.0
+      }
+    },
+    "F0": {
+      "Popularity (reference)": {
+        "map5_all": 0.28565,
+        "map5_sub": 0.30119
+      },
+      "Repeat own history (reference)": {
+        "map5_all": 0.38891,
+        "map5_sub": 0.42158
+      },
+      "CBF": {
+        "map5_all": 0.26014,
+        "map5_sub": 0.27963
+      },
+      "Association rules": {
+        "map5_all": 0.33068,
+        "map5_sub": 0.34951
+      },
+      "MF (implicit ALS)": {
+        "map5_all": 0.38412,
+        "map5_sub": 0.41269
+      },
+      "PPR": {
+        "map5_all": 0.3922,
+        "map5_sub": 0.42441
+      },
+      "Hybrid LightGBM ranker (sum label)": {
+        "map5_all": 0.43951,
+        "map5_sub": 0.47109
+      },
+      "_pool": {
+        "rows": 269824,
+        "median_candidates_per_user": 74.0
+      }
+    },
+    "F2": {
+      "Popularity (reference)": {
+        "map5_all": 0.24755,
+        "map5_sub": 0.27212
+      },
+      "Repeat own history (reference)": {
+        "map5_all": 0.32302,
+        "map5_sub": 0.35032
+      },
+      "CBF": {
+        "map5_all": 0.21514,
+        "map5_sub": 0.22516
+      },
+      "Association rules": {
+        "map5_all": 0.26379,
+        "map5_sub": 0.28474
+      },
+      "MF (implicit ALS)": {
+        "map5_all": 0.3027,
+        "map5_sub": 0.32359
+      },
+      "PPR": {
+        "map5_all": 0.32374,
+        "map5_sub": 0.34925
+      },
+      "Hybrid LightGBM ranker (sum label)": {
+        "map5_all": 0.36332,
+        "map5_sub": 0.39028
+      },
+      "_pool": {
+        "rows": 395140,
+        "median_candidates_per_user": 107.0
+      }
+    }
+  },
+  "cost_seconds_F1": {
+    "Popularity (reference)": 0.0,
+    "Repeat own history (reference)": 0.0,
+    "CBF": 0.6,
+    "Association rules": 0.4,
+    "MF (implicit ALS)": 1.4,
+    "PPR": 10.1,
+    "Hybrid: candidate/feature table incl. the four methods": 16.7,
+    "Hybrid: LightGBM 5 seeds x 5 CV folds (train + predict)": 123.5
+  },
+  "final_config_F1": {
+    "description": "rank average of the sum-label and max-label rankers, 5 seeds each (validation analogue of det_ens_AD)",
+    "truth_sum_all": 0.42382,
+    "truth_sum_sub": 0.45506,
+    "truth_max_all": 0.4289,
+    "truth_max_sub": 0.4635
+  }
+}

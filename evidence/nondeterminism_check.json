@@ -1,0 +1,10 @@
+{
+  "old_code_commit": "47bffcd",
+  "rows": 460764,
+  "exp_show_slot_values_differing_between_two_runs": 537,
+  "max_abs_difference": 2.842170943040401e-14,
+  "exp_show_slot_rank_differing": 2,
+  "cv_sub02_map5_all_recorded_at_47bffcd": 0.42288,
+  "cv_sub02_map5_all_after_fix": 0.42268,
+  "fixed_code_check": "evidence/determinism_check.json"
+}

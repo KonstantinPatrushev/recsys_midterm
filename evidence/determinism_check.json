@@ -1,0 +1,15 @@
+{
+  "f1": {
+    "rows": 460764,
+    "columns": 89,
+    "identical_run0_run1": true,
+    "identical_run0_run2": true
+  },
+  "test": {
+    "rows": 531811,
+    "columns": 88,
+    "identical_run0_run1": true,
+    "identical_run0_run2": true
+  },
+  "all_identical": true
+}
