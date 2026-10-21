@@ -1,0 +1,5 @@
+{
+  "trials": 300,
+  "pairs_checked": 4088,
+  "all_equal_to_bruteforce": true
+}

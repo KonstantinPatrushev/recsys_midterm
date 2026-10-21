@@ -1,0 +1,335 @@
+{
+  "n_users_logs": 4914,
+  "n_sub_users": 1260,
+  "n_sub_users_in_logs": 1260,
+  "n_channels_logs": 202,
+  "n_channels_schedule_nonzero": 196,
+  "weeks_logs": [
+    11,
+    30
+  ],
+  "weeks_schedule": [
+    {
+      "week": 10,
+      "len": 21
+    },
+    {
+      "week": 11,
+      "len": 11150
+    },
+    {
+      "week": 12,
+      "len": 11325
+    },
+    {
+      "week": 13,
+      "len": 11483
+    },
+    {
+      "week": 14,
+      "len": 11119
+    },
+    {
+      "week": 15,
+      "len": 11887
+    },
+    {
+      "week": 16,
+      "len": 11416
+    },
+    {
+      "week": 17,
+      "len": 12066
+    },
+    {
+      "week": 18,
+      "len": 11224
+    },
+    {
+      "week": 19,
+      "len": 11729
+    },
+    {
+      "week": 20,
+      "len": 11910
+    },
+    {
+      "week": 21,
+      "len": 11371
+    },
+    {
+      "week": 22,
+      "len": 12144
+    },
+    {
+      "week": 23,
+      "len": 11929
+    },
+    {
+      "week": 24,
+      "len": 12001
+    },
+    {
+      "week": 25,
+      "len": 12155
+    },
+    {
+      "week": 26,
+      "len": 12604
+    },
+    {
+      "week": 27,
+      "len": 12541
+    },
+    {
+      "week": 28,
+      "len": 12000
+    },
+    {
+      "week": 29,
+      "len": 12686
+    },
+    {
+      "week": 30,
+      "len": 12090
+    },
+    {
+      "week": 31,
+      "len": 12328
+    },
+    {
+      "week": 32,
+      "len": 11911
+    },
+    {
+      "week": 33,
+      "len": 11646
+    },
+    {
+      "week": 34,
+      "len": 11619
+    },
+    {
+      "week": 35,
+      "len": 12728
+    },
+    {
+      "week": 36,
+      "len": 12376
+    },
+    {
+      "week": 37,
+      "len": 11738
+    },
+    {
+      "week": 38,
+      "len": 12062
+    },
+    {
+      "week": 39,
+      "len": 11992
+    },
+    {
+      "week": 40,
+      "len": 11870
+    },
+    {
+      "week": 41,
+      "len": 12199
+    },
+    {
+      "week": 42,
+      "len": 12315
+    },
+    {
+      "week": 43,
+      "len": 257
+    }
+  ],
+  "share_sessions_on_scheduled_channels": 0.8103851829280966,
+  "session_duration_quantiles_s": {
+    "0.1": 80.0,
+    "0.25": 133.0,
+    "0.5": 396.0,
+    "0.75": 1452.0,
+    "0.9": 3911.0,
+    "0.99": 14079.139999999665
+  },
+  "session_duration_vs_end_minus_start_mismatch": 117,
+  "sessions_overlapping_previous_same_user": 379228,
+  "sessions_contiguous_same_channel_gap_le_5s": 383398,
+  "schedule_overlaps_within_channel": 4,
+  "airing_duration_quantiles_s": {
+    "0.1": 600.0,
+    "0.5": 2700.0,
+    "0.9": 7200.0,
+    "0.99": 13500.0
+  },
+  "n_shows_total": 9671,
+  "n_shows_train_weeks": 8233,
+  "n_shows_test_weeks": 6646,
+  "n_shows_test_not_in_train": 1438,
+  "share_session_starts_within_2min_after_some_airing_start_by_offset_h": {
+    "-3": 0.516587682611605,
+    "-2": 0.517932436528233,
+    "-1": 0.5192222174319524,
+    "0": 0.5184479113402348,
+    "1": 0.5172450574005061,
+    "2": 0.5150767255234339,
+    "3": 0.5133486213555613
+  },
+  "full_views_per_week": [
+    {
+      "week": 11,
+      "len": 26482
+    },
+    {
+      "week": 12,
+      "len": 33664
+    },
+    {
+      "week": 13,
+      "len": 34825
+    },
+    {
+      "week": 14,
+      "len": 31818
+    },
+    {
+      "week": 15,
+      "len": 29363
+    },
+    {
+      "week": 16,
+      "len": 28403
+    },
+    {
+      "week": 17,
+      "len": 27487
+    },
+    {
+      "week": 18,
+      "len": 27710
+    },
+    {
+      "week": 19,
+      "len": 43898
+    },
+    {
+      "week": 20,
+      "len": 36121
+    },
+    {
+      "week": 21,
+      "len": 32807
+    },
+    {
+      "week": 22,
+      "len": 32693
+    },
+    {
+      "week": 23,
+      "len": 28466
+    },
+    {
+      "week": 24,
+      "len": 27580
+    },
+    {
+      "week": 25,
+      "len": 13770
+    },
+    {
+      "week": 26,
+      "len": 9983
+    },
+    {
+      "week": 27,
+      "len": 10978
+    },
+    {
+      "week": 28,
+      "len": 48734
+    },
+    {
+      "week": 29,
+      "len": 49453
+    },
+    {
+      "week": 30,
+      "len": 41744
+    }
+  ],
+  "val19_30_full": {
+    "users_with_any": 4728,
+    "users_with_ge5_shows": 4254,
+    "share_users_with_tie_at_5th": 0.6297602256699577,
+    "median_cnt_1st": 9.0,
+    "median_cnt_5th": 2.0
+  },
+  "val19_30_full_max": {
+    "users_with_any": 4712,
+    "users_with_ge5_shows": 4160,
+    "share_users_with_tie_at_5th": 0.6307692307692307,
+    "median_cnt_1st": 9.0,
+    "median_cnt_5th": 2.0
+  },
+  "sub_users_activity": {
+    "secs": {
+      "0.1": 704505.0,
+      "0.5": 1933267.0,
+      "0.9": 4272550.0
+    },
+    "n_weeks": {
+      "0.1": 14.0,
+      "0.5": 20.0,
+      "0.9": 20.0
+    },
+    "last_week": {
+      "0.1": 30.0,
+      "0.5": 30.0,
+      "0.9": 30.0
+    },
+    "n_full": {
+      "0.1": 27.0,
+      "0.5": 110.0,
+      "0.9": 345.0
+    },
+    "n_full_shows": {
+      "0.1": 15.0,
+      "0.5": 40.0,
+      "0.9": 117.0
+    }
+  },
+  "other_users_activity": {
+    "secs": {
+      "0.1": 292245.0,
+      "0.5": 1224337.0,
+      "0.9": 3187638.0
+    },
+    "n_weeks": {
+      "0.1": 12.0,
+      "0.5": 18.0,
+      "0.9": 20.0
+    },
+    "last_week": {
+      "0.1": 30.0,
+      "0.5": 30.0,
+      "0.9": 30.0
+    },
+    "n_full": {
+      "0.1": 10.0,
+      "0.5": 72.0,
+      "0.9": 269.0
+    },
+    "n_full_shows": {
+      "0.1": 6.0,
+      "0.5": 29.0,
+      "0.9": 102.0
+    }
+  },
+  "sub_users_last_week_30_share": 0.9650793650793651,
+  "other_users_last_week_30_share": 0.9165298303229338,
+  "sub_users_with_ge5_full_shows_in_weeks_19_30": 0.9515873015873015,
+  "all_users_with_ge5_full_shows_in_weeks_19_30": 4254
+}

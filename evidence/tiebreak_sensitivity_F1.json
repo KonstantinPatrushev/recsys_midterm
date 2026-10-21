@@ -1,0 +1,30 @@
+{
+ "train_id_asc/eval_id_asc": [
+  0.41537,
+  0.44419
+ ],
+ "train_id_asc/eval_id_desc": [
+  0.37329,
+  0.41082
+ ],
+ "train_id_asc/eval_random1": [
+  0.39003,
+  0.42671
+ ],
+ "train_id_asc/eval_random2": [
+  0.39069,
+  0.42391
+ ],
+ "train_id_asc/eval_random3": [
+  0.39008,
+  0.42117
+ ],
+ "train_id_asc+idfeat/eval_id_asc": [
+  0.41521,
+  0.44504
+ ],
+ "train_id_asc+idfeat/eval_id_desc": [
+  0.37284,
+  0.41046
+ ]
+}

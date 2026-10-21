@@ -1,0 +1,58 @@
+{
+  "lambdarank_nomethod": {
+    "map5_all": 0.41612,
+    "map5_sub": 0.44641
+  },
+  "lambdarank": {
+    "map5_all": 0.41622,
+    "map5_sub": 0.45019
+  },
+  "lambdarank_lr03_r800": {
+    "map5_all": 0.41498,
+    "map5_sub": 0.45094
+  },
+  "lambdarank_leaves31": {
+    "map5_all": 0.42019,
+    "map5_sub": 0.45372
+  },
+  "lambdarank_leaves127_mdl100": {
+    "map5_all": 0.40978,
+    "map5_sub": 0.44182
+  },
+  "lambdarank_trunc10": {
+    "map5_all": 0.41381,
+    "map5_sub": 0.44657
+  },
+  "xendcg": {
+    "map5_all": 0.41811,
+    "map5_sub": 0.44879
+  },
+  "binary": {
+    "map5_all": 0.41901,
+    "map5_sub": 0.44974
+  },
+  "poisson_cnt": {
+    "map5_all": 0.41582,
+    "map5_sub": 0.4456
+  },
+  "lambdarank_subw2": {
+    "map5_all": 0.41527,
+    "map5_sub": 0.44753
+  },
+  "ENS_lr+bin": {
+    "map5_all": 0.41929,
+    "map5_sub": 0.4522
+  },
+  "ENS_lr+bin+pois": {
+    "map5_all": 0.42217,
+    "map5_sub": 0.454
+  },
+  "ENS_lr+xendcg+bin+pois": {
+    "map5_all": 0.42146,
+    "map5_sub": 0.45277
+  },
+  "ENS_all_rankers": {
+    "map5_all": 0.41918,
+    "map5_sub": 0.45247
+  }
+}

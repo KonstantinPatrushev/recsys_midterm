@@ -1,0 +1,9 @@
+report/
+.venv/
+data/
+cache/
+__pycache__/
+*.pyc
+*.jsonl
+session*.json
+.DS_Store

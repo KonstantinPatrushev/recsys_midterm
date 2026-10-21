@@ -1,0 +1,78 @@
+{
+  "schedule_files": {
+    "export_arh_11-20-final.csv": {
+      "rows": 1074235,
+      "zero_show_rows": 958622,
+      "columns": [
+        "channel_id",
+        "channel_title",
+        "start_time",
+        "duration",
+        "tv_show_title",
+        "tv_show_id",
+        "tv_show_category",
+        "tv_show_genre_1",
+        "tv_show_genre_2",
+        "tv_show_genre_3",
+        "year_of_production",
+        "director",
+        "actors",
+        "src_file"
+      ]
+    },
+    "export_arh_21-30-final.csv": {
+      "rows": 1074394,
+      "zero_show_rows": 952889,
+      "columns": [
+        "channel_id",
+        "channel_title",
+        "start_time",
+        "duration",
+        "tv_show_title",
+        "tv_show_id",
+        "tv_show_category",
+        "tv_show_genre_1",
+        "tv_show_genre_2",
+        "tv_show_genre_3",
+        "year_of_production",
+        "director",
+        "actors",
+        "src_file"
+      ]
+    },
+    "export_arh_31-42-final.csv": {
+      "rows": 1295378,
+      "zero_show_rows": 1150604,
+      "columns": [
+        "channel_id",
+        "channel_title",
+        "start_time",
+        "duration",
+        "tv_show_title",
+        "tv_show_id",
+        "tv_show_category",
+        "tv_show_genre_1",
+        "tv_show_genre_2",
+        "tv_show_genre_3",
+        "year_of_production",
+        "director",
+        "actors",
+        "src_file"
+      ]
+    }
+  },
+  "schedule_rows_nonzero": 381892,
+  "log_rows": 5821987,
+  "log_columns": [
+    "user_id",
+    "vsetv_id",
+    "start_time",
+    "stop_time",
+    "duraton"
+  ],
+  "session_airing_pairs": 3847696,
+  "user_airing_views": 3014129,
+  "full_views_sum_ge_0.8": 615979,
+  "full_views_max_ge_0.8": 562939,
+  "seconds": 2.1
+}

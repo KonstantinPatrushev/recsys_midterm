@@ -1,0 +1,410 @@
+{
+  "sum/F1": {
+    "meta": {
+      "n_eval_users": 4254,
+      "n_eval_sub_users": 1199,
+      "hist": [
+        11,
+        18
+      ],
+      "target": [
+        19,
+        30
+      ]
+    },
+    "scores": {
+      "POP": {
+        "map5_all": 0.29581,
+        "map5_sub": 0.32229
+      },
+      "POP_ANY": {
+        "map5_all": 0.29581,
+        "map5_sub": 0.32229
+      },
+      "REPEAT": {
+        "map5_all": 0.34626,
+        "map5_sub": 0.38202
+      },
+      "REPEAT_AIR": {
+        "map5_all": 0.3493,
+        "map5_sub": 0.38438
+      },
+      "RATE_AIR": {
+        "map5_all": 0.33939,
+        "map5_sub": 0.37438
+      },
+      "DECAY_AIR_h1": {
+        "map5_all": 0.29104,
+        "map5_sub": 0.32019
+      },
+      "DECAY_RATE_AIR_h1": {
+        "map5_all": 0.27305,
+        "map5_sub": 0.29606
+      },
+      "DECAY_AIR_h2": {
+        "map5_all": 0.32124,
+        "map5_sub": 0.35709
+      },
+      "DECAY_RATE_AIR_h2": {
+        "map5_all": 0.30745,
+        "map5_sub": 0.33478
+      },
+      "DECAY_AIR_h4": {
+        "map5_all": 0.33784,
+        "map5_sub": 0.37401
+      },
+      "DECAY_RATE_AIR_h4": {
+        "map5_all": 0.32661,
+        "map5_sub": 0.35815
+      },
+      "DECAY_AIR_h8": {
+        "map5_all": 0.34208,
+        "map5_sub": 0.37948
+      },
+      "DECAY_RATE_AIR_h8": {
+        "map5_all": 0.33482,
+        "map5_sub": 0.36926
+      }
+    }
+  },
+  "sum/F2": {
+    "meta": {
+      "n_eval_users": 3447,
+      "n_eval_sub_users": 1019,
+      "hist": [
+        11,
+        27
+      ],
+      "target": [
+        28,
+        30
+      ]
+    },
+    "scores": {
+      "POP": {
+        "map5_all": 0.22351,
+        "map5_sub": 0.24513
+      },
+      "POP_ANY": {
+        "map5_all": 0.22351,
+        "map5_sub": 0.24513
+      },
+      "REPEAT": {
+        "map5_all": 0.3096,
+        "map5_sub": 0.33746
+      },
+      "REPEAT_AIR": {
+        "map5_all": 0.31921,
+        "map5_sub": 0.3463
+      },
+      "RATE_AIR": {
+        "map5_all": 0.28701,
+        "map5_sub": 0.31476
+      },
+      "DECAY_AIR_h1": {
+        "map5_all": 0.22655,
+        "map5_sub": 0.24856
+      },
+      "DECAY_RATE_AIR_h1": {
+        "map5_all": 0.1957,
+        "map5_sub": 0.21361
+      },
+      "DECAY_AIR_h2": {
+        "map5_all": 0.26765,
+        "map5_sub": 0.29324
+      },
+      "DECAY_RATE_AIR_h2": {
+        "map5_all": 0.2285,
+        "map5_sub": 0.24927
+      },
+      "DECAY_AIR_h4": {
+        "map5_all": 0.30466,
+        "map5_sub": 0.33055
+      },
+      "DECAY_RATE_AIR_h4": {
+        "map5_all": 0.26131,
+        "map5_sub": 0.28431
+      },
+      "DECAY_AIR_h8": {
+        "map5_all": 0.3165,
+        "map5_sub": 0.34414
+      },
+      "DECAY_RATE_AIR_h8": {
+        "map5_all": 0.27835,
+        "map5_sub": 0.30494
+      }
+    }
+  },
+  "sum/F0": {
+    "meta": {
+      "n_eval_users": 3620,
+      "n_eval_sub_users": 1049,
+      "hist": [
+        11,
+        15
+      ],
+      "target": [
+        16,
+        19
+      ]
+    },
+    "scores": {
+      "POP": {
+        "map5_all": 0.28457,
+        "map5_sub": 0.30841
+      },
+      "POP_ANY": {
+        "map5_all": 0.28457,
+        "map5_sub": 0.30841
+      },
+      "REPEAT": {
+        "map5_all": 0.3709,
+        "map5_sub": 0.40712
+      },
+      "REPEAT_AIR": {
+        "map5_all": 0.37734,
+        "map5_sub": 0.41252
+      },
+      "RATE_AIR": {
+        "map5_all": 0.36456,
+        "map5_sub": 0.39475
+      },
+      "DECAY_AIR_h1": {
+        "map5_all": 0.34501,
+        "map5_sub": 0.37485
+      },
+      "DECAY_RATE_AIR_h1": {
+        "map5_all": 0.33577,
+        "map5_sub": 0.36115
+      },
+      "DECAY_AIR_h2": {
+        "map5_all": 0.36419,
+        "map5_sub": 0.39811
+      },
+      "DECAY_RATE_AIR_h2": {
+        "map5_all": 0.35663,
+        "map5_sub": 0.38704
+      },
+      "DECAY_AIR_h4": {
+        "map5_all": 0.37038,
+        "map5_sub": 0.40472
+      },
+      "DECAY_RATE_AIR_h4": {
+        "map5_all": 0.36152,
+        "map5_sub": 0.39246
+      },
+      "DECAY_AIR_h8": {
+        "map5_all": 0.36996,
+        "map5_sub": 0.40358
+      },
+      "DECAY_RATE_AIR_h8": {
+        "map5_all": 0.36218,
+        "map5_sub": 0.39218
+      }
+    }
+  },
+  "max/F1": {
+    "meta": {
+      "n_eval_users": 4160,
+      "n_eval_sub_users": 1173,
+      "hist": [
+        11,
+        18
+      ],
+      "target": [
+        19,
+        30
+      ]
+    },
+    "scores": {
+      "POP": {
+        "map5_all": 0.30286,
+        "map5_sub": 0.33248
+      },
+      "POP_ANY": {
+        "map5_all": 0.30286,
+        "map5_sub": 0.33248
+      },
+      "REPEAT": {
+        "map5_all": 0.35,
+        "map5_sub": 0.38706
+      },
+      "REPEAT_AIR": {
+        "map5_all": 0.35241,
+        "map5_sub": 0.38874
+      },
+      "RATE_AIR": {
+        "map5_all": 0.34572,
+        "map5_sub": 0.38157
+      },
+      "DECAY_AIR_h1": {
+        "map5_all": 0.29626,
+        "map5_sub": 0.32695
+      },
+      "DECAY_RATE_AIR_h1": {
+        "map5_all": 0.28237,
+        "map5_sub": 0.30789
+      },
+      "DECAY_AIR_h2": {
+        "map5_all": 0.32474,
+        "map5_sub": 0.36043
+      },
+      "DECAY_RATE_AIR_h2": {
+        "map5_all": 0.31493,
+        "map5_sub": 0.34585
+      },
+      "DECAY_AIR_h4": {
+        "map5_all": 0.34169,
+        "map5_sub": 0.38009
+      },
+      "DECAY_RATE_AIR_h4": {
+        "map5_all": 0.33387,
+        "map5_sub": 0.36903
+      },
+      "DECAY_AIR_h8": {
+        "map5_all": 0.34508,
+        "map5_sub": 0.38522
+      },
+      "DECAY_RATE_AIR_h8": {
+        "map5_all": 0.34203,
+        "map5_sub": 0.37864
+      }
+    }
+  },
+  "max/F2": {
+    "meta": {
+      "n_eval_users": 3295,
+      "n_eval_sub_users": 976,
+      "hist": [
+        11,
+        27
+      ],
+      "target": [
+        28,
+        30
+      ]
+    },
+    "scores": {
+      "POP": {
+        "map5_all": 0.24393,
+        "map5_sub": 0.26583
+      },
+      "POP_ANY": {
+        "map5_all": 0.24393,
+        "map5_sub": 0.26583
+      },
+      "REPEAT": {
+        "map5_all": 0.31248,
+        "map5_sub": 0.33909
+      },
+      "REPEAT_AIR": {
+        "map5_all": 0.32175,
+        "map5_sub": 0.34775
+      },
+      "RATE_AIR": {
+        "map5_all": 0.29358,
+        "map5_sub": 0.31852
+      },
+      "DECAY_AIR_h1": {
+        "map5_all": 0.2286,
+        "map5_sub": 0.25123
+      },
+      "DECAY_RATE_AIR_h1": {
+        "map5_all": 0.20048,
+        "map5_sub": 0.22002
+      },
+      "DECAY_AIR_h2": {
+        "map5_all": 0.27114,
+        "map5_sub": 0.29509
+      },
+      "DECAY_RATE_AIR_h2": {
+        "map5_all": 0.2334,
+        "map5_sub": 0.25457
+      },
+      "DECAY_AIR_h4": {
+        "map5_all": 0.30723,
+        "map5_sub": 0.33202
+      },
+      "DECAY_RATE_AIR_h4": {
+        "map5_all": 0.26663,
+        "map5_sub": 0.28893
+      },
+      "DECAY_AIR_h8": {
+        "map5_all": 0.31851,
+        "map5_sub": 0.3444
+      },
+      "DECAY_RATE_AIR_h8": {
+        "map5_all": 0.28432,
+        "map5_sub": 0.30862
+      }
+    }
+  },
+  "max/F0": {
+    "meta": {
+      "n_eval_users": 3447,
+      "n_eval_sub_users": 1014,
+      "hist": [
+        11,
+        15
+      ],
+      "target": [
+        16,
+        19
+      ]
+    },
+    "scores": {
+      "POP": {
+        "map5_all": 0.29319,
+        "map5_sub": 0.31511
+      },
+      "POP_ANY": {
+        "map5_all": 0.29319,
+        "map5_sub": 0.31511
+      },
+      "REPEAT": {
+        "map5_all": 0.37472,
+        "map5_sub": 0.40066
+      },
+      "REPEAT_AIR": {
+        "map5_all": 0.37983,
+        "map5_sub": 0.40543
+      },
+      "RATE_AIR": {
+        "map5_all": 0.37163,
+        "map5_sub": 0.39255
+      },
+      "DECAY_AIR_h1": {
+        "map5_all": 0.34737,
+        "map5_sub": 0.37119
+      },
+      "DECAY_RATE_AIR_h1": {
+        "map5_all": 0.34196,
+        "map5_sub": 0.36234
+      },
+      "DECAY_AIR_h2": {
+        "map5_all": 0.36653,
+        "map5_sub": 0.39217
+      },
+      "DECAY_RATE_AIR_h2": {
+        "map5_all": 0.36155,
+        "map5_sub": 0.38298
+      },
+      "DECAY_AIR_h4": {
+        "map5_all": 0.37194,
+        "map5_sub": 0.39757
+      },
+      "DECAY_RATE_AIR_h4": {
+        "map5_all": 0.36685,
+        "map5_sub": 0.38899
+      },
+      "DECAY_AIR_h8": {
+        "map5_all": 0.37202,
+        "map5_sub": 0.39812
+      },
+      "DECAY_RATE_AIR_h8": {
+        "map5_all": 0.36884,
+        "map5_sub": 0.38965
+      }
+    }
+  }
+}

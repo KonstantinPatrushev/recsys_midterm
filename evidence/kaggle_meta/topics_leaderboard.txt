@@ -1,0 +1,26 @@
+topics error TypeError("object of type 'ApiListCompetitionTopicsResponse' has no len()")
+Next Page Token = CfDJ8JDwKpgsc5hJpcljKjpYpOEYlw1n7BgqHZkRoWXx6N6-_v2oyT7h5Pj0WT2kEXBtu-S4ZYHVJJUBhm9wwuupUos
+LEADERBOARD rows: 20
+{'team_name': 'Magic City', 'score': '0.42912', 'submission_date': datetime.datetime(2020, 11, 21, 23, 45, 18, 290000), 'team_id': 5860143}
+{'team_name': 'Nikita Melentev', 'score': '0.42905', 'submission_date': datetime.datetime(2020, 11, 21, 21, 7, 15, 213000), 'team_id': 5849796}
+{'team_name': 'AfterParty', 'score': '0.42674', 'submission_date': datetime.datetime(2020, 11, 21, 23, 54, 30, 350000), 'team_id': 5850251}
+{'team_name': 'Too much ...', 'score': '0.42544', 'submission_date': datetime.datetime(2020, 11, 21, 23, 54, 46, 626000), 'team_id': 5872995}
+{'team_name': 'x0x0w1', 'score': '0.42533', 'submission_date': datetime.datetime(2020, 11, 21, 21, 59, 40, 86000), 'team_id': 5849201}
+{'team_name': 'it is the way', 'score': '0.41380', 'submission_date': datetime.datetime(2020, 11, 21, 23, 29, 40, 136000), 'team_id': 5853736}
+{'team_name': 'Tymur Prorochenko', 'score': '0.41332', 'submission_date': datetime.datetime(2020, 11, 21, 18, 45, 55, 343000), 'team_id': 5849227}
+{'team_name': 'chikibambino', 'score': '0.41155', 'submission_date': datetime.datetime(2020, 11, 21, 23, 57, 54, 26000), 'team_id': 5850717}
+{'team_name': 'Vladimir', 'score': '0.41102', 'submission_date': datetime.datetime(2020, 11, 21, 19, 46, 44, 670000), 'team_id': 5864124}
+{'team_name': 'Gornyaki', 'score': '0.40861', 'submission_date': datetime.datetime(2020, 11, 21, 21, 3, 22, 540000), 'team_id': 5849290}
+{'team_name': 'Andriy Samoshyn', 'score': '0.40846', 'submission_date': datetime.datetime(2020, 11, 21, 13, 51, 46, 583000), 'team_id': 5849192}
+{'team_name': 'yvtkff', 'score': '0.40597', 'submission_date': datetime.datetime(2020, 11, 21, 9, 55, 40, 626000), 'team_id': 5853149}
+{'team_name': '[Deleted] f120bcfd-f63f-46ee-877f-9367780d83e1', 'score': '0.40551', 'submission_date': datetime.datetime(2020, 11, 21, 13, 43, 46, 336000), 'team_id': 5858936}
+{'team_name': 'nazar grycshuk', 'score': '0.40062', 'submission_date': datetime.datetime(2020, 11, 21, 18, 36, 36, 953000), 'team_id': 5852346}
+{'team_name': 'Hanna Pylieva', 'score': '0.39739', 'submission_date': datetime.datetime(2020, 11, 21, 12, 50, 21, 150000), 'team_id': 5849500}
+{'team_name': 'Sergey Mischenko', 'score': '0.39736', 'submission_date': datetime.datetime(2020, 11, 21, 1, 13, 34, 860000), 'team_id': 5852921}
+{'team_name': 'Oleksandr Dudnev', 'score': '0.39618', 'submission_date': datetime.datetime(2020, 11, 21, 23, 52, 0, 766000), 'team_id': 5857987}
+{'team_name': 'Rudy', 'score': '0.39618', 'submission_date': datetime.datetime(2020, 11, 21, 15, 17, 4, 513000), 'team_id': 5855662}
+{'team_name': 'Reign of Machines', 'score': '0.39279', 'submission_date': datetime.datetime(2020, 11, 21, 23, 30, 25, 920000), 'team_id': 5850920}
+{'team_name': 'monkey_head', 'score': '0.39100', 'submission_date': datetime.datetime(2020, 11, 21, 13, 59, 17, 676000), 'team_id': 5849258}
+resp attrs: ['body_fields', 'endpoint', 'endpoint_path', 'from_dict', 'from_json', 'method', 'prepare_from', 'to_dict', 'to_field_map', 'to_json', 'topics', 'totalCount', 'total_count']
+topics 0
+LB downloaded

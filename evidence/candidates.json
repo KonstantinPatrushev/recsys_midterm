@@ -1,0 +1,9 @@
+{
+  "F1": {
+    "rows": 391458,
+    "users_with_candidates": 4829,
+    "candidates_per_user_median": 79.0,
+    "recall_all": 0.7742360131640809,
+    "recall_sub": 0.8180150125104254
+  }
+}
