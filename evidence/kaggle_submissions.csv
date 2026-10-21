@@ -1,3 +1,6 @@
 ref,fileName,date,description,status,publicScore,privateScore
+57493693,det_ens_A.csv,2026-10-21 18:36:54.377000,Константин Патрушев konstantinpatrushev,SubmissionStatus.COMPLETE,0.44847,0.43865
+57493688,det_ens_AD.csv,2026-10-21 18:36:47.747000,Константин Патрушев konstantinpatrushev,SubmissionStatus.COMPLETE,0.44608,0.43968
+57493682,det_ens_D.csv,2026-10-21 18:36:35.410000,Константин Патрушев konstantinpatrushev,SubmissionStatus.COMPLETE,0.44206,0.43082
 57489891,sub02_hybrid_lr31_r250_s5.csv,2026-10-21 16:31:32.323000,Константин Патрушев,SubmissionStatus.COMPLETE,0.44688,0.43848
 57488685,sub01_ranker_v1.csv,2026-10-21 15:52:38.967000,Константин Патрушев,SubmissionStatus.COMPLETE,0.44705,0.43278

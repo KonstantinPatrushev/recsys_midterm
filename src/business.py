@@ -76,8 +76,9 @@ def main():
         "MF (ALS)": topk_from_matrix(space, als_scores(space, 64, 10.0, 1.0, iters=30), users),
         "PPR": topk_from_matrix(space, ppr_scores(space, 0.7, users=users)[0], users),
     }
-    # hybrid = out-of-fold top-5 of the exact submission-2 configuration (src/cv_final.py, 5 seeds)
-    cvp = json.loads((ROOT / "cache" / "cv_pred_sub02_hybrid_lr31_r250_s5.json").read_text())
+    # hybrid = out-of-fold top-5 of the final configuration on F1 (sum-label + max-label rankers,
+    # 5 seeds each; src/report_stats.py) -- the validation analogue of the designated final submission
+    cvp = json.loads((ROOT / "cache" / "cv_pred_final_config.json").read_text())
     preds["Hybrid (LGBM)"] = {int(u): v for u, v in cvp.items()}
 
     test_pred = {}
