@@ -1,0 +1,299 @@
+{
+ "checked": [
+  {
+   "item": "F1. Competition metadata: id 24201, host ogurbych, enabled 2020-11-18T07:58Z, deadline 2020-11-21T23:59Z, MAP@{K} (LEGACY), 50% public, 10 submissions/day, 2 scored, 1260 solution rows, 5 decimals, 36 teams / 47 competitors / 578 submissions / 69 joined",
+   "url_or_doi": "https://www.kaggle.com/api/i/competitions.CompetitionService/GetCompetition (POST {\"competitionName\":\"sweettv-tv-program-recommender\"})",
+   "status": "verified",
+   "evidence": "I re-ran the call without login on 2026-10-21 (HTTP 200). It returned: id 24201; hostName 'ogurbych'; dateEnabled 2020-11-18T07:58:18.460Z; deadline 2020-11-21T23:59:00Z; evaluationAlgorithm.name 'MAP@{K}' with state 'LEGACY'; leaderboardPercentage 50; maxDailySubmissions 10; numScoredSubmissions 2; totalSolutionRows 1260; scoreTruncationNumDecimals 5; totalTeams 36; totalCompetitors 47; totalSubmissions 578; totalJoinedUsers 69; forumId 997514.",
+   "corrected_value": ""
+  },
+  {
+   "item": "F2. Description page quotes (external data allowed, 10 submissions/day, deadline, task sentence) and prizes ($10k / $5k per challenge, $50k pool)",
+   "url_or_doi": "https://www.kaggle.com/api/i/competitions.PageService/ListPages (POST {\"competitionId\":24201})",
+   "status": "verified",
+   "evidence": "No login needed (HTTP 200). The 'Description' page contains, verbatim: 'The prize pool is $50 000', '$10 000 — for first place in every challenge', '$5 000 — for second place in every challenge', 'You are allowed to use any external data source', '10 submissions/day', 'Deadline - 21.11.2020, 11.59 PM'. It also has the quoted task sentence ending '...using the subsequent 12 weeks (weeks 31-42) of historical views.' The raw markdown escapes the underscores (tv\\_show\\_id).",
+   "corrected_value": ""
+  },
+  {
+   "item": "F3. The Evaluation page has no formula; it gives the MAP@5 name, the 'Order matters!' format and an example row; the Rules page is Kaggle's placeholder",
+   "url_or_doi": "https://www.kaggle.com/api/i/competitions.PageService/ListPages (POST {\"competitionId\":24201})",
+   "status": "verified",
+   "evidence": "The Evaluation text is: 'Submissions are evaluated according to the Mean Average Precision @ 5 (MAP@5)'; 'For every user, you must predict (strictly) 5 space-delimited tv_show_ids they prefer. Order matters!'; header 'user_id,tv_show_id'; example '5201886213552257351,0 0 0 0 0'. It contains no formula. The 'rules' page is the unedited template: 'Don't cheat! / Apply yourself! / Have fun!'.",
+   "corrected_value": ""
+  },
+  {
+   "item": "F4. Official target recipe on the data page (drop id 0; screen time = watched / show duration; keep >= 0.8; frequency; strictly top 5 DESC; split BY USERS 50/50, not by time)",
+   "url_or_doi": "https://www.kaggle.com/api/i/competitions.PageService/ListPages (POST {\"competitionId\":24201}), page 'data-description'",
+   "status": "verified",
+   "evidence": "All quoted bullets are present verbatim, including 'Private/public test data is split BY USERS (50/50) - not by time' and '#1 - has the largest number of views'. The page says 'frequency' and 'number of views' and never says 'airing'. Reading the target as 'a count of airings watched to >= 80%' is therefore an interpretation, though it agrees with that wording.",
+   "corrected_value": ""
+  },
+  {
+   "item": "F5. The file names on the data page do not exist. The real files are dataset11-30.csv (396,216,555 B), export_arh_11-20-final.csv (153,322,643 B), export_arh_21-30-final.csv (154,366,907 B), export_arh_31-42-final.csv (185,952,991 B) and submission.csv (38,348 B), all created 2020-11-18T07:19Z. data/list returns 401 without a token and 200 with a Bearer token. The kaggle CLI is absent.",
+   "url_or_doi": "https://www.kaggle.com/api/v1/competitions/data/list/sweettv-tv-program-recommender",
+   "status": "verified",
+   "evidence": "Without credentials: HTTP 401 {\"code\":401,\"message\":\"Unauthenticated\"}. With ~/.kaggle/access_token as a Bearer token: HTTP 200, and the names, totalBytes and creation dates match exactly (07:19:16-07:19:23Z). 'which kaggle' finds nothing. Extra detail: totalBytes is the uncompressed CSV size, since it equals the ZIP entry's file_size. The ZIPs themselves are 95.8, 10.9, 11.1 and 13.3 MB.",
+   "corrected_value": ""
+  },
+  {
+   "item": "F6. The download endpoint returns a 302 to a signed GCS URL; the four large files are single-entry ZIPs; submission.csv is plain CSV",
+   "url_or_doi": "https://www.kaggle.com/api/v1/competitions/data/download/sweettv-tv-program-recommender/<file>",
+   "status": "verified",
+   "evidence": "All five downloads return 302 to https://storage.googleapis.com. The four large files start with PK\\x03\\x04 and are content-type application/zip. Each ZIP's central directory has exactly 1 entry (checked on the full schedule ZIPs and on a ranged read of the end of the log ZIP). submission.csv starts with 'user_id,tv_show_id'. It has 1261 lines (header plus 1260 distinct users, all '0 0 0 0 0') and no trailing newline.",
+   "corrected_value": ""
+  },
+  {
+   "item": "F7. Log header \"user_id\",\"vsetv_id\",\"start_time\",\"stop_time\",\"duraton\"; duraton = stop - start in seconds; user_id is uint64; the 2nd-place code casts to uint64",
+   "url_or_doi": "https://www.kaggle.com/api/v1/competitions/data/download/sweettv-tv-program-recommender/dataset11-30.csv (ranged read)",
+   "status": "verified",
+   "evidence": "I partially inflated the first 256 KB (16,335 rows). The header is exactly as stated. The first row is 3398461054087191302,6,2020-03-09 00:00:02,2020-03-09 00:01:53,111. duraton equals stop_time - start_time in all 16,335 rows. 8,725 sampled rows have user_id above the int64 maximum; the largest is 18437797701155742162, which fits uint64. 3_final_model.ipynb contains add_df['user_id'].astype('uint64').",
+   "corrected_value": ""
+  },
+  {
+   "item": "F8. The three schedule files share a 13-column header; start_time is 'DD.MM.YYYY HH:MM:SS'; duration is in seconds; first rows are 09.03.2020, 18.05.2020 and 27.07.2020 (Mondays of ISO weeks 11, 21 and 31)",
+   "url_or_doi": "https://www.kaggle.com/api/v1/competitions/data/download/sweettv-tv-program-recommender/export_arh_11-20-final.csv (and the 21-30 and 31-42 files)",
+   "status": "verified",
+   "evidence": "The header and first-row dates match. 2020-03-09, 2020-05-18 and 2020-07-27 are Mondays of ISO weeks 11, 21 and 31. The files are not sorted by time, though. From the full files, the real start ranges are: 11-20 from 2020-03-08 23:00 to 2020-05-18 11:45; 21-30 from 2020-05-18 00:00 to 2020-07-27 11:55; 31-42 from 2020-07-27 00:00 to 2020-10-19 11:55 (last airing ends 12:00). Each channel switches from one file to the next with no repeated (channel, start_time) pairs.",
+   "corrected_value": ""
+  },
+  {
+   "item": "F9. tv_show_id=0 is not 'films': 0 appears on a series block ('Т/с По праву любви, 1-8 с.', 28800 s, Сериалы) and an entertainment show; films have non-zero ids (e.g. 90082508); some 28800 s blocks are hard to watch at 80%",
+   "url_or_doi": "https://www.kaggle.com/api/v1/competitions/data/download/sweettv-tv-program-recommender/export_arh_11-20-final.csv (full files of 11-20, 21-30 and 31-42 checked)",
+   "status": "corrected",
+   "evidence": "The cited rows exist: channel 1+1, 09.03.2020 11:30, \"Т/с 'По праву любви', 1-8 с.\", 28800, id 0, Сериалы; and 90082508 = \"Премьера. Х/ф 'Любовь без памяти', 1-4 с.\", Фильмы. In the full files, though: id 0 covers 958,622 of 1,074,235 rows (89.2%) in 11-20, 88.7% in 21-30 and 88.8% in 31-42, and it occurs in every category. 41-47% of 'Фильмы' rows also have id 0 (19,684 of 41,579 in 11-20). Rows of 28800 s or longer number 978, 1,194 and 1,360 per file, and 964, 1,176 and 1,347 of those have id 0.",
+   "corrected_value": "tv_show_id=0 ('irrelevant', dropped) marks about 89% of all schedule rows across every category, including 41-47% of 'Фильмы' rows. It is not a film flag, but neither do films always have non-zero ids. Very long blocks (28800 s or more) exist, but about 99% of them have id 0 and are dropped anyway."
+  },
+  {
+   "item": "F10. Private top-10, count of teams >= 0.40, 20th = 0.39100, public top-5, five zero scores; v1 leaderboard/view = private top-20; leaderboard/download = public LB",
+   "url_or_doi": "https://www.kaggle.com/api/i/competitions.LeaderboardService/GetLeaderboard (POST {\"competitionId\":24201}); https://www.kaggle.com/api/v1/competitions/sweettv-tv-program-recommender/leaderboard/view ; .../leaderboard/download",
+   "status": "verified",
+   "evidence": "The private ranks 1-10 and scores match exactly (Magic City 0.42912 ... Gornyaki 0.40861). 14th is nazar grycshuk at 0.40062 and 15th is 0.39739, so 14 teams scored 0.40 or more. 20th is monkey_head at 0.39100. The public top 5 match. Five teams score 0.00000 on both boards. v1/view returns 401 without a token; with a token it returns 20 rows starting at Magic City 0.42912 and ending at monkey_head 0.39100. The download ZIP is 'sweettv-tv-program-recommender-publicleaderboard-...csv' (1 Magic City 0.44297). YuAn made a single submission on 2020-11-18, scoring 0.27862 public and 0.25047 private. No team has a solutionWriteUpUrl.",
+   "corrected_value": ""
+  },
+  {
+   "item": "F11. Public is above private for all 31 non-zero teams; gap mean 0.0134, median 0.0134, range 0.0037-0.0282; Spearman 0.969, Pearson 0.9975",
+   "url_or_doi": "https://www.kaggle.com/api/i/competitions.LeaderboardService/GetLeaderboard (POST {\"competitionId\":24201})",
+   "status": "verified",
+   "evidence": "I recomputed from the API: n=31; public > private for all 31; mean gap 0.0134; median 0.0134; minimum 0.00368 ('it is the way'); maximum 0.02815 (YuAn); Pearson 0.9975; Spearman 0.9690.",
+   "corrected_value": ""
+  },
+  {
+   "item": "F12. No discussion topics: forum 997514 returns an empty list, while the H&M forum returns topics",
+   "url_or_doi": "https://www.kaggle.com/api/i/discussions.DiscussionsService/GetTopicListByForumId (POST {\"forumId\":997514})",
+   "status": "verified",
+   "evidence": "The call returns HTTP 200 with body '{}'. The same call on the H&M forum (1629935) returns 20 topics, e.g. 'Greetings!'. This only shows that the API lists no topics.",
+   "corrected_value": ""
+  },
+  {
+   "item": "F13. Only one public notebook (kinahem/gornyaki-final-solution, Myhaylo Turkin, 10 votes, no saved outputs); keyword searches find only unrelated notebooks",
+   "url_or_doi": "https://www.kaggle.com/api/v1/kernels/list?competition=sweettv-tv-program-recommender&pageSize=100 ; https://www.kaggle.com/api/v1/kernels/output?userName=kinahem&kernelSlug=gornyaki-final-solution",
+   "status": "corrected",
+   "evidence": "Correct: the competition list has exactly 1 notebook, with title 'Gornyaki_final_solution', author 'Myhaylo Turkin' and totalVotes 10. Wrong on outputs: kernels/output lists the file 'my_submission.csv' and a 3,590-character run log, and kernels/status is 'complete'. The log contains the same printed numbers as the GitHub copy (0.5724..., MAPK 0.32688, 10 NaNs, 0.0325). Only the pulled .ipynb source has no cell outputs. Wrong on searches: 'vsetv' returns anhnguyenquocak57/rec-project, which is a LightGCN / Deep MF notebook on the same sweet.tv TV logs (vsetv_id, tv_show_id, screen_time). It treats channels as items, reads a private 'clean-data' dataset and has no outputs. The 'sweettv' and 'sweet.tv' searches also return the Gornyaki notebook itself. The movie-track hits are huybeo2609/notebook-version31 (competition source sweettv-movie-recommender) and hoandd2004/notebook5af221b006.",
+   "corrected_value": "One notebook is attached (kinahem/gornyaki-final-solution, 10 votes). Its .ipynb has no cell outputs, but the Kaggle run is saved: a log plus my_submission.csv. Keyword searches also surface anhnguyenquocak57/rec-project, which uses the same TV logs (channel-level LightGCN/DeepMF, no Kaggle score); the other hits are movie-track notebooks."
+  },
+  {
+   "item": "F14. Demo competition 'sweettv-tv-program-recommender-demo' (id 24181, created 2020-11-17): identical data file sizes, 86 rows, 'next 10 weeks', CLOSED, 3 teams, best private 0.30085",
+   "url_or_doi": "https://www.kaggle.com/api/i/competitions.PageService/ListPages (POST {\"competitionId\":24181}); GetCompetition and GetLeaderboard for 24181",
+   "status": "verified",
+   "evidence": "id 24181; dateCreated 2020-11-17T14:37:16Z; totalSolutionRows 86; 3 teams. The data page says 'Test data contains user's tv program preferences for the next 10 weeks.' Description and Evaluation say 'This competition was CLOSED / Please submit your solutions here: https://www.kaggle.com/c/sweettv-tv-program-recommender'. Private scores: Andriy Samoshyn 0.30085, YuAn 0.26062, Vlad Balanda 0.00000. Data list (with a token): the same four file sizes; its submission.csv is 2,518 B.",
+   "corrected_value": ""
+  },
+  {
+   "item": "F15. epravda: hackathon 14-22 Nov 2020, sweet.tv with We_Challenge, three directions; TV track Magic City 1st (280k UAH / $10k) and Nikita Melentiev 2nd (140k UAH / $5k), decided automatically; movie track AfterParty 1st, Too much recsys experience 2nd",
+   "url_or_doi": "https://epravda.com.ua/rus/news/2020/11/24/668341/",
+   "status": "verified",
+   "evidence": "The page opened (200), dated 24 Nov 2020. Quotes: 'проходил с 14 до 22 ноября 2020 года'; 'национальный онлайн-кинотеатр sweet.tv вместе с компанией по внедрению инноваций We_Challenge'; 'команда Magic City (280 тыс грн/10 тыс долларов - 1 место) и Никита Мелентьев (2 место - 140 тыс грн/5 тыс долларов)'; 'победители в этих категориях определялись автоматически согласно показателям эффективности'; 'AfterParty (280 тыс грн/10 тыс долларов - 1 место) и Too much recsys experience (2 место ...)'; and a third nomination for teams' own projects.",
+   "corrected_value": ""
+  },
+  {
+   "item": "F16. DOU listing: organizers 'SWEET.TV and the We_Challenge team'; Challenge 2 = TV-program recommender; $50,000 fund. cinema.wechallenge.it is down (HTTP 530); first Wayback capture is a 2022 404",
+   "url_or_doi": "https://dou.ua/calendar/34875/ ; https://web.archive.org/cdx/search/cdx?url=cinema.wechallenge.it*",
+   "status": "corrected",
+   "evidence": "DOU (200, title 'Cinema Challenge Hackathon Online, 14 — 22 November 2020 | DOU') says: 'Hackathon organizers — SWEET.TV and the We_Challenge team'; 'Challenge 2 For Data scientists. Participants and Teams are working on a recommendation system for TV programs'; '$ 50,000 prize fund'. The site check is only half right: http://cinema.wechallenge.it/ returns 530 (Cloudflare), but https://cinema.wechallenge.it/ returns 301 to https://www.anyway-ed.com/, an unrelated site. The Wayback CDX does start at 20220114233946 with status 404 and has no 2020 captures.",
+   "corrected_value": "cinema.wechallenge.it no longer serves the hackathon: http returns 530, and https redirects (301) to an unrelated site, anyway-ed.com. It was not archived during the event; the first Wayback capture is 2022-01-14 (404)."
+  },
+  {
+   "item": "F17. TDS 2nd-place write-up (Nikita Melentev, 2021-03-20): '...over 80% of it and did not change the channel'; '20 weeks of user logs'; '12 weeks ... 50 / 50 split by users'; live page 403; the 2021 and 2025 Wayback copies agree",
+   "url_or_doi": "https://web.archive.org/web/20250827164704/https://towardsdatascience.com/two-layered-recommender-system-methodology-a-prize-winning-solution-c4bdb815b156/",
+   "status": "verified",
+   "evidence": "The live URL returns 403. The 2025 copy (200) shows author Nikita Melentev, 'Mar 20, 2021' and all three quotes verbatim. The 2021 copy (web/20210327063743/...?gi=45095e13eefd) has the same sentences and links to github.com/ndmel/2nd_place_recsys_cinema_challenge_2020. The page title starts with a medal emoji: '🥈Two-layered recommender system methodology: a prize-winning solution'.",
+   "corrected_value": ""
+  },
+  {
+   "item": "F18. 'Algorithm 1' baseline: >50% in a single sitting, filtered to the future schedule, padded with popular shows; Kaggle MAP@5 = 0.41296; LightFM WARP 'a little bit lower'",
+   "url_or_doi": "https://web.archive.org/web/20250827164704/https://towardsdatascience.com/two-layered-recommender-system-methodology-a-prize-winning-solution-c4bdb815b156/",
+   "status": "verified",
+   "evidence": "Verbatim: 'Tv-program is considered watched if the user watched more than 50% of its full length in a single sitting; Filter result by programs that are not in the tv-program in the future; If the user watched fewer than 5 tv-programs total in his lifetime, fill in his predictions with the most popular tv-programs.' and 'accuracy on Kaggle MAP@5 = 0.41296'. On LightFM: 'Accuracy is a little bit lower than the first approach'.",
+   "corrected_value": ""
+  },
+  {
+   "item": "F19. 2nd-place LightGBM score progression 0.43128 -> 0.43302 -> 0.43565 -> 0.43823 -> 0.44075 -> 0.44173 -> 0.44203; final public 0.44252 / private 0.42905; top features; validation 'correlated highly'",
+   "url_or_doi": "https://web.archive.org/web/20250827164704/https://towardsdatascience.com/two-layered-recommender-system-methodology-a-prize-winning-solution-c4bdb815b156/ ; https://github.com/ndmel/2nd_place_recsys_cinema_challenge_2020 (Description.pptx)",
+   "status": "verified",
+   "evidence": "Each step and number appears verbatim in the article, along with 'Top features – user watch time, user features from LightFM, schedule change' and 'Local holdout validation correlated highly with Kaggle leaderboard, so there was almost no shake-up'. Slide 6 has 'Публичный LB: 0.44252 (2е место); Приватный LB: 0.42905 (2е место) (отличие от первого места на 0.00007)'. One caveat: the step-3 features 'time since the user was created' and 'time since the last time watch' are not among the 28 features in the published 3_final_model.ipynb.",
+   "corrected_value": ""
+  },
+  {
+   "item": "F20. 2nd-place code: session x airing join on the same channel; user_watch_perc = overlap / airing length; target = top 5 by count of >= 0.8 rows; 9-week holdout with candidates from the holdout schedule; 200 candidates (frequency, then LightFM WARP, 15 epochs); LightGBM AUC 0.904; local MAP 0.35318 vs 0.31975; baseline 0.32881; slides say 23 features, notebook has 28",
+   "url_or_doi": "https://github.com/ndmel/2nd_place_recsys_cinema_challenge_2020 (utils.py; 1_prepare_data, 2_baseline_model and 3_final_model notebooks; Description.pptx)",
+   "status": "verified",
+   "evidence": "1_prepare_data joins on channel_id == vsetv_id with start < stop overlaps. utils.get_target filters user_watch_perc >= 0.8, does groupby().size() and head(5). The holdout uses split_date = max - 9*7 days, and possible_movies_in_val = df_info_val.tv_show_id. The code has get_n=200, LightFM(loss='warp'), fit(epochs=15), LGBM learning_rate 0.01, num_leaves 150, early_stopping_rounds 15, best iteration 588 with valid AUC 0.904125, and train_test_split over users (default 25%). Outputs: 'Model MAP@5 = 0.35318' and 'Baseline MAP@5 = 0.31975'; the baseline notebook prints 'MAP@5 = 0.32881'. The feature list prints 28 columns, and the slide says 'Всего в финальной модели 23 признака'. In the baseline notebook, unlike the final model, candidates are restricted to tv_show_ids seen in the holdout viewing log rather than the holdout schedule.",
+   "corrected_value": ""
+  },
+  {
+   "item": "F20 sub-claim: 'Local numbers are far below the LB because users with fewer than 5 targets are included'",
+   "url_or_doi": "https://github.com/ndmel/2nd_place_recsys_cinema_challenge_2020 (utils.py apk; 3_final_model.ipynb cell 26)",
+   "status": "unverifiable",
+   "evidence": "No source says this; it is an inference. The code shows the following. Evaluation runs over all held-out users who have candidates. actual = the user's top 5 in the 9-week window, which is empty when the user has no view of 80% or more there. apk() returns 0.0 for an empty truth and otherwise divides by min(len(actual), 5). So users with 1-4 targets are not penalized by the denominator, while users with zero targets score 0. The target window is also 9 weeks, not 12.",
+   "corrected_value": "Local MAP is lower mainly because the evaluation includes users with no qualifying view in the 9-week holdout (they score 0) and because the window is shorter (9 vs 12 weeks). The Kaggle test users all have exactly 5 targets. This explanation is inferred, not stated by the author."
+  },
+  {
+   "item": "F21. 2nd-place notebook outputs: 4914 users, 202 channels, 8234-8235 non-zero ids, log and schedule ranges, 3,847,696 join rows, duplicate channel titles (75, 288, 1249), duplicate metadata, 20088 durations, 30066 'Наша Russia', gaps between programmes",
+   "url_or_doi": "https://github.com/ndmel/2nd_place_recsys_cinema_challenge_2020 (0_data_exploration.ipynb, 1_prepare_data.ipynb, 3_final_model.ipynb)",
+   "status": "verified",
+   "evidence": "0_data_exploration prints 4914 / 202 / 8234, logs '2020-03-09 00:00:02 2020-07-26 23:58:42' and info '2020-03-08 23:00:00 2020-07-27 06:00:00'. 1_prepare_data prints 8235 and '... 2020-07-27 11:55:00'. 3_final_model prints df_show.shape (3847696, 14), which equals 2,537,448 + 1,310,248. The channel duplicates 75, 288 and 1249, genre duplicates on 900954, 20088 durations 10500/1800/3000 and 30066 episode titles all appear in the outputs. 'Есть перерывы между передачами' is a markdown statement with no output. My check on the current full files reproduces 8,234 non-zero ids and a non-zero range of 2020-03-08 23:00 to 2020-07-27 06:00, so the 8235/11:55 run probably used another file version. The full train schedule has 3 more channel ids with two titles (224, 1319, 1379).",
+   "corrected_value": ""
+  },
+  {
+   "item": "F22. Overlapping or duplicate sessions probably exist; the 2nd place's alternative base sums watch time per airing and drops sums above 1.0; Gornyaki also summed time across sessions per airing and clipped view_pct to [0,1]",
+   "url_or_doi": "https://github.com/ndmel/2nd_place_recsys_cinema_challenge_2020 (utils.py prepare_features); https://github.com/imgremlin/SWEET.TV-Hackathon (gornyaki-final-solution.ipynb cells 9, 19)",
+   "status": "corrected",
+   "evidence": "Overlaps exist: in the first 16,335 log rows, 626 sessions start before the same user's previous session ends (568 on another channel, 58 on the same channel). There are no exact duplicate rows in that sample. The 2nd-place part is confirmed: it groups by airing and user, sums user_watch_time, and keeps user_watch_perc <= 1. The Gornyaki part is not. full_intercept() computes full_interception_time = sum(interception_time) per (start_time_tv, channel_id, user_id), with a comment about a user switching channel and coming back. But view_pct was computed and clipped per session row before that, and is not recomputed from the sum. drop_duplicates keeps the first row's view_pct, and all >= 0.8 filters use that value.",
+   "corrected_value": "Gornyaki computed a per-airing summed time but did not use it for the 80% rule. Their filter uses the clipped per-session view_pct of the first session row, so the effect is one row per (user, airing) rather than summing partial views. Overlapping sessions do exist in the logs (about 4% of rows in a 16k-row sample)."
+  },
+  {
+   "item": "F23. 4th place ('Too much ...', AleXXL1986): no ML model; the 5-step heuristic; 'Private 0.42544 / 4 место; Public 0.43511 / 4 место'; local validation 0.2308 / 0.2545 / 0.2720 / 0.2654",
+   "url_or_doi": "https://github.com/AleXXL1986/sweettv (CLEANED_EDA.ipynb, tv_utils.py)",
+   "status": "verified",
+   "evidence": "Cell 0 markdown: 'Для решения мы использовали не машинно обученную модель. 1. Отсекали шоу по доле просмотра пользователем с коэф. 0.5 ... 5. Фильтрация шоу по тем, которые уже смотрел пользователь также увеличила скор. Private 0.42544 / 4 место; Public 0.43511 / 4 место'. Outputs: 0.25450 (per-user >= 0.8 frequency), 0.27200 (projection with fallbacks), 0.23077 (global top 5), 0.26536 (blend). The split is train_co = prgs['valid'].start_time.min(), where the valid window starts at '2020-05-17' in get_programs, and valid users are restricted to train users. The team's best public score on the LB is 0.43566.",
+   "corrected_value": ""
+  },
+  {
+   "item": "F24. Cold start: the 4th-place code adds 2 submission users explicitly; Gornyaki has 10 users with no candidates and 3.25% with fewer than 5",
+   "url_or_doi": "https://github.com/AleXXL1986/sweettv (CLEANED_EDA.ipynb cell 27, tv_utils.get_target); https://github.com/imgremlin/SWEET.TV-Hackathon (cell 46)",
+   "status": "verified",
+   "evidence": "Cell 27 is get_target(data, add_empty=True, add_ids=[10246214960655461086, 16561743585370579180]). add_ids is only needed for users absent from 'data', their merged log with show ids. Gornyaki prints 'NaNs in shows before fill - 10' and 'Missing shows before fill - 0.03253968253968254' (41 of 1260). 'Probably no usable history' remains an inference, as labelled.",
+   "corrected_value": ""
+  },
+  {
+   "item": "F25. Gornyaki 10th place (private 0.40861, public 0.42183). Method: >= 0.8 and duration < 10000 s, films dropped; weight 5 or 2+2x^2 times 0.8^(days/60); score = count x mean weight x log10(past airings); test-schedule filter; fill from 10 similar users, then global top. Validation MAPK 0.3269. README lists Andriy Samoshyn.",
+   "url_or_doi": "https://github.com/imgremlin/SWEET.TV-Hackathon (README.md, gornyaki-final-solution.ipynb); https://www.kaggle.com/code/kinahem/gornyaki-final-solution",
+   "status": "corrected",
+   "evidence": "The README says '10th place' and lists the authors Oleksii Tsepa, Andriy Samoshyn and Myhaylo Turkin; on Kaggle, Samoshyn was a separate team (11th, 0.40846). Cells 39, 40 and 45 match the weighting, the filters and train_total = count * mean(view_rating) * log10(train_count). The Kaggle and GitHub code cells are identical (48 of 48). Two corrections. (1) Cell 46 first fills users with no candidates (10) with the global top 5. Only users with 1-4 shows are padded from the 10 most similar users, so the global top is not a fallback after similar users. (2) The 0.3269 MAPK (cell 37: 0.32688) is for show_cnt_new = top_user_show_sorted(...), a plain per-user count of >= 0.8 views with duration < 10000 s and non-film categories, ties broken by global count. That validation computes a different weighting (2+9x^2, base 0.4) and never uses it. The final weighted score was not validated in the notebook.",
+   "corrected_value": "The final ranking (count x mean weight x log10 airings) was not validated. MAPK 0.3269 belongs to a simpler frequency rule. Users with no candidates get the global top 5; partial lists are padded from similar users."
+  },
+  {
+   "item": "F26. Gornyaki outputs: 57.2% of shows air on more than one channel; train categories are 7, and the test schedule adds Спорт, so test sports shows are absent from train; DtypeWarning on column 10",
+   "url_or_doi": "https://github.com/imgremlin/SWEET.TV-Hackathon (gornyaki-final-solution.ipynb cells 18, 21, 22); full schedule files via the Kaggle download API",
+   "status": "corrected",
+   "evidence": "The outputs match: 0.5724177726485863; train ['Инфо' 'Фильмы' 'Сериалы' 'Развлечения' 'Познавательное' 'Другое' 'Детям']; test adds 'Спорт'; 'DtypeWarning: Columns (10) have mixed types'. But cell 18 first restricts train_arh to ids that also air in the test schedule (uniq_train = setdiff1d(...)), so the category list describes only that subset. On the full files, the raw train schedule has 9 categories, including Музыка and Спорт. Its non-zero rows include Спорт ids 2000444 and 2000453 (the 2nd-place output also shows 2000444 as Спорт / хоккей). The test schedule has only one non-zero Спорт id, with 2 airings, and it is not in train. Overall, 1,437 of the 6,636 non-zero test ids are absent from the train schedule. Re-running the restricted computation reproduces 0.5724.",
+   "corrected_value": "57.2% and the 7-category list apply to train shows that also air in weeks 31-42. The raw train schedule also has Спорт (2 non-zero ids) and Музыка (id-0 rows only). The new-in-test Спорт case is a single show; the real cold-start set is 1,437 of 6,636 test ids that are not in the train schedule."
+  },
+  {
+   "item": "F27. Most popular shows (4th-place code, by >= 0.5 views): [2400480, 240081, 12001682, 20088, 2400508]; 2400480 = 'ТСН' (Инфо, 1+1) and 20088 = 'Завтрак с 1+1' both air several times a day",
+   "url_or_doi": "https://github.com/AleXXL1986/sweettv (CLEANED_EDA.ipynb cell 6); export_arh_31-42-final.csv (full file)",
+   "status": "verified",
+   "evidence": "Cell 6 prints [2400480, 240081, 12001682, 20088, 2400508]. In the schedule, 2400480 is 'ТСН.' / 'ТСН. Неделя', category Инфо, on channel 3 '1+1' and also channels 282 and 740, with a median of 16 airings per day (max 24) in weeks 31-42. 20088 is \"'Завтрак с 1+1'...\", category Развлечения, on channels 3 and 282, with a median of 5 airings per day.",
+   "corrected_value": ""
+  },
+  {
+   "item": "F28. Kaggle wiki MAP@n: ap@n = sum P(k) / min(m, n), P(k) = 0 for non-relevant items, MAP is the mean over users; truth is a set; with m = 5 the order of the true top 5 does not matter; applying it to the 2020 LEGACY metric is an assumption",
+   "url_or_doi": "https://web.archive.org/web/20150106171352/http://www.kaggle.com/wiki/MeanAveragePrecision/",
+   "status": "verified",
+   "evidence": "The page opened (200; 'Last Updated: 2014-12-09'). It reads: '$$ap@n = \\sum_{k=1}^n P(k) / min(m, n)$$ where if the denominator is zero, the result is set zero; ... P(k) equals 0 when k-th item is not followed'; 'MAP@n = \\sum ap@n_i / N'; 'order matters'. The data page says each solution user has exactly 5 shows, so m = 5. That this wiki definition applies to the 2020 metric is an assumption, as the claim already says.",
+   "corrected_value": ""
+  },
+  {
+   "item": "F29. WebFetch of the Kaggle competition page returns only a JS shell titled 'sweet.tv - TV program recommender | Kaggle'; the /api/i/ endpoints work without login",
+   "url_or_doi": "https://www.kaggle.com/competitions/sweettv-tv-program-recommender",
+   "status": "verified",
+   "evidence": "WebFetch returned only the title 'sweet.tv - TV program recommender | Kaggle', with no description text. GetCompetition, ListPages and GetLeaderboard all answered 200 without credentials.",
+   "corrected_value": ""
+  },
+  {
+   "item": "F30a. ngochuyen2609/tv-program-recommender: 2025 student project, plan and partial code, no scores; renames stop_time->end_time and duraton->duration; keeps views >= 180 s; train weeks 11-24 / validation 25-30. A GitHub search found no other solution repositories.",
+   "url_or_doi": "https://github.com/ngochuyen2609/tv-program-recommender ; https://api.github.com/search/repositories?q=sweettv",
+   "status": "verified",
+   "evidence": "The GitHub API gives created_at 2025-10-11. src/utils/io.py has rename({'stop_time':'end_time','duraton':'duration'}) and logs[logs['duration'] >= 180]. The README says 'Train weeks 11–24, Val 25–30' and 'If multiple matches → pick the largest time overlap'. cf.ipynb has 20 cells and 0 outputs. Search 'sweettv' gives 13 repos; only AleXXL1986/sweettv is a solution (the rest are Kodi/IPTV tools, ryfin/SweetTVBot in C#, test tasks). 'cinema challenge 2020' finds only ndmel. 'vsetv' finds only EPG scrapers. 'sweet.tv' adds imgremlin/SWEET.TV-Hackathon (known) and Cinema-Challenge/sweet-tv-kids, a React project-track app.",
+   "corrected_value": ""
+  },
+  {
+   "item": "F30b. ArefievMC/sweet.tv-TV-program-recommender: appears in web search, returns 404, is not among the user's public repos, has no Wayback copy",
+   "url_or_doi": "https://github.com/ArefievMC/sweet.tv-TV-program-recommender",
+   "status": "verified",
+   "evidence": "The page and API both return 404. The user's public repo list (13 repos: AI4D..., idao2021, OZON, ...) does not include it. Wayback CDX for github.com/ArefievMC/sweet.tv-TV-program-recommender* returns []. I could not reproduce the 'appears in web search' part: my two web searches for the repo name returned nothing.",
+   "corrected_value": ""
+  },
+  {
+   "item": "F31. Raw artifacts saved locally in the scratchpad kaggle_research directory",
+   "url_or_doi": "/private/tmp/claude-501/-Users-konstantin-Documents-----recsys-course/8c34e5a1-52dd-4d84-beda-c2ce400d5147/scratchpad/kaggle_research/",
+   "status": "verified",
+   "evidence": "ls shows competition_pages.txt, leaderboard_private_public.csv, file_header_samples.txt, gh_AleXXL1986_sweettv, gh_ndmel, gh_imgremlin_SWEET.TV-Hackathon, gh_ngochuyen2609_tv-program-recommender, kernel_gornyaki and tds/.",
+   "corrected_value": ""
+  },
+  {
+   "item": "data_columns block (file and column descriptions)",
+   "url_or_doi": "https://www.kaggle.com/api/v1/competitions/data/download/sweettv-tv-program-recommender/<file> (full schedule files; first 256 KB of the log)",
+   "status": "corrected",
+   "evidence": "Headers, the example row, uint64 ids, duraton = stop - start, seconds units, year_of_production values ('1997', '1996-', '2018-2018'), the train range and the 8,234 non-zero ids all check out. Three corrections. (1) tv_show_category in the raw files also includes 'Музыка' (29-34k rows per file, all with id 0). (2) The claim that the test schedule's end date is unverified: it is now verified. export_arh_31-42-final.csv runs from 2020-07-27 00:00 to a last start of 2020-10-19 11:55 (ending 12:00). That covers ISO weeks 31-42 fully plus Monday morning of week 43, with 6,636 non-zero ids. (3) '0 is used for some series blocks and other shows; films have non-zero ids' understates it: id 0 covers about 89% of rows and 41-47% of film rows (see F9). The 25.6% figure (1260 / 4914) is arithmetic only; that all 1260 users appear in the logs is not verified.",
+   "corrected_value": "Add 'Музыка' (id-0 rows only) to the category list. Test schedule: 2020-07-27 00:00 to 2020-10-19 12:00, i.e. 12 full weeks (ISO 31-42). tv_show_id=0 covers about 89% of rows in every category."
+  },
+  {
+   "item": "target_definition_evidence block",
+   "url_or_doi": "https://www.kaggle.com/api/i/competitions.PageService/ListPages (POST {\"competitionId\":24201}); https://github.com/ndmel/2nd_place_recsys_cinema_challenge_2020 (utils.get_target); https://github.com/imgremlin/SWEET.TV-Hackathon",
+   "status": "corrected",
+   "evidence": "The data-page quotes and the description of the 2nd place's get_target are accurate. One statement needs correcting: 'Gornyaki summed and clipped at 1.0' (see F22). On the horizon question, the test schedule file does span the full 12 weeks (2020-07-27 to 2020-10-19 12:00), which is consistent with the main page. The demo page's 'next 10 weeks' and the 4th-place window ending 2020-10-04 are both shorter than the schedule provided.",
+   "corrected_value": "Gornyaki computed a summed time per airing, but their 80% rule used the clipped per-session view_pct of the first session row, not the sum. The schedule for weeks 31-42 covers 12 full weeks."
+  },
+  {
+   "item": "solutions_found: 2nd place TDS write-up (two-stage: about 200 candidates from frequency then LightFM WARP; LightGBM binary; features; ideas for improvement)",
+   "url_or_doi": "https://web.archive.org/web/20250827164704/https://towardsdatascience.com/two-layered-recommender-system-methodology-a-prize-winning-solution-c4bdb815b156/",
+   "status": "verified",
+   "evidence": "The article states around 200 candidates, 'First N items we get from algorithm 1... The rest M items ... from LigthFM', 'Train binary classification LightGBM model', the listed features, and the ideas 'LambdaRank', time and day profiles, and cold start. The code's target ('seen') is any >= 0.8 view in the 9-week holdout (get_target(val_base, 10000)). Scores: private 0.42905, public 0.44252, baseline 0.41296. Suggested IEEE reference: N. Melentev, \"Two-layered recommender system methodology: a prize-winning solution,\" Towards Data Science, Mar. 20, 2021. [Online]. Available: https://towardsdatascience.com/two-layered-recommender-system-methodology-a-prize-winning-solution-c4bdb815b156 (archived copy: web.archive.org/web/20250827164704/...). Crossref and OpenAlex list no DOI for it.",
+   "corrected_value": ""
+  },
+  {
+   "item": "solutions_found: 2nd place code repository (notebooks, utils.py, Description.pptx; 9-week target; LightFM WARP 15 epochs; LGBM lr 0.01, 150 leaves, early stopping, AUC 0.904; 0.35318 vs 0.31975)",
+   "url_or_doi": "https://github.com/ndmel/2nd_place_recsys_cinema_challenge_2020",
+   "status": "verified",
+   "evidence": "The repo exists (created 2020-12-06). The README lists Description.pptx, 1_prepare_data.ipynb and 3_final_model.ipynb; the repo also holds 0_data_exploration.ipynb, 2_baseline_model.ipynb and utils.py. All hyperparameters and outputs match (see F20).",
+   "corrected_value": ""
+  },
+  {
+   "item": "solutions_found: 4th place summary ('...restricted to shows they say the user already watched, padded with the global top 5'; validation numbers; movie-track ALS + NN)",
+   "url_or_doi": "https://github.com/AleXXL1986/sweettv",
+   "status": "corrected",
+   "evidence": "The scores and validation numbers match, and sol_desc.txt in sweettv.zip describes 'алс с разными рандом сидами' plus 'нейросеть' for the movie track. The filter does not match the description, however. In both validation and test, filter_merged() keeps tv_show_id in set(train['tv_show_id']) or set(data['tv_show_id']): shows present in anyone's training log, not in the specific user's history. It also keeps projected coverage rate > 0.5. Their markdown claims a per-user filter.",
+   "corrected_value": "The published code filters projected airings to shows present anywhere in the training log (all users) with coverage > 0.5, then takes the user's top 5 by count and pads first with the user's own >= 0.8-frequency list, then with the global top 5. The per-user 'already watched' filter appears only in their markdown."
+  },
+  {
+   "item": "solutions_found: Gornyaki Kaggle notebook ('fills gaps with 10 most similar users, then global top'; precomputed join from private sweet-data; 'Kaggle version has no saved outputs')",
+   "url_or_doi": "https://www.kaggle.com/code/kinahem/gornyaki-final-solution",
+   "status": "corrected",
+   "evidence": "It reads '/kaggle/input/sweet-data/big_data.csv'. The datasets/view call for kinahem/sweet-data returns 403 (not accessible), which fits a private dataset. The kernel does have a saved run, though: kernels/output lists my_submission.csv and a log, and status is 'complete'. The fill order is the reverse of what is claimed (see F25). Scores: private 0.40861 (10th), public 0.42183 (7th).",
+   "corrected_value": "Users with no candidates get the global top 5; users with 1-4 shows are padded from the 10 most similar users. The Kaggle run's log and my_submission.csv are saved; only the .ipynb lacks cell outputs."
+  },
+  {
+   "item": "solutions_found: Gornyaki GitHub copy (MAPK 0.3269; 57% multi-channel; Спорт only in test; 10 users with no candidates)",
+   "url_or_doi": "https://github.com/imgremlin/SWEET.TV-Hackathon",
+   "status": "corrected",
+   "evidence": "The outputs exist as stated. The 0.3269 belongs to a simpler frequency rule, not the final score (F25). 57% and the Спорт observation apply to train shows that also air in the test schedule; the raw train schedule has Спорт ids 2000444 and 2000453 (F26).",
+   "corrected_value": "MAPK 0.3269 is for a plain per-user frequency rule (>= 0.8, < 10000 s, no films). '57%' and 'Спорт only in test' hold only for train shows that recur in weeks 31-42."
+  },
+  {
+   "item": "solutions_found: 1st place Magic City (Roman Piankov 'therealroman', 'timriggins'): no public write-up or code; 12 submissions; TV-track prize 280k UAH",
+   "url_or_doi": "https://www.kaggle.com/api/i/competitions.LeaderboardService/GetLeaderboard (POST {\"competitionId\":24201}); https://epravda.com.ua/rus/news/2020/11/24/668341/",
+   "status": "verified",
+   "evidence": "Members are 'Roman Piankov' (therealroman) and 'Tim Riggins' (timriggins). submissionCount is 12, solutionWriteUpUrl is empty, private 0.42912 and public 0.44297. epravda gives the 280k UAH prize. My web search for 'Magic City' with the competition found no write-up, so 'none found' still stands.",
+   "corrected_value": ""
+  },
+  {
+   "item": "open_questions premise: the 4th-place code windowed the test schedule to 2020-07-25..2020-10-04 (10 weeks)",
+   "url_or_doi": "https://github.com/AleXXL1986/sweettv (tv_utils.get_programs); export_arh_31-42-final.csv",
+   "status": "verified",
+   "evidence": "get_programs uses the windows ['2020-03-08','2020-05-17','2020-07-25'] to ['2020-05-17','2020-07-26','2020-10-04']. The actual test schedule runs to 2020-10-19 12:00, so their test projection left out about 2 weeks (ISO weeks 41-42).",
+   "corrected_value": ""
+  }
+ ],
+ "summary": "I checked all 31 facts and the data_columns, target_definition and solutions_found blocks against the sources themselves:\n- the Kaggle APIs (the /api/i/ endpoints without login; v1 data, kernel and leaderboard calls with the user's ~/.kaggle/access_token, read-only);\n- the data files (the first 256 KB of the log; the three full schedule ZIPs, 35 MB);\n- the GitHub repos (codeload ZIPs);\n- epravda, DOU, and the 2021 and 2025 Wayback copies of the TDS article;\n- the archived Kaggle wiki.\n\nMost claims hold: competition metadata, page quotes, file names and sizes, headers, both leaderboards and the gap statistics, the demo competition, prizes and winners, and the 2nd- and 4th-place numbers.\n\nCorrections:\n1. tv_show_id=0 is not about films. It marks about 89% of all schedule rows in every category, including 41-47% of 'Фильмы' rows. About 99% of the blocks of 28800 s or more have id 0.\n2. Gornyaki computed a summed time per airing but never used it for the 80% rule. Their filter uses the clipped per-session view_pct of the first session, so the effect is deduplication, not summing.\n3. Gornyaki's 7 'train categories' and 'Спорт only in test' hold only for train shows that also air in weeks 31-42. The raw train schedule has Спорт (ids 2000444, 2000453) and Музыка. The test schedule has just one non-zero Спорт id. The real new-in-test set is 1,437 of 6,636 ids.\n4. Gornyaki's MAPK 0.3269 belongs to a plain frequency rule, not the final weighted score. Their fill order is: global top 5 for users with no candidates, similar users for partial lists. The Kaggle kernel does have a saved run (log plus my_submission.csv).\n5. The 'vsetv' notebook search returns anhnguyenquocak57/rec-project, which works on the same TV logs.\n6. cinema.wechallenge.it: http returns 530, and https redirects (301) to the unrelated anyway-ed.com.\n7. The 4th place's 'already watched' filter is global in the code (any user's log), not per user.\n8. The test schedule runs 2020-07-27 to 2020-10-19 12:00, i.e. 12 full ISO weeks (31-42). The 4th-place window that ends 2020-10-04 drops two weeks.\n9. 'Local MAP is low because users with fewer than 5 targets are included' is an inference. In the code, users with zero targets score 0 and the window is 9 weeks.\n\nUnverifiable: that the ArefievMC repo appeared in web search; my searches did not find it.\n\nThe JSON has no academic or DOI references. Crossref and OpenAlex list no DOI for the TDS post. Suggested IEEE string: N. Melentev, \"Two-layered recommender system methodology: a prize-winning solution,\" Towards Data Science, Mar. 20, 2021. [Online]. Available: https://towardsdatascience.com/two-layered-recommender-system-methodology-a-prize-winning-solution-c4bdb815b156\n\nVerification files are in /private/tmp/claude-501/-Users-konstantin-Documents-----recsys-course/8c34e5a1-52dd-4d84-beda-c2ce400d5147/scratchpad/verify_sweettv/ (scripts/ holds partial_unzip.py, nbdump.py, sched_check.py and overlap_check*.py; dl/ holds the API JSONs, the schedule ZIPs, the repos and the notebook dumps)."
+}

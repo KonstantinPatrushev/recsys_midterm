@@ -46,8 +46,11 @@ def global_ranks(space, M):
 
 
 def method_candidates(space, mats, users, k=20):
+    """Top-k shows per method for users that have history in this space (a user without
+    history has all-zero scores, and argpartition would return arbitrary shows)."""
     rows = []
-    uset = np.array(users)
+    active = np.asarray(space.R.getnnz(axis=1)) > 0
+    uset = np.array([u for u in users if active[space.uidx[u]]])
     ui = np.searchsorted(space.users, uset)
     for name, M in mats.items():
         S = np.where(space.airing_mask[None, :], M[ui], -np.inf)

@@ -25,6 +25,9 @@ from hybrid import make_table  # noqa: E402
 from ranker import CATS, PARAMS, feature_cols, to_pandas, top5_from_scores  # noqa: E402
 
 TEST_HIST = [15, 16, 17, 18, 19, 28, 29, 30]
+TEST_HISTS = {"clean8": TEST_HIST, "last8": list(range(23, 31)),
+              # recent weeks without the worst logging gap (25-27); supported by evidence/history_proxy.json
+              "recent8": [20, 21, 22, 23, 24, 28, 29, 30]}
 TEST_TARGET = list(range(31, 43))
 F1_HIST, F1_TARGET = list(range(11, 19)), list(range(19, 31))
 
@@ -33,6 +36,7 @@ ENSEMBLES = {
     # name -> list of (objective params, label, rounds)
     "v1": [(PARAMS, "y", 400)],
     "lr31": [(L31, "y", 400)],
+    "lr31_r250": [(L31, "y", 250)],
     "ens3": [(L31, "y", 400), (dict(L31, objective="binary", metric="auc"), "y", 400),
              (dict(L31, objective="poisson", metric="poisson"), "cnt_c", 400)],
 }
@@ -49,10 +53,14 @@ def main():
     ap.add_argument("--ensemble", default="ens3", choices=list(ENSEMBLES))
     ap.add_argument("--seeds", type=int, default=3)
     ap.add_argument("--table", default="hybrid", choices=["hybrid", "base"])
+    ap.add_argument("--test-hist", default="clean8", choices=list(TEST_HISTS))
+    ap.add_argument("--variant", default="sum", choices=["sum", "max"],
+                    help="screen time per airing: summed over sessions, or the longest single session")
     args = ap.parse_args()
+    test_hist = TEST_HISTS[args.test_hist]
     t0 = time.time()
 
-    views = load_views("sum")
+    views = load_views(args.variant)
     sched = load_schedule()
     sub = submission_users()
     sub_u = sub["u"].to_list()
@@ -68,7 +76,7 @@ def main():
     Xtr = Xtr.with_columns(pl.col("cnt").clip(0, 30).alias("cnt_c"))
     cols = [c for c in feature_cols(Xtr) if c != "cnt_c"]
 
-    Xte = table(TEST_HIST, TEST_TARGET, False).filter(pl.col("u").is_in(pl.Series(sub_u).implode()))
+    Xte = table(test_hist, TEST_TARGET, False).filter(pl.col("u").is_in(pl.Series(sub_u).implode()))
     have = set(Xte["u"].to_list())
     no_hist = [u for u in sub_u if u not in have]
     if no_hist:
@@ -98,7 +106,7 @@ def main():
     score /= n_models
     pred = top5_from_scores(Xte, score)
 
-    pop = (views.filter(pl.col("week").is_in(pl.Series(TEST_HIST).implode()) & pl.col("full"))
+    pop = (views.filter(pl.col("week").is_in(pl.Series(test_hist).implode()) & pl.col("full"))
            .group_by("tv_show_id").agg(pl.col("u").n_unique().alias("n")).join(
                sched.filter(pl.col("week").is_between(31, 42)).select("tv_show_id").unique(), on="tv_show_id")
            .sort(["n", "tv_show_id"], descending=[True, False])["tv_show_id"].to_list())
@@ -119,10 +127,10 @@ def main():
         ROOT / "cache" / f"test_scores_{args.name}.parquet")
 
     info = {
-        "name": args.name, "ensemble": args.ensemble, "table": args.table, "models": n_models,
+        "name": args.name, "ensemble": args.ensemble, "table": args.table, "models": n_models, "variant": args.variant,
         "train_rows": Xtr.height, "train_users": len(gt), "test_rows": Xte.height,
         "test_users_with_candidates": Xte["u"].n_unique(), "users_filled_from_pop": n_filled,
-        "users_with_fallback_history_11_18": len(no_hist), "features": cols, "test_hist_weeks": TEST_HIST,
+        "users_with_fallback_history_11_18": len(no_hist), "features": cols, "test_hist_weeks": test_hist,
         "seconds": round(time.time() - t0, 1),
     }
     (ROOT / "evidence" / f"{args.name}_info.json").write_text(json.dumps(info, indent=2))

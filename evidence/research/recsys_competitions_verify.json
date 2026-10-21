@@ -1,0 +1,313 @@
+{
+ "checked": [
+  {
+   "item": "Volkovs et al., «Two-stage Model for Automatic Playlist Continuation at Scale» (RecSys Challenge 2018, 1-е место): библиографические данные и DOI",
+   "url_or_doi": "10.1145/3267471.3267480",
+   "status": "verified",
+   "evidence": "Crossref и OpenAlex: авторы Maksims Volkovs, Himanshu Rai, Zhaoyue Cheng, Ga Wu, Yichao Lu, Scott Sanner; сборник «Proceedings of the ACM Recommender Systems Challenge 2018» (RecSys Challenge '18, Vancouver BC Canada); ACM; страницы 1-6; дата 2018-10-02; тип proceedings-article. DOI совпадает посимвольно. В PDF (https://www.cs.toronto.edu/~mvolkovs/recsys2018_challenge.pdf) та же строка ACM Reference и 'our team vl6 achieved 1'st place in both main and creative tracks'. Страница ACM DL закрыта Cloudflare, поэтому номер статьи проверить не удалось; у Crossref его нет.",
+   "corrected_value": "M. Volkovs, H. Rai, Z. Cheng, G. Wu, Y. Lu, and S. Sanner, \"Two-stage model for automatic playlist continuation at scale,\" in Proc. ACM Recommender Systems Challenge 2018 (RecSys Challenge '18), Vancouver, BC, Canada, 2018, pp. 1–6, doi: 10.1145/3267471.3267480."
+  },
+  {
+   "item": "Volkovs, Yu, Poutanen — статья Layer6 о RecSys Challenge 2017: в JSON название обрезано («Content-based Neighbor Models for Cold Start»)",
+   "url_or_doi": "10.1145/3124791.3124792",
+   "status": "corrected",
+   "evidence": "Crossref и OpenAlex дают полное название «Content-based Neighbor Models for Cold Start in Recommender Systems». Авторы Maksims Volkovs, Guang Wei Yu, Tomi Poutanen; сборник «Proceedings of the Recommender Systems Challenge 2017» (RecSys Challenge '17, Como, Italy); страницы 1-6; дата 2017-08-27. DOI совпадает посимвольно.",
+   "corrected_value": "M. Volkovs, G. W. Yu, and T. Poutanen, \"Content-based neighbor models for cold start in recommender systems,\" in Proc. Recommender Systems Challenge 2017 (RecSys Challenge '17), Como, Italy, 2017, pp. 1–6, doi: 10.1145/3124791.3124792."
+  },
+  {
+   "item": "Volkovs 2018, Table 1: WRMF 0.1641, Item-Item 0.1772, User-User 0.1768, Blend 0.1866, 2nd Stage 0.1985, Popular 0.0395, Name SVD 0.1106 (RPREC)",
+   "url_or_doi": "https://www.cs.toronto.edu/~mvolkovs/recsys2018_challenge.pdf",
+   "status": "verified",
+   "evidence": "PDF скачан и переведён в текст через pdftotext. В Table 1 «Validation set results» все семь значений RPREC совпадают точно.",
+   "corrected_value": ""
+  },
+  {
+   "item": "Volkovs 2018, цитаты: 5 скоров первой стадии как признаки; ranking loss лучше BCE; выборка 20+20; XGBoost; WRMF отбирает 20K; полнота >90% и около 60% на top-1K; валидация 9K с тем же распределением длины; 'neighbor-based models ... matching or outperforming'",
+   "url_or_doi": "https://www.cs.toronto.edu/~mvolkovs/recsys2018_challenge.pdf",
+   "status": "verified",
+   "evidence": "Всё есть в тексте дословно: 'We use five scores from the first stage directly as input features. This allows the second stage model to quickly recover the performance of the first stage and then focus on improving it'; 'randomly sample (up to) 20 relevant songs and 20 not relevant songs'; 'ranking loss performed better than binary cross entropy objective for this task'; 'using the excellent XGBoost [4] library'; 'retrieve 20K candidates for each playlist with over 90% recall ... top-1K ... close to 60% recall'; подпись к Fig. 3: 'We sample 9K playlists from the MPD with same length distribution as in challenge test set'; 'neighbor-based models produce strong performance either matching or outperforming the latent models'.",
+   "corrected_value": ""
+  },
+  {
+   "item": "Layer6 2017: 'content similarity replacing interaction similarity'; победа в офлайн- и онлайн-фазах; сглаживание по времени трудно настроить",
+   "url_or_doi": "https://www.cs.toronto.edu/~guangweiyu/pdfs/recsys2017.pdf",
+   "status": "verified",
+   "evidence": "В PDF: 'analogous to the item-based neighbor collaborative filtering model [7], but with content similarity replacing interaction similarity'; 'winning both offline and online phases'. Про сглаживание: 'the smoothing factor was difficult to tune and did not produce significant improvements'. Это сказано о взвешенном по времени среднем для признака user-item temporal.",
+   "corrected_value": ""
+  },
+  {
+   "item": "H&M 1st (senkin13 & 30CrMnSiA), текст поста: retrieval + FE + GBDT; генерация кандидатов как ключ к потолку точности; признаки по окнам; холодные товары не попадают в топ-12; 6 недель train и последняя для валидации; HitNum@100; прореживание до 1–2 млн негативов; lgb cv 0.0441 / lb 0.0367 → ансамбль 5 LGB + 7 CatBoost, lb 0.0371; feature store; около 50% без покупок за 3 месяца; изображения и текст не помогли",
+   "url_or_doi": "https://www.kaggle.com/competitions/h-and-m-personalized-fashion-recommendations/discussion/324070",
+   "status": "verified",
+   "evidence": "Страница открыта через r.jina.ai: «1st place solution», автор senkin13, '1st in this Competition'. Все цитаты есть дословно, в том числе опечатки 'candinate', 'tranactions', 'performace', 'exsiting'. Например: 'user and item interaction information are always the most important of recommendation problem'; 'Our best single model is a lightgbm(cv:0.0441,lb:0.0367),finally we trained 5 lightgbm classifier and 7 catboost classifier for ensemble(lb:0.0371)'. Что 30CrMnSiA — напарник, подтверждает пост OTTO 382839: 'I and 30CrMnSiA won the H&M ...'.",
+   "corrected_value": ""
+  },
+  {
+   "item": "H&M 1st, комментарии: вклад графового эмбеддинга 'about 0.002 up'; 'different N by adjusting manually to optimize the hit number'; 'At least we have top 100 popular items for all users'",
+   "url_or_doi": "https://www.kaggle.com/competitions/h-and-m-personalized-fashion-recommendations/discussion/324070",
+   "status": "verified",
+   "evidence": "sirius (3-е место) спросил: 'what's the improvement of graph embedding in your recalling and ranking?'. senkin13 (автор темы) ответил: 'about 0.002 up'. На вопрос про Top N он же ответил: 'different N by adjusting manually to optimize the hit number' и 'we don't need to take same N for each strategy,make sure total candidates is 100.At least we have top 100 popular items for all users.'",
+   "corrected_value": ""
+  },
+  {
+   "item": "Схема пайплайна H&M 1st (картинка): repurchase / Itemcf / same product_code / Popularity / graph embedding / Logistic regression, каждая Top N; итого Top 100–500; 5 LightGBM + 7 CatBoost classifier; Top 12",
+   "url_or_doi": "https://i.postimg.cc/bwBm7GVv/overview.png",
+   "status": "verified",
+   "evidence": "PNG скачан (HTTP 200, image/png) и просмотрен. Блоки на нём точно такие, как описано в JSON. Картинка вставлена в пост 324070 как overview.png.",
+   "corrected_value": ""
+  },
+  {
+   "item": "H&M 2nd (wht1996 + Paweł Jankiewicz), текст: 130 кандидатов плюс вся история покупок; itemCF хуже популярности; признак «когда пользователь купит снова»; repurchase-признаки; lambdarankmap немного лучше lambdarank; модели RecBole хуже; random graph walk, cooccurences, счётчики популярности по группам; streaks; 0.0355 → 0.0362 → 0.0368",
+   "url_or_doi": "https://www.kaggle.com/competitions/h-and-m-personalized-fashion-recommendations/discussion/324197",
+   "status": "verified",
+   "evidence": "Обсуждение редиректит на writeups/hello-world-2nd-place-solution: в отрендеренной странице returnUrl и Citation указывают туда. Все цитаты дословно в разделах «wht1996 solution» и «@paweljankiewicz solution», включая 'not even as good as directly selecting popular products', 'predict when the user will next purchase the product' и 'The score of the single model on the Leaderboard is 0.0355, after adding @paweljankiewicz candidates can be promoted to 0.0362, and the ensemble score is 0.0368'.",
+   "corrected_value": ""
+  },
+  {
+   "item": "H&M 2nd: 'A large part of the competition was about predicting the availability of the products for different postal_codes' — в JSON приписано лично Paweł",
+   "url_or_doi": "https://www.kaggle.com/competitions/h-and-m-personalized-fashion-recommendations/discussion/324197",
+   "status": "corrected",
+   "evidence": "Цитата на странице есть дословно. Но стоит она в общем командном разделе «## How to improve competitions like this». Это не подраздел Paweł, а writeup опубликовал wht1996 ('Here is my team mate @paweljankiewicz and my solution'). Что автор — Paweł, правдоподобно, но прямо на странице не сказано.",
+   "corrected_value": "Атрибутировать как «H&M 2nd place team (wht1996 & Paweł Jankiewicz), раздел How to improve competitions like this»."
+  },
+  {
+   "item": "H&M 2nd, комментарии: Paweł — популярность за 1/3/7 дней × атрибуты даёт точность 10–11%; image-эмбеддинги без значимого прироста; wht1996 — binary на recall и lambdarank на ранжировании; следующая покупка = последняя покупка + средний интервал",
+   "url_or_doi": "https://www.kaggle.com/competitions/h-and-m-personalized-fashion-recommendations/discussion/324197",
+   "status": "verified",
+   "evidence": "Paweł: 'Popularity in the last 1/3/7 days combined with postal_code + age or other item/customer attributes creates very precise candidates. Some combinations have 10-11% precision. About image embeddings I also didn't see any significant boost'. wht1996: 'The recall phase uses the binary objective and the sorting phase uses the lambdarank objective'; 'I know the last time the user bought this product, and I also know the average interval of the purchase time of this product. The sum of the two is the estimated time of the next purchase.' Уточнение: интервал берётся средний по товару, а не по пользователю.",
+   "corrected_value": ""
+  },
+  {
+   "item": "H&M 3rd (sirius): флаг и ранг стратегии, 0.02855 → 0.03262, 'very very poor' CV без них; BPR по неделям (implicit), 0.03363 → 0.03510, AUC 0.720 против 0.806; same prod_name; jaccard; 30×позитивов; позитивы только из кандидатов; окна 7/30/all; популярность с весом 1/days; weekly trend; популярное по атрибутам пользователя; среднее 16 моделей",
+   "url_or_doi": "https://www.kaggle.com/competitions/h-and-m-personalized-fashion-recommendations/discussion/324129",
+   "status": "verified",
+   "evidence": "Редирект на writeups/sirius-3rd-place-solution (видно в Citation). 'Solution Writeup · 3rd place · May 16, 2022'. Все цитаты и числа совпадают, например: 'boost my LB score from 0.02855 to 0.03262'; 'if I only increase the recall num and don't adding the recall features, the CV score is very very poor'; 'I've trained one BPR for each week'; 'The auc of BPR similarity is ~0.720, while the auc of the whole ranking model is ~0.806'; '30*len(pos_samples)'; 'the average score of 16 models'.",
+   "corrected_value": ""
+  },
+  {
+   "item": "H&M 3rd, комментарии: Paweł использовал BPR только для части кандидатов; в предсказании нет дублей пар; 18 недель; 'The latter one' (переобучение вместе с последней неделей); XGB, CatBoost и LGB близки",
+   "url_or_doi": "https://www.kaggle.com/competitions/h-and-m-personalized-fashion-recommendations/discussion/324129",
+   "status": "verified",
+   "evidence": "Paweł Jankiewicz: 'I also used BPR from implicit package but only to generate limited candidates and not to score user-item pairs'. sirius: 'there aren't duplicated (customer_id, article_id) in my prediction'; '2. The latter one' — ответ на вопрос Radek про переобучение на всех данных, включая последнюю неделю; '1. 18 weeks' на вопрос о числе недель на этапе ранжирования; 'Xgboost, Catboost and Lightgbm give similar CV scores'.",
+   "corrected_value": ""
+  },
+  {
+   "item": "H&M — «Addressing common questions» (Paweł Jankiewicz): генерация кандидатов, затем ранжирующая модель; LGBMRanker; customer id как query; 'Sample the data as much as possible'; 'Fast local validation is key'",
+   "url_or_doi": "https://www.kaggle.com/competitions/h-and-m-personalized-fashion-recommendations/discussion/307288",
+   "status": "verified",
+   "evidence": "Первый рендер через jina пришёл пустым (1.3 КБ), повторный с X-No-Cache вернул полную страницу. Автор Paweł Jankiewicz, '2nd in this Competition'. Заголовки '1. For each customer generate candidates that they can buy.' и '2. Build a ranking model that ranks the items within Customer'. Цитаты 'The customer id can be treated as a query'; 'Sample the data as much as possible'; 'Fast local validation is key here'.",
+   "corrected_value": ""
+  },
+  {
+   "item": "H&M Evaluation (MAP@12): 'There is never a penalty for using the full 12 predictions'",
+   "url_or_doi": "https://www.kaggle.com/competitions/h-and-m-personalized-fashion-recommendations/overview/evaluation",
+   "status": "verified",
+   "evidence": "Формула MAP@12 и фраза 'There is never a penalty for using the full 12 predictions for a customer that ordered fewer than 12 items; thus, it's advantageous to make 12 predictions for each customer.' на месте. Мелочь: в описании приёма сказано «из правил H&M», а это страница Evaluation, не Rules.",
+   "corrected_value": ""
+  },
+  {
+   "item": "OTTO — How To Build a GBT Ranker Model (Chris Deotte): 50–200 кандидатов → GBT-ранжировщик выбирает 20; GroupKFold; rank:pairwise / rank:ndcg / rank:map; прореживание негативов; инференс через sort_values + cumcount < 20",
+   "url_or_doi": "https://www.kaggle.com/competitions/otto-recommender-system/discussion/370210",
+   "status": "verified",
+   "evidence": "Первый рендер пустой, повторный — полная страница (52 КБ). Автор Chris Deotte, '3rd in this Competition'. 'for each session (i.e. user), we find 50-200 candidates ... then we train an GBT ranker model to select our final 20'; 'We must train using GroupKFold'; три objective XGB; 'downsampling negatives 2x, 4x, 10x, 20x'; код с predictions.n<20.",
+   "corrected_value": ""
+  },
+  {
+   "item": "OTTO 3rd (Chris Deotte): только правила — LB 0.590 (49-е место); счётчики co-visit + XGB = +0.011 → 0.601; 20 матриц (consecutive, forward, time decay, до/после 14:00, по длине истории); wgt=(1/2)**(|Δts|/60/60); сложение рангов; top_20_new/new2, top_40_less/more",
+   "url_or_doi": "https://www.kaggle.com/competitions/otto-recommender-system/writeups/g-b-d-t-3rd-place-using-only-rules-achieves-lb-0-5",
+   "status": "verified",
+   "evidence": "Всё есть дословно: 'the XGB reranker will boost +0.011 and achieve LB 0.601'; 'By itself it scores 49th place LB 0.590!'; 'ensembled all our work together by adding the ranks of each of our predictions per user target type'; описаны все 20 матриц, включая top_20_new ('Find cold start users in train') и top_40_less ('Train users with less than 6 history').",
+   "corrected_value": ""
+  },
+  {
+   "item": "OTTO 3rd в описании источника: «матрицы только по последним 1–3 неделям»",
+   "url_or_doi": "https://www.kaggle.com/competitions/otto-recommender-system/writeups/g-b-d-t-3rd-place-using-only-rules-achieves-lb-0-5",
+   "status": "corrected",
+   "evidence": "Окном по свежим данным ограничена только часть матриц: top_20_buy2buy2 и top_20_test (3 недели), top_20_test2 (2 недели), top_40_day и top_40_day2 (последняя неделя). Остальные, например top_20b–top_20f и top_20_orders, строятся по всем данным.",
+   "corrected_value": "Часть матриц co-visitation строится только по последним 1–3 неделям, остальные — по всей истории."
+  },
+  {
+   "item": "OTTO 2nd (senkin13 & 30CrMnSiA): 'only repeat action,next action and itemcf work'; главное — улучшать itemcf, веса type / time distance / order / popularity; 3 недели с метками, последняя для валидации, переобучение с фиксированным числом раундов; CV совпадал с LB; CatBoost ranker +0.0007 / +0.002 / +0.0012 и лучшая одиночная модель; ProNE session2aid; polars в 40 раз быстрее",
+   "url_or_doi": "https://www.kaggle.com/competitions/otto-recommender-system/discussion/382839",
+   "status": "verified",
+   "evidence": "Всё есть дословно, например: 'we found only repeat action,next action and itemcf work'; 'I made 3 weeks' train data with labels, use last week as validation,then retrain all train data with fixed round number ..., the CV matched LB very well, we don't need to watch LB by submission'; 'order model: 0.0007 up, cart model: 0.002 up, clicks model: 0.0012 up. My best single model is a catboost ranker'; 'pandas.merge -> polars.join = 40X faster'. Что LGB был бинарным классификатором, подтверждает комментарий автора 'my lightgbm classifier'.",
+   "corrected_value": ""
+  },
+  {
+   "item": "OTTO 2nd (часть ONODERA) и комментарии Silogram: item2item-признаки (count, time difference, sequence difference); кандидаты почти целиком из co-visitation; признаки на сходстве пользователей не помогли; бленд по рангам",
+   "url_or_doi": "https://www.kaggle.com/competitions/otto-recommender-system/writeups/sos3-2nd-place-solution-onodera-part",
+   "status": "verified",
+   "evidence": "ONODERA: признаки 'count', 'time difference', 'sequence difference'; 'we blended our result (@senkin13, @h4211819) by rank'. Это же подтверждает фразу «OTTO 2nd: бленд по рангам» из приёма про ансамбли, хотя там эта страница в источниках не указана. Silogram: 'candidates are generated almost entirely by joining the events that have already occurred in the session to the various co-visitation matrices'; 'generating candidates and features based on user (session) similarity but couldn't find anything that helped the cv score'.",
+   "corrected_value": ""
+  },
+  {
+   "item": "OTTO 1st (mrkmakr): кандидаты 'visited aids in session', абляция 0.588359 → 0.586126; в среднем около 1200 кандидатов; признаки ранга по co-visitation и косинуса NN; популярность 'worked well when ranked' по нескольким окнам; LGBMRanker 0.604, ансамбль 9 ранкеров 0.605 усреднением скоров; эксперименты на 5% и 10% данных",
+   "url_or_doi": "https://www.kaggle.com/competitions/otto-recommender-system/writeups/mrkmakr-1st-place-solution",
+   "status": "verified",
+   "evidence": "Страница «1st place solution», автор в ответах помечен '1st in this Competition'. Все цитаты и таблица абляций совпадают: 'my solution (LB604) ... 0.588359' и 'without visited aid ... 0.586126'; 'single LGBMRanker : LB 0.604 / ensemble of 9 LGBMRankers ... : LB 0.605'; 'I conducted experiments by training with 5% of the data and evaluating with other 10% of the data'. Из комментариев: 1200 — это кандидаты сразу для clicks, carts и orders.",
+   "corrected_value": ""
+  },
+  {
+   "item": "OTTO 1st в приёме про objective: «доля негативов 5/25/40%»",
+   "url_or_doi": "https://www.kaggle.com/competitions/otto-recommender-system/writeups/mrkmakr-1st-place-solution",
+   "status": "corrected",
+   "evidence": "В источнике это 'negative sampling rate: clicks 5%, carts 25%, orders 40%', то есть доля негативов, которую оставляют в выборке, а не доля негативов в обучающих данных. Автор выбрал эти значения, чтобы данные (около 35 ГБ на каждую цель) поместились в память.",
+   "corrected_value": "OTTO 1st: доля сохраняемых негативов (negative sampling rate) — 5% для clicks, 25% для carts, 40% для orders."
+  },
+  {
+   "item": "OTTO — Radek Osmulski: последние 7 дней train как валидация; 'local validation tracks public LB perfectly'",
+   "url_or_doi": "https://www.kaggle.com/competitions/otto-recommender-system/discussion/364991",
+   "status": "verified",
+   "evidence": "'I am using the last 7 days of train set for validation (similarly to the test set)'; 'local validation tracks public LB perfectly!' (в заголовке темы опечатка 'perfecty'). OTTO 1st тоже пишет, что использовал эту схему: 'almost perfect correlation between local validation and LB'.",
+   "corrected_value": ""
+  },
+  {
+   "item": "Santander 1st (idle_speculation): подмодели скорили как Jun-16, Jun-15 и Dec-15; для reca брали скор Jun-15, для cco — Dec-15",
+   "url_or_doi": "https://www.kaggle.com/competitions/santander-product-recommendation/writeups/idle-speculation-1-solution",
+   "status": "verified",
+   "evidence": "'each submodel is scored once as Jun-16, once as Jun-15, and once as Dec-15 ... the reca score, which is replaced by the Jun-15 score, and the cco score, which is replaced by the Dec-15 score'. Авторство и место: в списке обсуждений конкурса '#1 solution [idle_speculation]'; Tom Van de Wiele пишет: 'Idle_speculation was substantially ahead of the rest ... on the private leaderboard'.",
+   "corrected_value": ""
+  },
+  {
+   "item": "Santander 3rd (Jack (Japan)): 'Pr of cco_fin was predicted only by 2015-12-28 data'; 'Pr of reca_fin was predicted only by 2015-06-28 data'",
+   "url_or_doi": "https://www.kaggle.com/competitions/santander-product-recommendation/writeups/jack-japan-3rd-place-solution-with-code",
+   "status": "verified",
+   "evidence": "'Solution Writeup · 3rd place · Jan 14, 2017', автор Jack (Japan) (rsakata). Обе цитаты есть дословно.",
+   "corrected_value": ""
+  },
+  {
+   "item": "Описание приёма про доступность: «Santander 1st и 3rd: сезонные продукты (reca, cco) скорили моделями того же месяца прошлого года»",
+   "url_or_doi": "https://www.kaggle.com/competitions/santander-product-recommendation/writeups/idle-speculation-1-solution",
+   "status": "corrected",
+   "evidence": "Для reca это верно: тестовый месяц — июнь 2016, скор брали по июню 2015 (Jun-15 и 2015-06-28 соответственно). Для cco оба решения брали декабрь 2015 (Dec-15 и 2015-12-28), а это не «тот же месяц прошлого года». Tom (2-е место) объясняет: cco вёл себя иначе в июне и декабре 2015 из-за паттернов конца налогового года.",
+   "corrected_value": "Santander 1st и 3rd: reca скорили по июню 2015 (тот же месяц год назад), cco — по декабрю 2015 (конец налогового года)."
+  },
+  {
+   "item": "Santander 2nd (Tom Van de Wiele): число лагов на тесте равно числу лагов на обучении; xgboost для 24 продуктов × 16 месяцев; 'use all the available data'; взвешенное среднее лучше стекинга; бутстреп 'consistently worse'; MAP-оптимизация около +0.2% локально, мало на LB; признаки «домохозяйства» почти ничего не дали",
+   "url_or_doi": "https://www.kaggle.com/competitions/santander-product-recommendation/writeups/tom-van-de-wiele-2nd-place-solution",
+   "status": "verified",
+   "evidence": "Всё есть дословно: 'fit to the test data where the number of used test lags was set to the number of lags in the train data'; 'xgboost models for all 24 products for all of the 16 months'; 'too variable over time for the value of stacking to kick in compared to a weighted average'; 'consistently worse'; 'great effects in local validation (~0.2% boost) but limited value on the leaderboard'; 'people from the same household ... Sadly all of the features I tried added little value'. Автор подтверждён списком обсуждений: '2nd Place Solution [Tom Van de Wiele]'.",
+   "corrected_value": ""
+  },
+  {
+   "item": "Santander — Solution sharing (BreakfastPirate): важным оказалось распределение продуктов июня 2015; поправки на тренды; с полной историей алгоритм «угадывал месяц»; связи «домохозяйства» не дали прироста",
+   "url_or_doi": "https://www.kaggle.com/competitions/santander-product-recommendation/discussion/26786",
+   "status": "verified",
+   "evidence": "Цитаты дословные: 'The distribution of products in June 2015 turned out to be what was important about June 2015'; 'tweaked the input distribution based on trends'; 'the algorithm was using that to figure out which month the data came from'; про домохозяйства 'I was not able to turn it into a score increase'. Сама страница автора не показывает. Авторство подтверждено списком обсуждений: 'Solution sharing [BreakfastPirate]' → discussion/26786. Дополнение к примечаниям JSON: на private leaderboard команда «Jared Turkewitz and BreakfastPirate» на 5-м месте (0.03126, writeup jared-turkewitz-and-breakfastpirate-5-solution).",
+   "corrected_value": ""
+  },
+  {
+   "item": "Rekko 2nd (Е. Смирнов, Okko): kNN + LightFM WARP (около 0.033), бленд суммой рангов 0.0347; top-200 и LightGBM binary; ранг и скор 0.0359; удаление «даты» 0.0367; биасы LightFM 0.0388; ранги после удаления просмотренного 0.0395; итог 0.0457; бленд 6 моделей 0.0469678 — 5-е место на public, 2-е на private; валидация по времени 80/20 и переобучение на всём; раздел «Не зашло»",
+   "url_or_doi": "https://habr.com/ru/post/454818/",
+   "status": "verified",
+   "evidence": "URL редиректит на https://habr.com/ru/companies/tbank/articles/454818/. Автор smirnovevgeny (имя «Евгений»); в статье о 14-м месте он назван «Смирнов Евгений, который занял 2 место». Все числа и цитаты совпадают, включая 'модель сильно переобучалась на этот признак', 'Финальный блендинг 6 моделей позволил добиться 0.0469678 на LB, что соответствовало 5-му месту', 'решение оказалось устойчивым благодаря блендингу' и 'Валидация не всегда коррелировала с LB, что говорило о возможном шейк апе'.",
+   "corrected_value": ""
+  },
+  {
+   "item": "Rekko 2nd: «ранг и скор моделей первого уровня оказались самыми значимыми признаками» и цитата 'Наиболее значимыми оказались признаки от моделей первого уровня'",
+   "url_or_doi": "https://habr.com/ru/post/454818/",
+   "status": "corrected",
+   "evidence": "Цитата обрезана. Полностью: 'Наиболее значимыми оказались признаки от моделей первого уровня и анонимизированные признаки из каталога контента.'",
+   "corrected_value": "Самыми значимыми оказались признаки от моделей первого уровня и анонимизированные признаки из каталога контента."
+  },
+  {
+   "item": "Rekko 14th (А. Козлов): ALS 0.02646; Cosine kNN 0.03170; LightFM 0.02567–0.02635 (MNAP@20 на своей валидации); вес по времени 0.03627 / 0.03685; последние 25 взаимодействий, итог 0.03870 / 0.03990 public/private; стекинг на top-200 LightFM хуже одиночной модели; TensorRec",
+   "url_or_doi": "https://habr.com/ru/post/461055/",
+   "status": "verified",
+   "evidence": "Редирект на https://habr.com/ru/companies/surfstudio/articles/461055/. В метаданных автор imtyomm, fullname «Артем Козлов». Таблица 'Test MNAP@20': Implicit ALS 0.02646, Implicit Cosine kNN CF 0.03170, LightFM 0.02567/0.02632/0.02635; фраза 'классическая коллаборативная фильтрация показала себя намного лучше'. Остальное: '0.03627 на локальной валидации и 0.03685 на public LB'; 'оставлять только последние 25 взаимодействий'; '0.03870 и 0.03990 на public/private ... 14-м местом'; 'скор, получаемый мной на валидации, был хуже, чем на одной модели'; TensorRec дал 0.02869.",
+   "corrected_value": ""
+  },
+  {
+   "item": "Rekko 14th: «новых фильмов в тесте было мало (240)», модель холодного старта дала около 0",
+   "url_or_doi": "https://habr.com/ru/post/461055/",
+   "status": "corrected",
+   "evidence": "Число 240 автор считал по своему отложенному тестовому периоду, а не по тесту лидерборда: '«новых» фильмов всего 240(!)' в 'честно отколотом нами тестовом периоде относительно train', только по просмотрам. Сабмит одной cold-start модели дал 0.0000136.",
+   "corrected_value": "По собственному отложенному периоду автора новых фильмов (по просмотрам) было всего 240; сабмит cold-start модели — 0.0000136."
+  },
+  {
+   "item": "Instacart 2nd (Kazuki Onodera), интервью (копия Wayback): задача о повторной покупке; важнейшие признаки total_buy_n5, total_buy_ratio_n5, order_ratio_by_chance_n5; _n5 = 5 последних заказов; 'adding in each user's 3 most recent orders'; среднее 6 сидов XGBoost; streak",
+   "url_or_doi": "https://web.archive.org/web/20170929051359/http://blog.kaggle.com/2017/09/21/instacart-market-basket-analysis-winners-interview-2nd-place-kazuki-onodera/",
+   "status": "verified",
+   "evidence": "Снимок открылся (HTTP 200). Цитаты: 'which of their previously purchased products will they repurchase'; 'the most important features were... total_buy_n5 ... total_buy_ratio_n5 ... useritem_order_days_max_n5 ... order_ratio_by_chance_n5'; '(Note: the suffix \"_n5\" means \"near5\" ...)'; 'I increased the amount of training data available to me by adding in each user's 3 most recent orders as well'; 'six different gradient boosted tree models (each GBDT uses a different random seed). I average their predictions'. То, что прямой адрес blog.kaggle.com отдаёт 302 на medium.com/kaggle-blog, подтвердилось.",
+   "corrected_value": ""
+  },
+  {
+   "item": "Instacart 2nd: «Days_last_order-max — разница между днями с последнего заказа товара и максимальным перерывом пользователя»",
+   "url_or_doi": "https://web.archive.org/web/20170929051359/http://blog.kaggle.com/2017/09/21/instacart-market-basket-analysis-winners-interview-2nd-place-kazuki-onodera/",
+   "status": "corrected",
+   "evidence": "По интервью максимум берётся по паре user×item: 'Useritem_orders_days_max(User A, Item B) ... the longest that User A has ever gone without ordering B'. Days_last_order-max — разница между Days_since_last_order_this_item и этой величиной: 'tells us how ready the user is to repurchase the item'.",
+   "corrected_value": "Days_last_order-max = (дни с последней покупки товара B пользователем A) − (самый длинный перерыв A в покупке именно B)."
+  },
+  {
+   "item": "GitHub KazukiOnodera/Instacart README: User×Item — 'Number of orders in which the user purchases the item', 'Days since the user last purchased the item', 'Streak'",
+   "url_or_doi": "https://github.com/KazukiOnodera/Instacart",
+   "status": "verified",
+   "evidence": "Репозиторий называется «2nd place solution». В разделе 'User x Item feature' все три пункта дословно, включая 'Streak (number of orders in a row the user has purchased the item)'.",
+   "corrected_value": ""
+  },
+  {
+   "item": "logicai-io/recsys2019: код 1-го места; '37 LGBMLight models'; make_blend.py оптимизирует MRR на валидации",
+   "url_or_doi": "https://github.com/logicai-io/recsys2019",
+   "status": "verified",
+   "evidence": "В README: 'This is the code for the 1st place ACM Recsys competition.'; 'we merged 37 LGBMLight models with different datasets and different hyper parameters'; 'make_blend.py script which optimizes directly MRR using validation predictions'. В конфигах модели класса LGBMRanker / LGBMRankerMRR3. Paweł в посте 307288 пишет 'my team won RecSys 2019' и ссылается на этот репозиторий.",
+   "corrected_value": ""
+  },
+  {
+   "item": "Документация LightGBM: lambdarank_truncation_level около k+3; rank_xendcg 'achieves the similar performance as lambdarank'; группы запросов",
+   "url_or_doi": "https://lightgbm.readthedocs.io/en/latest/Parameters.html",
+   "status": "verified",
+   "evidence": "'The optimal setting for this parameter is likely to be slightly higher than k (e.g., k + 3)'. Здесь k — это cutoff в NDCG@k, а не в MAP, так что перенос на MAP@5 — экстраполяция. 'rank_xendcg is faster than and achieves the similar performance as lambdarank'; group_column / query, 'data should be grouped by query_id'.",
+   "corrected_value": ""
+  },
+  {
+   "item": "sweet.tv — Evaluation: MAP@5; 'you must predict (strictly) 5 ... Order matters!'; недели 31–42",
+   "url_or_doi": "https://www.kaggle.com/competitions/sweettv-tv-program-recommender/overview/evaluation",
+   "status": "verified",
+   "evidence": "'Mean Average Precision @ 5 (MAP@5)'; 'For every user, you must predict (strictly) 5 space-delimited tv_show_ids they prefer. Order matters!'; 'The preferences were calculated for the users using the subsequent 12 weeks (weeks 31-42)'. Попутно (это не утверждение JSON): на странице Start Nov 18, 2020, Close Nov 21, 2020, 'Deadline - 21.11.2020, 11.59 PM', а в общем контексте задачи сказано Nov 18–22.",
+   "corrected_value": ""
+  },
+  {
+   "item": "Подсчёты агента по данным: 6636 шоу в сетке 31–42 и 8234 в 11–30; 1437 новых (7.3% эфирного времени); 3035 шоу больше не выходят; 88.8% строк сетки 31–42 с tv_show_id=0; 404 канала в сетке",
+   "url_or_doi": "/Users/konstantin/Documents/вшэ/recsys_course/midterm/data/raw",
+   "status": "verified",
+   "evidence": "Пересчитал своим скриптом /private/tmp/claude-501/-Users-konstantin-Documents-----recsys-course/8c34e5a1-52dd-4d84-beda-c2ce400d5147/scratchpad/verify_comp_adv/scripts/verify_stats.py (polars из midterm/.venv). Получилось: 6636 / 8234; новых 1437, доля эфира 0.0728; закончившихся 3035; доля строк с id=0 — 0.8882 (по эфирному времени 0.833); каналов в сетке 31–42 — 404 (в 11–30 тоже 404).",
+   "corrected_value": ""
+  },
+  {
+   "item": "Подсчёты агента по просмотрам: 5.82 млн строк, 4914 пользователей, 202 канала; все 1260 пользователей сабмита есть в истории; медиана 537 ч и 71 канал против 393 ч и 57; за недели 27–30 медиана 108 ч, 20 пользователей без просмотров",
+   "url_or_doi": "/Users/konstantin/Documents/вшэ/recsys_course/midterm/data/raw",
+   "status": "verified",
+   "evidence": "Пересчёт: 5 821 987 строк, 4914 пользователей, 202 vsetv_id; период 2020-03-09 – 2020-07-26 (ISO-недели 11–30); 1260 из 1260 в истории; медианы 536.5 ч и 71 против 393.4 ч и 57; недели 27–30: медиана 108.4 ч, ровно 20 пользователей с нулём.",
+   "corrected_value": ""
+  },
+  {
+   "item": "Подсчёт агента: 85 новых tv_show_id совпадают с прошлыми по нормализованному названию",
+   "url_or_doi": "/Users/konstantin/Documents/вшэ/recsys_course/midterm/data/raw",
+   "status": "verified",
+   "evidence": "С той же нормализацией (удаление «N сезон/серия/выпуск», цифр и пунктуации) и с первым названием на id выходит ровно 85. Результат зависит от метода: если сравнивать все варианты названий у id, совпадений 93.",
+   "corrected_value": ""
+  },
+  {
+   "item": "«В просмотрах 202 канала, в сетке 404; vsetv_id и channel_id — одно пространство id» (неявно: все каналы просмотров есть в сетке)",
+   "url_or_doi": "/Users/konstantin/Documents/вшэ/recsys_course/midterm/data/raw",
+   "status": "corrected",
+   "evidence": "Пространства id действительно общие, но покрытие неполное. Из 202 vsetv_id в сетке 11–30 есть 197, в сетке 31–42 — 196. У 5–6 каналов из просмотров вообще нет передач, поэтому их сессии не атрибутируются ни к одному tv_show_id.",
+   "corrected_value": "197 из 202 каналов просмотров есть в сетке 11–30, 196 из 202 — в сетке 31–42."
+  },
+  {
+   "item": "Обобщение в приёме про ансамбли: «Прирост обычно около 1% относительно»",
+   "url_or_doi": "https://www.kaggle.com/competitions/otto-recommender-system/writeups/mrkmakr-1st-place-solution",
+   "status": "corrected",
+   "evidence": "По примерам, которые приводит сам JSON: H&M 1st 0.0367 → 0.0371 (+1.1%); H&M 2nd 0.0362 → 0.0368 (+1.7%); OTTO 1st 0.604 → 0.605 (+0.17%); OTTO 2nd, по посту 382839: 0.602 → 0.604 после бленда с тиммейтами (+0.3%).",
+   "corrected_value": "Относительный прирост от ансамбля в приведённых примерах — от +0.2% (OTTO) до +1.7% (H&M)."
+  },
+  {
+   "item": "Приём 1: «Так устроены 1–3 места H&M, 1–3 места OTTO, победитель RecSys Challenge 2018 и 2-е место Rekko» (генерация кандидатов + GBDT-ранжировщик)",
+   "url_or_doi": "https://www.kaggle.com/competitions/h-and-m-personalized-fashion-recommendations/discussion/324070",
+   "status": "verified",
+   "evidence": "Подтверждается страницами, открытыми выше. H&M 1st: retrieval + GBDT. H&M 2nd: кандидаты + две стадии LGB. H&M 3rd: 'candidate generation + ranking'. OTTO 1st: кандидаты + LGBMRanker. OTTO 2nd: Retrieval + Ranking (CatBoost/LGB). OTTO 3rd: 'candidate rerank' + XGB. Volkovs 2018: WRMF + XGBoost. Rekko 2nd: top-200 + LightGBM. Часть этих страниц в источниках приёма 1 не указана, но в JSON они есть в других приёмах.",
+   "corrected_value": ""
+  }
+ ],
+ "summary": "Проверил все источники и утверждения трека «recsys-competitions». Опровергнутых утверждений нет, выдуманных источников нет. Нужны мелкие правки в 12 местах; самые заметные — неверная деталь про Santander (cco) и обрезанная цитата Rekko 2nd.\n\nЧто открыл. Все 25 веб-источников: 15 страниц Kaggle через r.jina.ai (две из них пришли пустыми и перезапрошены без кэша), 2 PDF Layer6, обе статьи на Habr, копию интервью Instacart в Wayback, 2 README на GitHub, документацию LightGBM, PNG-схему H&M 1st. Оба DOI сверил через Crossref и OpenAlex: авторы, названия, сборники, страницы 1–6 и годы совпадают. Строки IEEE даны в checked. ACM DL закрыт Cloudflare, поэтому номера статей не проверены.\n\nПравки:\n- Santander: «reca и cco скорили моделью того же месяца прошлого года» верно только для reca. Для cco оба решения брали декабрь 2015.\n- Rekko 2nd: цитата о самых значимых признаках обрезана. В источнике самые значимые — признаки первого уровня и анонимизированные признаки каталога.\n- Instacart Days_last_order-max: максимальный перерыв считается по паре user×item, а не по пользователю.\n- OTTO 1st: 5/25/40% — это доля оставляемых негативов (sampling rate), а не доля негативов в данных.\n- OTTO 3rd: по последним 1–3 неделям строится только часть co-visitation матриц.\n- H&M 2nd: фраза про availability стоит в командном разделе writeup, а не в части Paweł.\n- Название статьи Layer6 2017 обрезано: полностью «...Cold Start in Recommender Systems».\n- Rekko 14th: 240 новых фильмов — это отложенный период самого автора, а не тест лидерборда.\n- Прирост от ансамблей по приведённым примерам — 0.2–1.7%, а не «около 1%».\n\nПодсчёты агента по данным пересчитал независимо (/private/tmp/claude-501/-Users-konstantin-Documents-----recsys-course/8c34e5a1-52dd-4d84-beda-c2ce400d5147/scratchpad/verify_comp_adv/scripts/verify_stats.py). Все числа совпали: 6636, 8234, 1437, 3035, 7.3%, 88.8%, 404, 5.82 млн, 4914, 202, медианы 537 ч / 393 ч и 71 / 57 каналов, 108 ч, 20 пользователей, 85 совпадений. Два уточнения:\n- 85 совпадений по названию — при первом названии на id. Если сравнивать все варианты названий, выходит 93.\n- Из 202 каналов просмотров в сетке 11–30 есть только 197, в сетке 31–42 — 196. Сессии оставшихся 5–6 каналов нельзя привязать к передачам.\n\nBreakfastPirate (место в JSON не утверждалось): его команда «Jared Turkewitz and BreakfastPirate» заняла 5-е место на private LB.\n\nРасхождения с общим контекстом (в самом JSON их нет):\n- На странице sweet.tv указано Close Nov 21, 2020 (дедлайн 21.11.2020 23:59), а в контексте — Nov 18–22.\n- Реальные файлы называются dataset11-30.csv, export_arh_11-20-final.csv, export_arh_21-30-final.csv и export_arh_31-42-final.csv, а не так, как в контексте (dataset11-30week.csv, export_arh_10-19.csv и т. д.).\n\nСырые копии страниц лежат в /private/tmp/claude-501/-Users-konstantin-Documents-----recsys-course/8c34e5a1-52dd-4d84-beda-c2ce400d5147/scratchpad/verify_comp_adv/fetch/."
+}

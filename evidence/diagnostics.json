@@ -1,0 +1,156 @@
+{
+  "adversarial_all_features": {
+    "auc": 0.9994,
+    "top_features": [
+      [
+        "u_shows",
+        252407.1
+      ],
+      [
+        "show_full_rate",
+        206092.0
+      ],
+      [
+        "dur_med_h",
+        204474.6
+      ],
+      [
+        "m_ar_rank",
+        180580.4
+      ],
+      [
+        "m_ar",
+        163316.7
+      ],
+      [
+        "tv_show_genre_1",
+        125383.0
+      ],
+      [
+        "m_ppr_rank",
+        122383.6
+      ],
+      [
+        "show_scr_mean",
+        91602.7
+      ],
+      [
+        "pop_full",
+        88523.2
+      ],
+      [
+        "pop_users",
+        87337.8
+      ]
+    ]
+  },
+  "adversarial_without_top5_shifted": {
+    "dropped": [
+      "u_shows",
+      "show_full_rate",
+      "dur_med_h",
+      "m_ar_rank",
+      "m_ar"
+    ],
+    "auc": 0.9988,
+    "top_features": [
+      [
+        "m_ppr_rank",
+        268805.8
+      ],
+      [
+        "show_scr_mean",
+        196623.3
+      ],
+      [
+        "pop_full",
+        194922.6
+      ],
+      [
+        "tv_show_genre_1",
+        164592.6
+      ],
+      [
+        "u_full_l2",
+        149296.8
+      ],
+      [
+        "pop_users",
+        143753.5
+      ],
+      [
+        "m_ppr",
+        124330.3
+      ],
+      [
+        "dur_med_t",
+        116012.5
+      ],
+      [
+        "pop_full_l2",
+        96154.4
+      ],
+      [
+        "pop_users_l2",
+        90124.4
+      ]
+    ]
+  },
+  "error_by_truth_items_in_candidates": [
+    {
+      "in_cand": 0,
+      "users": 111,
+      "map5": 0.0
+    },
+    {
+      "in_cand": 1,
+      "users": 159,
+      "map5": 0.08
+    },
+    {
+      "in_cand": 2,
+      "users": 302,
+      "map5": 0.1805
+    },
+    {
+      "in_cand": 3,
+      "users": 589,
+      "map5": 0.2704
+    },
+    {
+      "in_cand": 4,
+      "users": 1085,
+      "map5": 0.4162
+    },
+    {
+      "in_cand": 5,
+      "users": 2008,
+      "map5": 0.5576
+    }
+  ],
+  "error_by_novel_truth_items_(3=3+)": [
+    {
+      "novel": 0,
+      "users": 616,
+      "map5": 0.7045
+    },
+    {
+      "novel": 1,
+      "users": 840,
+      "map5": 0.5773
+    },
+    {
+      "novel": 2,
+      "users": 946,
+      "map5": 0.4687
+    },
+    {
+      "novel": 3,
+      "users": 1852,
+      "map5": 0.2351
+    }
+  ],
+  "map5_if_all_5_in_candidates": 0.5576,
+  "share_users_all_5_in_candidates": 0.472,
+  "map5_all_check": 0.4226
+}

@@ -1,0 +1,85 @@
+{
+  "n_eval": 4254,
+  "n_clean": 2624,
+  "n_clean_sub": 856,
+  "scores": {
+    "lr_l31_r150": {
+      "map5_all": 0.42308,
+      "map5_sub": 0.45569,
+      "map5_clean": 0.4665,
+      "map5_clean_sub": 0.49284
+    },
+    "lr_l31_r200": {
+      "map5_all": 0.42321,
+      "map5_sub": 0.45586,
+      "map5_clean": 0.46682,
+      "map5_clean_sub": 0.49286
+    },
+    "lr_l31_r250": {
+      "map5_all": 0.4231,
+      "map5_sub": 0.45617,
+      "map5_clean": 0.46613,
+      "map5_clean_sub": 0.49228
+    },
+    "lr_l31_r300": {
+      "map5_all": 0.4227,
+      "map5_sub": 0.45493,
+      "map5_clean": 0.46643,
+      "map5_clean_sub": 0.49213
+    },
+    "lr_l31_r250_trainclean": {
+      "map5_all": 0.41854,
+      "map5_sub": 0.44987,
+      "map5_clean": 0.46163,
+      "map5_clean_sub": 0.48657
+    },
+    "lr_l31_r250_downweight_unclean": {
+      "map5_all": 0.42067,
+      "map5_sub": 0.45385,
+      "map5_clean": 0.46378,
+      "map5_clean_sub": 0.49039
+    },
+    "lr_l31_r250_seed1": {
+      "map5_all": 0.42109,
+      "map5_sub": 0.45337,
+      "map5_clean": 0.46389,
+      "map5_clean_sub": 0.49035
+    },
+    "lr_l31_r250_seed2": {
+      "map5_all": 0.42206,
+      "map5_sub": 0.45408,
+      "map5_clean": 0.46548,
+      "map5_clean_sub": 0.49151
+    },
+    "bin_l31_r250_seed0": {
+      "map5_all": 0.41995,
+      "map5_sub": 0.4522,
+      "map5_clean": 0.46191,
+      "map5_clean_sub": 0.48836
+    },
+    "bin_l31_r250_seed1": {
+      "map5_all": 0.4194,
+      "map5_sub": 0.4519,
+      "map5_clean": 0.4619,
+      "map5_clean_sub": 0.48817
+    },
+    "bin_l31_r250_seed2": {
+      "map5_all": 0.42117,
+      "map5_sub": 0.45186,
+      "map5_clean": 0.46388,
+      "map5_clean_sub": 0.48883
+    },
+    "ENS_lr3_r250": {
+      "map5_all": 0.42352,
+      "map5_sub": 0.45647,
+      "map5_clean": 0.46647,
+      "map5_clean_sub": 0.49329
+    },
+    "ENS_lr3+bin3_r250": {
+      "map5_all": 0.42267,
+      "map5_sub": 0.45468,
+      "map5_clean": 0.46559,
+      "map5_clean_sub": 0.49077
+    }
+  }
+}

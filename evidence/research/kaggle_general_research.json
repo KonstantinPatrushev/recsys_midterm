@@ -1,0 +1,650 @@
+{
+ "tricks": [
+  {
+   "name": "Time-split validation that mirrors the test: cutoff, then the next 12 weeks",
+   "description": "Build the local validation the same way the hidden test was built. Features use only weeks up to the cutoff, labels come from the following 12 weeks, the user population is the same, and the same MAP@5 code scores it. The NVIDIA Grandmasters' rule is 'Match your CV strategy to how the test data is structured': TimeSeriesSplit for time-dependent data, GroupKFold for data grouped by users. Bestfitting holds out a later period as validation in time-series problems. The runner-up of the Santander MAP@7 competition built each training month so that it 'mimics the test data'. NVIDIA's co-visitation write-up insists on a temporal split 'to avoid leaking information'.",
+   "why_it_works": "The leaderboard measures how well week 11-30 information predicts weeks 31-42. A random split, or a split by user only, leaks behaviour from the same period and rewards memorising it, so CV gains stop showing up on the LB. When the cutoff, horizon and population match the test, a CV gain predicts an LB gain. Bestfitting: 'A good CV is half of success'; NVIDIA: 'If you can't trust your validation score, you're flying blind.'",
+   "how_to_apply_to_sweettv": "Fold A (primary): cutoff at week 18, history weeks 11-18, target weeks 19-30. That is 12 weeks, the same horizon as the test. Fold B (robustness check only): cutoff at week 22 or 24, with a shorter target (23-30 or 25-30). Keep a change only if it improves fold A and does not hurt fold B. Use the 19-30 programme schedule as the known future schedule, exactly as the 31-42 schedule is used at test time. Define features on fixed windows relative to the cutoff (last 1/2/4/8 weeks, per-week rates) so a feature means the same thing at cutoff 18 and at cutoff 30. Score with mapk(k=5) from /Users/konstantin/Documents/вшэ/recsys_course/midterm/src/metrics.py on users who resemble the 1260 test users (see the adversarial-validation trick). Structural caveat: weeks 11-30 hold only one 12-week target window after a usable history. A learned ranker therefore cannot get a second disjoint time window. Validate it with GroupKFold on user_id inside fold A, and keep fold B as the shifted sanity check.",
+   "priority": "high",
+   "sources": [
+    {
+     "title": "NVIDIA Technical Blog - The Kaggle Grandmasters Playbook: 7 Battle-Tested Modeling Techniques for Tabular Data (Onodera, Viel, Titericz, Deotte; 18 Sep 2025)",
+     "url": "https://developer.nvidia.com/blog/the-kaggle-grandmasters-playbook-7-battle-tested-modeling-techniques-for-tabular-data/",
+     "accessed_ok": true,
+     "what_it_supports": "Quotes: 'Match your CV strategy to how the test data is structured', 'Use TimeSeriesSplit for time-dependent data', 'Use GroupKFold for grouped data (like users or patients)', 'If you can't trust your validation score, you're flying blind.'"
+    },
+    {
+     "title": "Kaggle blog (No Free Hunch) - Profiling Top Kagglers: Bestfitting, Currently #1 in the World (Kaggle Team, 07 May 2018), Wayback snapshot",
+     "url": "https://web.archive.org/web/20180515173145id_/http://blog.kaggle.com/2018/05/07/profiling-top-kagglers-bestfitting-currently-1-in-the-world/",
+     "accessed_ok": true,
+     "what_it_supports": "'A good CV is half of success. I won't go to the next step if I can't find a good way to evaluate my model.' and 'In some time series competitions, I set aside data for a period of time as a validation set.' The medium.com copy returned 403, so this archived copy of the original blog.kaggle.com post was read."
+    },
+    {
+     "title": "Santander Product Recommendation Competition, 2nd Place Winner's Solution Write-Up (Tom Van de Wiele, No Free Hunch, 12 Jan 2017), Wayback snapshot",
+     "url": "https://web.archive.org/web/20170115012200id_/http://blog.kaggle.com:80/2017/01/12/santander-product-recommendation-competition-2nd-place-winners-solution-write-up-tom-van-de-wiele/",
+     "accessed_ok": true,
+     "what_it_supports": "MAP@7 next-month recommendation. Features are built 'up till and including June 2015 ... This approach mimics the test data', and test features use lag data 'in order to have similar feature interpretations'. June 2015 was 'by far the best indicator' for June 2016, a seasonality-aligned window."
+    },
+    {
+     "title": "NVIDIA Technical Blog - Build Efficient Recommender Systems with Co-Visitation Matrices and NVIDIA cuDF (Theo Viel, 21 Aug 2024)",
+     "url": "https://developer.nvidia.com/blog/build-efficient-recommender-systems-with-co-visitation-matrices-and-rapids-cudf/",
+     "accessed_ok": true,
+     "what_it_supports": "Recsys offline validation: 'The first three weeks are used for building the matrices, and the last week for evaluation'; 'it's important to use a temporal split to avoid leaking information'."
+    }
+   ]
+  },
+  {
+   "name": "Rebuild the organisers' label exactly with a configurable target builder",
+   "description": "Before any modelling, write the function that turns viewing sessions plus the schedule into 'the 5 most preferred tv_show_id of a user over a 12-week window'. Treat each ambiguous choice in it as a setting to pin down. The organisers of the OTTO recsys competition shipped testset.py precisely so that participants 'could create their truncated test sets from the training sessions to evaluate their models offline'. Santander's runner-up generated training data that 'mimics the test data'.",
+   "why_it_works": "MAP@5 is computed against a set of up to 5 shows; in the reference apk code the 'actual' list is order-free and normalised by min(len(actual), k). If the local label differs from the hidden one, every CV comparison measures the wrong target and the link between CV and LB breaks. Likely sources of difference: minutes versus number of views, a minimum-overlap threshold, tv_show_id 0, programme boundaries.",
+   "how_to_apply_to_sweettv": "Implement make_target(sessions, schedule, weeks, variant). Overlap each session (user_id, vsetv_id, start_time, end_time) with the schedule slots of the same channel, clip it to the slot, drop tv_show_id = 0, aggregate per (user, show), rank, and keep the top 5. Keep these variants switchable: total overlap minutes versus number of distinct airings watched; minimum overlap per airing (none, or at least a few minutes); tie-breaking. Run three sanity checks on fold A. First, every label show should appear in the target-window schedule. Second, look at the distribution of label-set sizes. Third, measure the share of label shows the user already watched in history. After the first baseline submission, compare its public score with its CV under each variant. The variant whose CV comes closest is only weak evidence: the public part has about 630 users and weeks 31-42 differ from 19-30. Never pick a variant on this comparison alone against the wording of the task: 'the preferences were calculated ... using the subsequent 12 weeks ... of historical views'.",
+   "priority": "high",
+   "sources": [
+    {
+     "title": "otto-de/recsys-dataset - KAGGLE.md (official OTTO competition dataset repo)",
+     "url": "https://github.com/otto-de/recsys-dataset/blob/main/KAGGLE.md",
+     "accessed_ok": true,
+     "what_it_supports": "'Participants of the competition could create their truncated test sets from the training sessions to evaluate their models offline. For this purpose, we include a Python script called testset.py'. The test data 'contains sessions truncated by timestamp'."
+    },
+    {
+     "title": "Santander Product Recommendation, 2nd Place Write-Up (Tom Van de Wiele, 2017), Wayback snapshot",
+     "url": "https://web.archive.org/web/20170115012200id_/http://blog.kaggle.com:80/2017/01/12/santander-product-recommendation-competition-2nd-place-winners-solution-write-up-tom-van-de-wiele/",
+     "accessed_ok": true,
+     "what_it_supports": "The training data construction 'mimics the test data', a winning MAP@K solution that rebuilt the target per period."
+    },
+    {
+     "title": "benhamner/Metrics - ml_metrics average_precision.py (apk / mapk)",
+     "url": "https://raw.githubusercontent.com/benhamner/Metrics/master/Python/ml_metrics/average_precision.py",
+     "accessed_ok": true,
+     "what_it_supports": "Docstring: actual is 'A list of elements that are to be predicted (order doesn't matter)'. Score is divided by min(len(actual), k). The local src/metrics.py follows the same semantics."
+    }
+   ]
+  },
+  {
+   "name": "Trust CV and read the public LB of about 630 users as a noisy sanity check",
+   "description": "Decide by local CV. Use the public LB only to confirm that CV and LB move in the same direction. Bestfitting: 'I'll try to make sure my models improve both on my local CV and on the public LB' and 'I never chose a submission I can't explain, even with high public LB scores.' Two counter-examples show the cost of ignoring this. Greg Park fell from 2nd on the public LB to 52nd on the private LB. Santander's runner-up kept changes only when the public score improved: 'With a 30-70% public/private leaderboard split this approach is prone to overfitting and in hindsight I wish that I had put more trust in my local validation.'",
+   "why_it_works": "A small public split is a noisy estimate. Roelofs et al. (NeurIPS 2019, more than 100 Kaggle competitions) found that outlier competitions 'usually have pathologies such as non-i.i.d. data splits or (effectively) small test sets'. They suggest 'at least 10,000 examples is a reasonable minimum test set size to protect against adaptive overfitting', and note that 'large rank changes can be a natural consequence of random noise in the evaluation'. ML Contests 2024 lists 'overfitting to the public leaderboard' among the pitfalls that take experience to avoid. sweet.tv has only 1260 test users in total.",
+   "how_to_apply_to_sweettv": "Assume the roughly 50% public split from the course brief, so about 630 users. Measure the standard deviation of per-user AP@5 on fold A; SE(public) is about sd/sqrt(630). For example, if sd is 0.3, SE is about 0.012. To compare two candidate submissions, run a paired bootstrap on their per-user AP difference over random 630-user subsets of the validation users. Treat LB deltas smaller than about 2 of those SEs as noise. In the original competition, 1st and 2nd place differ by 0.00007 (0.42912 vs 0.42905), so near-top ranks among classmates are mostly luck; maximise expected score, which means CV. Keep a CV-versus-LB table for every submission. If CV and LB disagree by more than the noise, suspect the CV design (label variant, user filter, leak) and fix that rather than chasing the LB.",
+   "priority": "high",
+   "sources": [
+    {
+     "title": "Profiling Top Kagglers: Bestfitting (Kaggle blog, 2018), Wayback snapshot",
+     "url": "https://web.archive.org/web/20180515173145id_/http://blog.kaggle.com/2018/05/07/profiling-top-kagglers-bestfitting-currently-1-in-the-world/",
+     "accessed_ok": true,
+     "what_it_supports": "Builds a stable CV with a validation distribution similar to train and test; makes sure models improve on both local CV and public LB; never picks a submission he cannot explain even with a high public LB."
+    },
+    {
+     "title": "Greg Park - The dangers of overfitting: a Kaggle postmortem (6 Jul 2012)",
+     "url": "https://gregpark.io/blog/Kaggle-Psychopathy-Postmortem",
+     "accessed_ok": true,
+     "what_it_supports": "Dropped from 2nd on the public LB to 52nd on the private LB. Lessons: 'Be more selective with submissions', 'include all training (feature selection, preprocessing, etc.) in each fold', 'Try to ignore the public leaderboard, even when it is telling you nice things about yourself.'"
+    },
+    {
+     "title": "Santander Product Recommendation, 2nd Place Write-Up (2017), Wayback snapshot",
+     "url": "https://web.archive.org/web/20170115012200id_/http://blog.kaggle.com:80/2017/01/12/santander-product-recommendation-competition-2nd-place-winners-solution-write-up-tom-van-de-wiele/",
+     "accessed_ok": true,
+     "what_it_supports": "30-70 public/private split; keeping changes only if the public score improved was 'prone to overfitting'. MAP optimisation looked useless on the public LB but helped on the private LB."
+    },
+    {
+     "title": "Roelofs et al. - A Meta-Analysis of Overfitting in Machine Learning (NeurIPS 2019), abstract page",
+     "url": "https://papers.nips.cc/paper/9117-a-meta-analysis-of-overfitting-in-machine-learning",
+     "accessed_ok": true,
+     "what_it_supports": "Analysis of more than 100 Kaggle competitions comparing public and final rankings; 'little evidence of substantial overfitting' from adaptivity in general."
+    },
+    {
+     "title": "Roelofs et al. (NeurIPS 2019) - full paper PDF",
+     "url": "https://papers.nips.cc/paper_files/paper/2019/file/ee39e503b6bedf0c98c388b7e8589aca-Paper.pdf",
+     "accessed_ok": true,
+     "what_it_supports": "Outliers have '(effectively) small test sets'; 'at least 10,000 examples is a reasonable minimum test set size'; rank changes can come from 'random noise in the evaluation'. Text extracted locally with pdftotext."
+    },
+    {
+     "title": "ML Contests - The State of Machine Learning Competitions (2024 edition)",
+     "url": "https://mlcontests.com/state-of-machine-learning-competitions-2024/",
+     "accessed_ok": true,
+     "what_it_supports": "Mentions 'the experience required to avoid common pitfalls like overfitting to the public leaderboard'."
+    }
+   ]
+  },
+  {
+   "name": "Keep every fitted step inside the fold",
+   "description": "Everything that is fitted or chosen must be computed only from data available at that fold's cutoff. That covers popularity, trends, ALS factors, co-occurrence and association rules, the PPR graph, encodings, feature selection and hyper-parameter search. Greg Park's CV went wrong because feature selection and preprocessing ran outside the folds. Chris Deotte uses nested CV when a group statistic involves the target 'to avoid leakage'. NVIDIA's co-visitation guide insists on a temporal split.",
+   "why_it_works": "Any statistic computed over weeks after the cutoff gives the validation model information the test model will never have. CV then looks optimistic and, worse, stops ranking ideas correctly.",
+   "how_to_apply_to_sweettv": "Write one function, build_fold(cutoff), that returns candidates, features and labels using only views from weeks up to the cutoff. The single allowed future input is the target-window programme schedule: the course permits it and it exists at test time too. Never use view-based aggregates of the target window as features, for example 'show popularity in weeks 19-30'. That is future user behaviour, which the course forbids. Refit ALS, association rules and PPR for every cutoff. Do not give the learned ranker a raw tv_show_id feature: with a user split inside one period it memorises that period's hits, which inflates CV and does not transfer to weeks 31-42 or to new shows. Whenever out-of-fold predictions are needed inside a window (stacking, early stopping), use GroupKFold on user_id so that no user's rows sit on both sides.",
+   "priority": "high",
+   "sources": [
+    {
+     "title": "Greg Park - The dangers of overfitting: a Kaggle postmortem (2012)",
+     "url": "https://gregpark.io/blog/Kaggle-Psychopathy-Postmortem",
+     "accessed_ok": true,
+     "what_it_supports": "CV became 'increasingly optimistic' because feature selection and preprocessing were not inside the folds. Lesson: 'include all training (feature selection, preprocessing, etc.) in each fold'."
+    },
+    {
+     "title": "NVIDIA Technical Blog - Grandmaster Pro Tip: Winning First Place in Kaggle Competition with Feature Engineering Using cuDF pandas (Chris Deotte, 17 Apr 2025)",
+     "url": "https://developer.nvidia.com/blog/grandmaster-pro-tip-winning-first-place-in-kaggle-competition-with-feature-engineering-using-nvidia-cudf-pandas/",
+     "accessed_ok": true,
+     "what_it_supports": "'When COL2 is the target column, then we use nested cross-validation to avoid leakage in our validation computation.'"
+    },
+    {
+     "title": "NVIDIA - Build Efficient Recommender Systems with Co-Visitation Matrices and NVIDIA cuDF (Theo Viel, 2024)",
+     "url": "https://developer.nvidia.com/blog/build-efficient-recommender-systems-with-co-visitation-matrices-and-rapids-cudf/",
+     "accessed_ok": true,
+     "what_it_supports": "'it's important to use a temporal split to avoid leaking information'."
+    },
+    {
+     "title": "NVIDIA - The Kaggle Grandmasters Playbook (2025)",
+     "url": "https://developer.nvidia.com/blog/the-kaggle-grandmasters-playbook-7-battle-tested-modeling-techniques-for-tabular-data/",
+     "accessed_ok": true,
+     "what_it_supports": "'Use GroupKFold for grouped data (like users or patients)'."
+    }
+   ]
+  },
+  {
+   "name": "Adversarial validation and time-focused EDA, on users and on periods",
+   "description": "Train a classifier to tell 'test-like' rows from 'train/validation' rows. An AUC near 0.5 means the two look alike. A high AUC, plus the classifier's feature importances, shows what differs, and the most test-like examples can serve as the validation set (FastML). The Kaggle Book's chapter 6 notebook does exactly this: concatenate train and test, label them 0/1, run cross_val_predict, compute ROC AUC and rank feature importances. Uber applies the same idea to concept drift. The NVIDIA playbook's first technique is EDA that checks for train-test differences and for temporal patterns in the target.",
+   "why_it_works": "CV only predicts the LB if the validation users and period resemble the test users and period. The 1260 submission users may be a selected subset, for example active viewers. The 31-42 window may also differ from 19-30: schedule changes, new seasons, new shows.",
+   "how_to_apply_to_sweettv": "(a) Users: label the 1260 submission users 1 and all other users 0. Build features from weeks 11-30 only (total minutes, active weeks, last active week, number of channels and shows, share of prime time). Train LightGBM or RandomForest, get cross_val_predict scores and compute AUC. If AUC is well above 0.5, restrict fold-A validation users to the same profile, or take the most test-like users as the validation set. Either way, report CV on that population. (b) Periods: compare show-level schedule features of the target window 19-30 with 31-42 (airtime hours, number of airings, prime-time share, channel, and whether the show is new, meaning absent from earlier weeks). High-importance features are drifting: turn absolute counts into shares or drop them. (c) Temporal EDA: weekly viewing volume, active users and new-show share per week. If 31-42 has far more new shows than 19-30, fold A understates the value of discovery candidates; account for that when choosing the candidate mix.",
+   "priority": "high",
+   "sources": [
+    {
+     "title": "FastML - Adversarial validation, part one (Zygmunt Zajac, 2016-05-23)",
+     "url": "http://fastml.com/adversarial-validation-part-one/",
+     "accessed_ok": true,
+     "what_it_supports": "'training a probabilistic classifier to distinguish train/test examples'; AUC of 0.5 when the two are indistinguishable; 'selecting training examples most similar to test examples and using them as a validation set'."
+    },
+    {
+     "title": "The Kaggle Book (Banachewicz & Massaron, Packt 2022) - official code repo README",
+     "url": "https://raw.githubusercontent.com/PacktPublishing/The-Kaggle-Book/main/README.md",
+     "accessed_ok": true,
+     "what_it_supports": "Chapter 06 is 'Designing Good Validation'; the book covers 'k-fold, probabilistic, and adversarial validation' and metrics including 'mean average precision at k'. The book text itself is paywalled: Packt and O'Reilly returned 403."
+    },
+    {
+     "title": "The Kaggle Book repo - chapter_06/adversarial-validation-example.ipynb",
+     "url": "https://raw.githubusercontent.com/PacktPublishing/The-Kaggle-Book/main/chapter_06/adversarial-validation-example.ipynb",
+     "accessed_ok": true,
+     "what_it_supports": "Code recipe: concat train and test, y = [0]*len(train)+[1]*len(test), RandomForest cross_val_predict, roc_auc_score, then ranked feature_importances_ to find drifting features."
+    },
+    {
+     "title": "Pan et al. - Adversarial Validation Approach to Concept Drift Problem in User Targeting Automation Systems at Uber (arXiv 2004.03045, 2020)",
+     "url": "https://arxiv.org/abs/2004.03045",
+     "accessed_ok": true,
+     "what_it_supports": "Adversarial validation used in production to detect concept drift in new data before inference."
+    },
+    {
+     "title": "NVIDIA - The Kaggle Grandmasters Playbook (2025)",
+     "url": "https://developer.nvidia.com/blog/the-kaggle-grandmasters-playbook-7-battle-tested-modeling-techniques-for-tabular-data/",
+     "accessed_ok": true,
+     "what_it_supports": "Technique 1: 'Spot when evaluation data differs from training'; 'Analyze target variable for temporal patterns'; 'Check for trends or seasonality'."
+    },
+    {
+     "title": "Profiling Top Kagglers: Bestfitting (2018), Wayback snapshot",
+     "url": "https://web.archive.org/web/20180515173145id_/http://blog.kaggle.com/2018/05/07/profiling-top-kagglers-bestfitting-currently-1-in-the-world/",
+     "accessed_ok": true,
+     "what_it_supports": "'I'll also check and make sure the validation set has similar distribution to the training set and test set'."
+    }
+   ]
+  },
+  {
+   "name": "Diverse baselines on day one, all on one shared harness",
+   "description": "Stand up several very different, cheap models quickly and score them all with the same fold and the same metric code. NVIDIA: 'We spin up a diverse set of baselines across model types right away.' The point is to learn which model families fit the data before investing in any one of them.",
+   "why_it_works": "Simple baselines set the bar and expose bugs in the label or the harness. They often stay strong in the final blend: one of Greg Park's best submissions was 'one of my own benchmarks that took very little thought'. They also become the candidate generators and level-1 features for the reranker. And the course requires comparing at least two methods on the same split.",
+   "how_to_apply_to_sweettv": "Score each of these on fold A with mapk@5 and record its candidate recall: (1) global popularity in the target-window schedule; (2) repeat: the user's top shows by recent minutes, kept only if they air in the target window; (3) habit times schedule: the user's channel by hour-of-week viewing profile multiplied by each show's airings in the target window, i.e. expected exposure; (4) matrix factorisation with implicit ALS on user-show minutes (log or bm25 weighting). Its default recommend(..., filter_already_liked_items=True) removes already-watched shows, the strongest TV signal, so set it to False and pass items= the shows that air. (5) Association rules or show-to-show co-occurrence; (6) personalized PageRank on the user-show graph; (7) content-based scoring from channel, genre or time-slot similarity where metadata allows. The comparison table goes straight into the course report.",
+   "priority": "high",
+   "sources": [
+    {
+     "title": "NVIDIA - The Kaggle Grandmasters Playbook (2025)",
+     "url": "https://developer.nvidia.com/blog/the-kaggle-grandmasters-playbook-7-battle-tested-modeling-techniques-for-tabular-data/",
+     "accessed_ok": true,
+     "what_it_supports": "Technique 2 'Build diverse baselines, fast': 'We spin up a diverse set of baselines across model types right away.'"
+    },
+    {
+     "title": "implicit documentation - AlternatingLeastSquares API",
+     "url": "https://benfred.github.io/implicit/api/models/cpu/als.html",
+     "accessed_ok": true,
+     "what_it_supports": "Signature 'recommend(userid, user_items, N=10, filter_already_liked_items=True, filter_items=None, recalculate_user=False, items=None)'; with items set, only those items are ranked."
+    },
+    {
+     "title": "Greg Park - Kaggle postmortem (2012)",
+     "url": "https://gregpark.io/blog/Kaggle-Psychopathy-Postmortem",
+     "accessed_ok": true,
+     "what_it_supports": "A near-effortless benchmark was among his best submissions."
+    }
+   ]
+  },
+  {
+   "name": "Feature-engineering habits: user, show, user-by-show and time features over several recency windows",
+   "description": "Grandmaster feature engineering for repeat-consumption problems has a common shape. Kazuki Onodera (Instacart, 2nd place) built four groups: 'User features - what is this user like?', 'Item features - what is this item like?', 'User x item features - how does this user feel about this item?', 'Datetime features'. Recency-windowed variants carried suffixes like '_n5' (the 5 most recent orders), and 'days since last order of this item' captured 'how ready the user is to repurchase'. The Santander runner-up used lags 1-6 and 12 plus months since the last event. Chris Deotte calls groupby aggregations 'The most powerful feature engineering technique'; he generated more than 10,000 features and kept 'the best 500'.",
+   "why_it_works": "GBDT rerankers gain most from well-normalised behavioural aggregates at several time scales and from interaction (user-by-item) statistics. Recency and regularity features capture habit, which drives repeat TV viewing.",
+   "how_to_apply_to_sweettv": "Compute everything relative to the cutoff. User by show: minutes in the last 1/2/4/8 weeks and over all history per week; number of distinct weeks and airings watched; share of the user's total time; weeks since last watched; trend (last 4 weeks versus the previous 4); share of the user's rank-1 show. User: total minutes, active weeks, entropy over channels and shows, prime-time share, weekday/weekend split. Show: global minutes and viewers per week with trend, and number of distinct viewers. Known-future schedule features, allowed by the course: hours and airings of the show in the target window, the share of them on the user's top channels and habitual hours of the week, and whether the show is new. User by channel by hour-of-week exposure: the user's historical probability of watching that channel at that hour times the show's airings there. Recommender scores (ALS, co-occurrence, PPR, content similarity) as features. Use polars groupby to generate many features, then prune by fold-A gain or importance.",
+   "priority": "high",
+   "sources": [
+    {
+     "title": "Instacart Market Basket Analysis, Winner's Interview: 2nd place, Kazuki Onodera (Edwin Chen, No Free Hunch, 21 Sep 2017), Wayback snapshot",
+     "url": "https://web.archive.org/web/20170922014019id_/http://blog.kaggle.com/2017/09/21/instacart-market-basket-analysis-winners-interview-2nd-place-kazuki-onodera/",
+     "accessed_ok": true,
+     "what_it_supports": "User, item, user-by-item and datetime feature groups; '_n5' recency features; 'Days_since_last_order_this_item' and related 'how ready the user is to repurchase'."
+    },
+    {
+     "title": "NVIDIA - Grandmaster Pro Tip: Feature Engineering Using cuDF pandas (Chris Deotte, 2025)",
+     "url": "https://developer.nvidia.com/blog/grandmaster-pro-tip-winning-first-place-in-kaggle-competition-with-feature-engineering-using-nvidia-cudf-pandas/",
+     "accessed_ok": true,
+     "what_it_supports": "'The most powerful feature engineering technique is groupby aggregations'; 'over 10,000 engineered features'; 'the best 500 discovered features significantly boosted the accuracy'."
+    },
+    {
+     "title": "Santander Product Recommendation, 2nd Place Write-Up (2017), Wayback snapshot",
+     "url": "https://web.archive.org/web/20170115012200id_/http://blog.kaggle.com:80/2017/01/12/santander-product-recommendation-competition-2nd-place-winners-solution-write-up-tom-van-de-wiele/",
+     "accessed_ok": true,
+     "what_it_supports": "'lagged features of all products at month lags 1 to 6 and 12' and 'number of months since the (second) last positive ... and negative ... flanks'."
+    },
+    {
+     "title": "NVIDIA - The Kaggle Grandmasters Playbook (2025)",
+     "url": "https://developer.nvidia.com/blog/the-kaggle-grandmasters-playbook-7-battle-tested-modeling-techniques-for-tabular-data/",
+     "accessed_ok": true,
+     "what_it_supports": "Technique 3 'Generate more features, discover more patterns': 'hundreds or thousands of engineered features'."
+    }
+   ]
+  },
+  {
+   "name": "Two-stage pipeline: candidate generation, then a GBDT (LightGBM) reranker",
+   "description": "The standard Grandmaster recsys architecture. Stage 1 generates a pool of candidate shows per user from several cheap generators. Stage 2 is a gradient-boosted reranker trained with a binary or learning-to-rank objective. Chris Deotte (KDD Cup 2023 winners): a 'two-stage candidate reranker'; 'You train your reranker with either a binary classification objective or a pairwise or listwise ranking objective.' GBDTs 'largely continue to dominate' tabular competitions, and LightGBM was the most frequent library among 2024 winners (16 solutions, versus 13 for CatBoost and 8 for XGBoost).",
+   "why_it_works": "Generators supply recall: repeat viewing, schedule exposure, collaborative and co-occurrence signals. The GBDT learns how to weight them per user and show context, and directly optimises a ranking loss close to MAP.",
+   "how_to_apply_to_sweettv": "Candidates: the union of the top N from repeat, habit-by-schedule, ALS, co-occurrence and association rules, PPR and target-window popularity; about 50-100 per user is a reasonable start. Measure candidate recall with recall_at_n in src/metrics.py; that is the ceiling for MAP. Label: 1 if the show is in the user's target top 5. Try LightGBM objective='lambdarank' (rows grouped and sorted by user; metric='map', eval_at=[5]) against objective='binary', and XGBoost objective='rank:map' as a cross-check. Choose by end-to-end fold-A MAP@5, computed against the full label set. LightGBM's built-in metric sees only the candidate rows, so positives missed by the generators are invisible to it, and its normalisation may differ from Kaggle's. Use it only for early stopping, on a user-grouped inner split.",
+   "priority": "high",
+   "sources": [
+    {
+     "title": "NVIDIA Technical Blog - Pro Tips for Building Multilingual Recommender Systems (Chris Deotte, 10 Aug 2023)",
+     "url": "https://developer.nvidia.com/blog/pro-tips-for-building-multilingual-recommender-systems/",
+     "accessed_ok": true,
+     "what_it_supports": "'two-stage candidate reranker'; first stage 'identifies hundreds of candidate items'; reranker trained 'with either a binary classification objective or a pairwise or listwise ranking objective'; used to win KDD Cup 2023."
+    },
+    {
+     "title": "ML Contests - State of Machine Learning Competitions 2024",
+     "url": "https://mlcontests.com/state-of-machine-learning-competitions-2024/",
+     "accessed_ok": true,
+     "what_it_supports": "GBDTs 'largely continue to dominate competitions with tabular data'; '16 winning solutions using LightGBM, 13 using Catboost, and 8 using XGBoost'."
+    },
+    {
+     "title": "LightGBM documentation - Parameters",
+     "url": "https://lightgbm.readthedocs.io/en/latest/Parameters.html",
+     "accessed_ok": true,
+     "what_it_supports": "lambdarank and rank_xendcg objectives; metric map; eval_at default 1,2,3,4,5; 'For learning to rank, it needs query information for training data'; data must be ordered by query."
+    },
+    {
+     "title": "XGBoost documentation - Learning to Rank",
+     "url": "https://xgboost.readthedocs.io/en/stable/tutorials/learning_to_rank.html",
+     "accessed_ok": true,
+     "what_it_supports": "'When the target metric is MAP and you are using a large dataset that can provide a sufficient amount of effective pairs, rank:map can in theory yield higher MAP value than rank:ndcg'; qid must be sorted."
+    },
+    {
+     "title": "Wp-Zhang/H-M-Fashion-RecSys (H&M Kaggle silver, 45/3006) README",
+     "url": "https://github.com/Wp-Zhang/H-M-Fashion-RecSys",
+     "accessed_ok": true,
+     "what_it_supports": "A MAP@12 recsys competition solved as recall strategies plus 'LGB ranker, LGB classifier, DNN'; about 50 candidates per user."
+    }
+   ]
+  },
+  {
+   "name": "More training rows from time-shifted windows, matched-lag features, then refit on everything",
+   "description": "After model selection, refit on all available labelled data (NVIDIA technique 7: 'Retrain on 100% of the data'). Santander's runner-up trained base models on several single months, each with its own feature file. Each model was applied to test features built from the same number of lag months, so that features 'have similar feature interpretations'.",
+   "why_it_works": "More training rows lower the variance of the reranker. Matching how much history the features see keeps the meaning of each feature the same between training and test. Without that, a model trained on 8 weeks of history is applied to 20-week features.",
+   "how_to_apply_to_sweettv": "Choose hyper-parameters and the number of boosting rounds with GroupKFold by user on window 18, then refit on all users of window 18. You can optionally add rows from earlier cutoffs (14 or 16, with 12-week labels 15-26 or 17-28). Their labels overlap fold A's period in time, so use them only with user-disjoint folds (a user never appears in training rows of any window and in validation rows) and judge them only by fold-A CV, which will be slightly optimistic. When predicting the test at cutoff 30, either compute whole-history features from the same number of recent weeks the model was trained with (for example, the last 8 weeks, 23-30), or normalise per week and add history length as a feature.",
+   "priority": "medium",
+   "sources": [
+    {
+     "title": "NVIDIA - The Kaggle Grandmasters Playbook (2025)",
+     "url": "https://developer.nvidia.com/blog/the-kaggle-grandmasters-playbook-7-battle-tested-modeling-techniques-for-tabular-data/",
+     "accessed_ok": true,
+     "what_it_supports": "'Retrain on 100% of the data' - 'After finding optimal hyperparameters, fitting your final model on all training data squeezes out extra accuracy.'"
+    },
+    {
+     "title": "Santander Product Recommendation, 2nd Place Write-Up (2017), Wayback snapshot",
+     "url": "https://web.archive.org/web/20170115012200id_/http://blog.kaggle.com:80/2017/01/12/santander-product-recommendation-competition-2nd-place-winners-solution-write-up-tom-van-de-wiele/",
+     "accessed_ok": true,
+     "what_it_supports": "Base models 'trained on a single month of data'; 'separate feature files for all months'; the June-2015 model with 5 lag months 'is evaluated on the test features calculated on only the lag data starting in January 2016'."
+    }
+   ]
+  },
+  {
+   "name": "Blend per user by rank (reciprocal rank fusion or Borda), with weights found by hill climbing on CV MAP@5",
+   "description": "Combine recommenders through their per-user ranks rather than raw scores, and pick members and weights greedily on validation. MLWave: 'first turn the predictions into ranks, then averaging these ranks'; low correlation between members matters. Santander's runner-up 'discovered after the deadline that rank averaging typically works better than probability averaging'. Reciprocal Rank Fusion scores each item as the sum over systems of 1/(k + rank), with k = 60 'near-optimal, but ... not critical', and it beat the individual systems. NVIDIA hill climbing and Caruana's ensemble selection add models greedily while the target metric improves.",
+   "why_it_works": "MAP depends only on the order within each user. Rank-based fusion ignores incomparable score scales (ALS dot products, rule confidences, PPR mass) and rewards agreement. Greedy selection on the actual metric avoids fitting a separate model. Ensembling two different candidate strategies took one H&M solution from 0.0286 to 0.0292.",
+   "how_to_apply_to_sweettv": "For each method m, compute rank_m(u, s) within user u over that method's top 50. Fused score = sum over m of w_m / (k + rank_m), with missing ranks contributing 0. Start from the best single method, add or re-weight one method at a time if fold-A MAP@5 improves, and stop when nothing helps. Check the result on fold B. Prefer members with low overlap@5. This is also the cheapest defensible hybrid for the course report. Remember bestfitting's caution that you 'often need very good single models', so fuse strong members only.",
+   "priority": "medium",
+   "sources": [
+    {
+     "title": "MLWave - Kaggle Ensembling Guide (11 Jun 2015), Wayback snapshot (mlwave.com no longer resolves)",
+     "url": "https://web.archive.org/web/20160206102007id_/http://mlwave.com/kaggle-ensembling-guide/",
+     "accessed_ok": true,
+     "what_it_supports": "Rank averaging recipe; 'Uncorrelated submissions clearly do better when ensembled than correlated submissions.'"
+    },
+    {
+     "title": "Santander Product Recommendation, 2nd Place Write-Up (2017), Wayback snapshot",
+     "url": "https://web.archive.org/web/20170115012200id_/http://blog.kaggle.com:80/2017/01/12/santander-product-recommendation-competition-2nd-place-winners-solution-write-up-tom-van-de-wiele/",
+     "accessed_ok": true,
+     "what_it_supports": "'rank averaging typically works better than probability averaging' (MAP@7 competition); final ensembles chosen to be 'as uncorrelated as possible'."
+    },
+    {
+     "title": "Cormack, Clarke, Buettcher - Reciprocal Rank Fusion outperforms Condorcet and individual rank learning methods (SIGIR 2009), PDF",
+     "url": "http://cormack.uwaterloo.ca/cormack/cormacksigir09-rrf.pdf",
+     "accessed_ok": true,
+     "what_it_supports": "RRFscore(d) = sum over r of 1/(k + r(d)); 'k = 60 was near-optimal, but ... the choice was not critical'; RRF 'outperforms Condorcet, CombMNZ and the best system by 4% to 5% on average' (MAP)."
+    },
+    {
+     "title": "NVIDIA - The Kaggle Grandmasters Playbook (2025)",
+     "url": "https://developer.nvidia.com/blog/the-kaggle-grandmasters-playbook-7-battle-tested-modeling-techniques-for-tabular-data/",
+     "accessed_ok": true,
+     "what_it_supports": "Hill climbing: 'Start with your strongest single model, then systematically add others with different weights', 'keeping only the combinations that improve validation', 'Repeat until no further gains.'"
+    },
+    {
+     "title": "Caruana et al. - Ensemble selection from libraries of models (ICML 2004), OpenAlex record with abstract",
+     "url": "https://api.openalex.org/works/doi:10.1145/1015330.1015432",
+     "accessed_ok": true,
+     "what_it_supports": "'Forward stepwise selection is used to add to the ensemble the models that maximize its performance' and ensembles can be 'optimized to performance metric'. Metadata also checked via the Crossref API."
+    },
+    {
+     "title": "Wp-Zhang/H-M-Fashion-RecSys README",
+     "url": "https://github.com/Wp-Zhang/H-M-Fashion-RecSys",
+     "accessed_ok": true,
+     "what_it_supports": "Single recall strategy 0.0286, ensembling 'helps us to boost up to 0.0292' (H&M, MAP@12)."
+    }
+   ]
+  },
+  {
+   "name": "Stacking: recommender scores as level-1 features of the ranker, with out-of-fold predictions only where labels are involved",
+   "description": "Feed the outputs of level-1 models into a level-2 model. NVIDIA technique 5: stacking 'builds a second-level model that learns how best to combine the outputs of other models'. Chris Deotte's first-place stack: out-of-fold predictions of 75 level-1 models (chosen from 500) became features for level-2 models, then 'simple Level 3 models ... average the Level 2 models' outputs'. MLWave: stacking needs out-of-fold predictions. Blending on a small holdout is simpler but 'The final model may overfit to the holdout set'.",
+   "why_it_works": "The ranker learns where each recommender is reliable, for example ALS for heavy users and co-occurrence for new shows on familiar channels. This usually beats a fixed blend once the level-1 inputs are leak-free.",
+   "how_to_apply_to_sweettv": "Level 1: ALS score and rank, association-rule confidence and lift, co-occurrence score, PPR score, content similarity, popularity. Each is fitted only on history up to the cutoff and refitted per cutoff, so on training rows they are leak-free by construction and need no out-of-fold scheme. Any supervised level-1 model, such as a second ranker, must produce out-of-fold predictions with user-grouped folds. Level 2: the LightGBM ranker over user-by-show features plus the level-1 scores. Level 3: a plain average of a few level-2 variants (objective, seed). Compare against the rank-fusion blend on the same fold; keep the simpler model if the gap is within noise. Avoid 'blending on a small holdout' with only one or two thousand validation users.",
+   "priority": "medium",
+   "sources": [
+    {
+     "title": "NVIDIA - The Kaggle Grandmasters Playbook (2025)",
+     "url": "https://developer.nvidia.com/blog/the-kaggle-grandmasters-playbook-7-battle-tested-modeling-techniques-for-tabular-data/",
+     "accessed_ok": true,
+     "what_it_supports": "Technique 5 'Stacking': 'builds a second-level model that learns how best to combine the outputs of other models'."
+    },
+    {
+     "title": "NVIDIA - Grandmaster Pro Tip: Winning First Place in a Kaggle Competition with Stacking Using cuML (Chris Deotte, 22 May 2025)",
+     "url": "https://developer.nvidia.com/blog/grandmaster-pro-tip-winning-first-place-in-a-kaggle-competition-with-stacking-using-cuml/",
+     "accessed_ok": true,
+     "what_it_supports": "'75 Level 1 models that were chosen from 500'; OOF predictions 'added as features for the Level 2 models'; Level 3 averages; CV RMSE 11.54 versus private LB 11.44 (CV tracked the private LB)."
+    },
+    {
+     "title": "MLWave - Kaggle Ensembling Guide (2015), Wayback snapshot",
+     "url": "https://web.archive.org/web/20160206102007id_/http://mlwave.com/kaggle-ensembling-guide/",
+     "accessed_ok": true,
+     "what_it_supports": "Out-of-fold stacking procedure; blending cons: 'The final model may overfit to the holdout set'; 'Your CV is more solid with stacking (calculated over more folds)'."
+    },
+    {
+     "title": "HSE / Coursera - How to Win a Data Science Competition: Learn from Top Kagglers (course page, Wayback 2020)",
+     "url": "https://web.archive.org/web/20200416102958id_/https://www.coursera.org/learn/competitive-data-science",
+     "accessed_ok": true,
+     "what_it_supports": "Ensembling module ('Every winning solution incorporates ensembles of models'), with lectures on stacking and a reading on 'Validation schemes for 2-nd level models'."
+    }
+   ]
+  },
+  {
+   "name": "Seed and bagging averaging",
+   "description": "Train the same model with several random seeds and average the predictions. NVIDIA technique 7: 'Train with different random seeds'. In Predicting Optimal Fertilizers, a MAP@3 competition, 'ensembling XGBoost models across 100 different seeds clearly outperformed single-seed training'; the figure's alt text puts single seeds near 0.376 and the seed ensemble near 0.379. Onodera's Instacart model averaged 'six different gradient boosted tree models (each GBDT uses a different random seed)'.",
+   "why_it_works": "Variance reduction is cheap and almost free of risk. Seed-to-seed spread also tells you how large an improvement must be before it is real.",
+   "how_to_apply_to_sweettv": "LightGBM: 3-5 seeds (seed, bagging_seed, feature_fraction_seed) with bagging_fraction and feature_fraction below 1. Average the raw scores per (user, show), then rank. ALS (implicit): 3-5 random_state values ('The random state for seeding the initial item and user factors'); average scores or ranks. Use deterministic=True with a fixed seed for single reproducible runs. Treat any gain smaller than the seed-to-seed standard deviation of fold-A MAP@5 as noise.",
+   "priority": "medium",
+   "sources": [
+    {
+     "title": "NVIDIA - The Kaggle Grandmasters Playbook (2025)",
+     "url": "https://developer.nvidia.com/blog/the-kaggle-grandmasters-playbook-7-battle-tested-modeling-techniques-for-tabular-data/",
+     "accessed_ok": true,
+     "what_it_supports": "Seed averaging; 100-seed XGBoost ensemble on a MAP@3 competition. The MAP@3 values (about 0.376 versus 0.379) appear only in the figure alt text."
+    },
+    {
+     "title": "Instacart 2nd place interview (Kazuki Onodera, 2017), Wayback snapshot",
+     "url": "https://web.archive.org/web/20170922014019id_/http://blog.kaggle.com/2017/09/21/instacart-market-basket-analysis-winners-interview-2nd-place-kazuki-onodera/",
+     "accessed_ok": true,
+     "what_it_supports": "'six different gradient boosted tree models (each GBDT uses a different random seed). I average their predictions together'."
+    },
+    {
+     "title": "LightGBM documentation - Parameters",
+     "url": "https://lightgbm.readthedocs.io/en/latest/Parameters.html",
+     "accessed_ok": true,
+     "what_it_supports": "seed, bagging_seed, feature_fraction_seed; deterministic 'should ensure the stable results when using the same data and the same parameters' (CPU only)."
+    },
+    {
+     "title": "implicit documentation - AlternatingLeastSquares API",
+     "url": "https://benfred.github.io/implicit/api/models/cpu/als.html",
+     "accessed_ok": true,
+     "what_it_supports": "random_state: 'The random state for seeding the initial item and user factors.'"
+    }
+   ]
+  },
+  {
+   "name": "Post-processing aligned with MAP@5",
+   "description": "Shape the output to the exact metric. In the reference apk code: a duplicate prediction earns nothing ('p not in predicted[:i]'); the score is divided by min(len(actual), k); order matters in predicted but not in actual; extra wrong items after the hits never reduce the score. Winners optimised the expected metric explicitly. Santander's runner-up showed by simulation that 'to optimize the expected MAP, less confident predictions should be shrunk with respect to more confident predictions', and that correlated items change the optimal order. Onodera built an expected-F1 maximiser for Instacart.",
+   "why_it_works": "An empty slot or a duplicate is a sure loss. A slot taken by a show that cannot be watched in weeks 31-42 is wasted. Hits at rank 1 are worth more than hits at rank 5, so the confidence order matters.",
+   "how_to_apply_to_sweettv": "(1) Exactly 5 distinct, non-zero tv_show_id for each of the 1260 users, in the sample file's layout. (2) Recommend only shows that air in the 31-42 schedule. First check on fold A that 100% of label shows air in the target window; if so, anything else is a wasted slot. (3) Order by the predicted probability that the show is in the user's target top 5, not by predicted minutes, so high-certainty repeat shows come first. (4) Never keep implicit's default filter_already_liked_items=True: it drops previously watched shows. (5) Backfill short lists with the user's channel by hour-of-week exposure, then target-window popularity. (6) Optional: expected-AP tweaks for near-duplicate or co-scheduled shows, kept only if folds A and B both improve.",
+   "priority": "high",
+   "sources": [
+    {
+     "title": "benhamner/Metrics - ml_metrics average_precision.py",
+     "url": "https://raw.githubusercontent.com/benhamner/Metrics/master/Python/ml_metrics/average_precision.py",
+     "accessed_ok": true,
+     "what_it_supports": "apk: duplicates ignored, score/min(len(actual), k), 'order doesn't matter' for actual, 'order does matter' for predicted."
+    },
+    {
+     "title": "Santander Product Recommendation, 2nd Place Write-Up (2017), Wayback snapshot",
+     "url": "https://web.archive.org/web/20170115012200id_/http://blog.kaggle.com:80/2017/01/12/santander-product-recommendation-competition-2nd-place-winners-solution-write-up-tom-van-de-wiele/",
+     "accessed_ok": true,
+     "what_it_supports": "MAP optimisation by simulation; shrinking less confident predictions; correlated products change the optimal order; '~0.2% boost' in local validation with similar positive value on the private LB."
+    },
+    {
+     "title": "Instacart 2nd place interview (2017), Wayback snapshot",
+     "url": "https://web.archive.org/web/20170922014019id_/http://blog.kaggle.com/2017/09/21/instacart-market-basket-analysis-winners-interview-2nd-place-kazuki-onodera/",
+     "accessed_ok": true,
+     "what_it_supports": "Converting probabilities to the final answer by maximising the expected F1 score per order."
+    },
+    {
+     "title": "implicit documentation - AlternatingLeastSquares API",
+     "url": "https://benfred.github.io/implicit/api/models/cpu/als.html",
+     "accessed_ok": true,
+     "what_it_supports": "recommend() default filter_already_liked_items=True; the items= argument restricts ranking to given items."
+    },
+    {
+     "title": "HSE / Coursera - How to Win a Data Science Competition (Wayback 2020)",
+     "url": "https://web.archive.org/web/20200416102958id_/https://www.coursera.org/learn/competitive-data-science",
+     "accessed_ok": true,
+     "what_it_supports": "A full 'Metrics Optimization' module: 'how we can efficiently optimize a metric given in a competition'."
+    }
+   ]
+  },
+  {
+   "name": "Error analysis on the worst segments, separating candidate recall from ranking",
+   "description": "Bestfitting's iteration cycle includes 'Result analysis such as prediction distribution, error analysis, hard examples', followed by 'design models to add diversities or solve hard samples'.",
+   "why_it_works": "An average MAP@5 hides where the loss comes from. Segment slices show whether the next hour should go to candidate generation, features or ranking, and they stop you tuning what is already solved.",
+   "how_to_apply_to_sweettv": "Store per-user AP@5 for every experiment. Slice by: history-volume deciles; active weeks; last active week; number of channels; share of label shows that are new to the user; share of label shows that are new to the catalogue (absent before the cutoff); main channel. Split the loss into (a) label shows missing from the candidates (recall_at_n) and (b) shows present but ranked outside the top 5. Compute a 'repeat oracle': a perfect ordering of previously watched shows that air in the target window. It shows how much MAP@5 is reachable without discovery. Then build for the worst segment, for example new-season shows on the user's habitual channels and slots, or segment popularity for cold users. Also list the users where the model loses to the simple repeat baseline.",
+   "priority": "medium",
+   "sources": [
+    {
+     "title": "Profiling Top Kagglers: Bestfitting (2018), Wayback snapshot",
+     "url": "https://web.archive.org/web/20180515173145id_/http://blog.kaggle.com/2018/05/07/profiling-top-kagglers-bestfitting-currently-1-in-the-world/",
+     "accessed_ok": true,
+     "what_it_supports": "Iteration cycle: 'Result analysis such as prediction distribution, error analysis, hard examples' and 'design models to add diversities or solve hard samples'."
+    },
+    {
+     "title": "NVIDIA - The Kaggle Grandmasters Playbook (2025)",
+     "url": "https://developer.nvidia.com/blog/the-kaggle-grandmasters-playbook-7-battle-tested-modeling-techniques-for-tabular-data/",
+     "accessed_ok": true,
+     "what_it_supports": "Fast iteration means 'the faster we catch when a model is failing, drifting, or overfitting'."
+    }
+   ]
+  },
+  {
+   "name": "A fast, reproducible experiment loop",
+   "description": "NVIDIA: 'The biggest lever we have in any competition or real-world project is the number of high-quality experiments we can run', so 'we optimize our entire pipeline for speed, not just our model training step.' Chris Deotte's 2026 win ran 850 experiments into a 4-level stack of 150 models, with the rule 'For each experiment, good or bad, always save the OOF and test prediction to disk.' Santander's runner-up noted the full pipeline took about a week, while a 0.031 private score (11th place) was reachable in about 90 minutes using only the top features.",
+   "why_it_works": "More correct experiments per hour find more signal. Saved per-user predictions make later blending, hill climbing and error analysis free. A fixed harness makes every number in the report reproducible.",
+   "how_to_apply_to_sweettv": "Convert the CSVs to parquet with polars once. Precompute a weekly table of overlap minutes and airings per (user, show): the expensive interval join of sessions with the schedule then runs once, and any window is a sum over weeks. Cache candidates and features per cutoff. Use a dev mode on about 20% of users for quick checks and run on everyone only for promising ideas. Keep an experiment registry in JSONL: id, config, seeds, git hash, fold A and B MAP@5, candidate recall, runtime. Save per-user validation and test scores for every run. Fix seeds and set deterministic=True. Keep unit tests for apk/mapk and the label builder (the tests/ folder exists). Use all 10 cores (LightGBM num_threads, polars).",
+   "priority": "high",
+   "sources": [
+    {
+     "title": "NVIDIA - The Kaggle Grandmasters Playbook (2025)",
+     "url": "https://developer.nvidia.com/blog/the-kaggle-grandmasters-playbook-7-battle-tested-modeling-techniques-for-tabular-data/",
+     "accessed_ok": true,
+     "what_it_supports": "Number of high-quality experiments as the biggest lever; optimise the whole pipeline for speed."
+    },
+    {
+     "title": "NVIDIA Technical Blog - Winning a Kaggle Competition with Generative AI-Assisted Coding (Chris Deotte, 23 Apr 2026)",
+     "url": "https://developer.nvidia.com/blog/winning-a-kaggle-competition-with-generative-ai-assisted-coding/",
+     "accessed_ok": true,
+     "what_it_supports": "850 experiments into a 4-level stack of 150 models; 'For each experiment, good or bad, always save the OOF and test prediction to disk'; per-experiment files train_oof_[MODEL]_[VERSION].npy and test_preds_[MODEL]_[VERSION].npy."
+    },
+    {
+     "title": "Santander Product Recommendation, 2nd Place Write-Up (2017), Wayback snapshot",
+     "url": "https://web.archive.org/web/20170115012200id_/http://blog.kaggle.com:80/2017/01/12/santander-product-recommendation-competition-2nd-place-winners-solution-write-up-tom-van-de-wiele/",
+     "accessed_ok": true,
+     "what_it_supports": "Full pipeline about a week on a 48 GB workstation, versus about 90 minutes for a ~0.031 private score using the top 10 features."
+    },
+    {
+     "title": "LightGBM documentation - Parameters",
+     "url": "https://lightgbm.readthedocs.io/en/latest/Parameters.html",
+     "accessed_ok": true,
+     "what_it_supports": "The deterministic flag for reproducible CPU runs."
+    }
+   ]
+  },
+  {
+   "name": "Spend the 5 submissions as a pre-planned budget",
+   "description": "Treat every submission as a scarce, planned measurement, never as a search step. Greg Park made 42 submissions where the contest median was six; 'After about 25 submissions or so, private leaderboard standings get worse with the number of submissions'; his first two submissions turned out to be his best. Blum and Hardt formalise the cause: participants who evaluate repeatedly 'may begin to overfit to the holdout data that supports the leaderboard.'",
+   "why_it_works": "With about 630 public users each LB reading is noisy (see the trust-CV trick). Few, pre-registered, well-separated submissions give real calibration information and cannot overfit the public split.",
+   "how_to_apply_to_sweettv": "S1: a robust, explainable baseline (repeat plus schedule exposure plus popularity backfill) as soon as the harness works. It checks the file format and gives the first CV-versus-LB point. S2: the best single course method (MF, association rules, PPR or content-based) for the report's comparison. S3: the reranker or hybrid, once it beats the baseline on folds A and B by more than the paired-bootstrap noise. S4: the final seed-averaged ensemble refitted on all users. S5: a reserve for a format bug or a conservative alternative. Write each file's CV down before seeing its LB. Never submit two variants whose CV difference is inside the noise. Never keep a change just because the public score went up. Validate every file automatically: 1260 users matching the sample, 5 distinct non-zero ids, all ids in the 31-42 schedule.",
+   "priority": "high",
+   "sources": [
+    {
+     "title": "Greg Park - The dangers of overfitting: a Kaggle postmortem (2012)",
+     "url": "https://gregpark.io/blog/Kaggle-Psychopathy-Postmortem",
+     "accessed_ok": true,
+     "what_it_supports": "42 submissions versus a median of six; private standings worsen after about 25 submissions; first two submissions were his best; 'Be more selective with submissions.'"
+    },
+    {
+     "title": "Blum & Hardt - The Ladder: A Reliable Leaderboard for Machine Learning Competitions (arXiv 1502.04585, 2015)",
+     "url": "https://arxiv.org/abs/1502.04585",
+     "accessed_ok": true,
+     "what_it_supports": "Repeated leaderboard evaluation lets participants 'overfit to the holdout data that supports the leaderboard'."
+    },
+    {
+     "title": "Santander Product Recommendation, 2nd Place Write-Up (2017), Wayback snapshot",
+     "url": "https://web.archive.org/web/20170115012200id_/http://blog.kaggle.com:80/2017/01/12/santander-product-recommendation-competition-2nd-place-winners-solution-write-up-tom-van-de-wiele/",
+     "accessed_ok": true,
+     "what_it_supports": "Keeping changes only if they improved the public score was prone to overfitting under a 30-70 split."
+    },
+    {
+     "title": "Roelofs et al. (NeurIPS 2019) - full paper PDF",
+     "url": "https://papers.nips.cc/paper_files/paper/2019/file/ee39e503b6bedf0c98c388b7e8589aca-Paper.pdf",
+     "accessed_ok": true,
+     "what_it_supports": "Small test sets make public scores 'only approximately equal' to private ones even without adaptive overfitting."
+    }
+   ]
+  },
+  {
+   "name": "Leaderboard probing: know its limits, and don't use it here",
+   "description": "Leaderboard probing means crafting submissions to read hidden-label information from the score. Whitehill showed that a log-loss oracle lets 'all of the test labels ... eventually be inferred' and reached 'rank of #4 out of 848 contestants' 'without ever training a classifier'. He concludes this underlines 'the importance of evaluating contestants based only on test data that the oracle does not examine'. Santander's runner-up used probed public scores to estimate product counts, adding that 'the probed public leaderboard scores don't translate directly into positive leaderboard counts.' The HSE 'How to Win a Data Science Competition' course files 'Leaderboard probing' under data leakages.",
+   "why_it_works": "Probing does raise public scores when submissions are plentiful and the metric leaks label information. It does not reflect modelling skill and does not carry over to the hidden part of the test.",
+   "how_to_apply_to_sweettv": "Do not probe. (i) The course forbids training on future user behaviour; probes such as submitting one show for every user to read its public frequency extract exactly that from the weeks 31-42 labels. (ii) Five submissions on about 630 public users with MAP@5 carry too little information to matter anyway. (iii) Any gain would not carry over to the other half of the test. The only acceptable LB use is comparing a genuine model's LB with its CV once, as in the label-builder and trust-CV tricks. State this in the report's integrity section.",
+   "priority": "low",
+   "sources": [
+    {
+     "title": "Whitehill - Climbing the Kaggle Leaderboard by Exploiting the Log-Loss Oracle (arXiv 1707.01825, 2017)",
+     "url": "https://arxiv.org/abs/1707.01825",
+     "accessed_ok": true,
+     "what_it_supports": "Label inference from leaderboard feedback; rank #4 of 848 without a classifier; recommendation to evaluate only on data the oracle does not examine. Abstract confirmed via the arXiv API as well."
+    },
+    {
+     "title": "Blum & Hardt - The Ladder (arXiv 1502.04585, 2015)",
+     "url": "https://arxiv.org/abs/1502.04585",
+     "accessed_ok": true,
+     "what_it_supports": "Adaptive overfitting to the leaderboard holdout; organisers rely on 'heuristics such as limiting the bit precision of answers and the rate of re-submission'."
+    },
+    {
+     "title": "Santander Product Recommendation, 2nd Place Write-Up (2017), Wayback snapshot",
+     "url": "https://web.archive.org/web/20170115012200id_/http://blog.kaggle.com:80/2017/01/12/santander-product-recommendation-competition-2nd-place-winners-solution-write-up-tom-van-de-wiele/",
+     "accessed_ok": true,
+     "what_it_supports": "A real MAP@K example of probing used for product-frequency normalisation, and its caveat."
+    },
+    {
+     "title": "HSE / Coursera - How to Win a Data Science Competition (Wayback 2020)",
+     "url": "https://web.archive.org/web/20200416102958id_/https://www.coursera.org/learn/competitive-data-science",
+     "accessed_ok": true,
+     "what_it_supports": "The Data Leakages module includes the lecture 'Leaderboard probing and examples of rare data leaks'."
+    }
+   ]
+  },
+  {
+   "name": "Final submission: a safe ensemble chosen by CV that you can explain; take risk only if the grading rule rewards it",
+   "description": "Bestfitting: 'I often choose my final submissions in a conservative way, I always choose a weighted average ensemble of my safe models and select a relatively risky one (in my opinion, more parameters equate to more risks). But, I never chose a submission I can't explain, even with high public LB scores.' Santander's runner-up chose two ensembles, one of them a hand-picked uncorrelated subset. Greg Park chose by a mis-specified CV and left out his actual best submissions.",
+   "why_it_works": "The final choice should maximise expected hidden-test score. With a noisy public split that means a validated, low-variance, explainable ensemble. A high-variance pick only pays off when the scoring rule takes the maximum over several tries.",
+   "how_to_apply_to_sweettv": "Rank candidates by CV: the mean of folds A and B and the stability across seeds, not the public LB. The safe final is the seed-averaged reranker or ensemble refitted on all users. Ask the instructor how the graded public score is chosen. If your best submission counts, one higher-variance variant (for example, more discovery candidates for new-season shows) costs nothing. If a selected or last submission counts, submit the safe file last. Keep the code, seeds, git hash and the experiment-registry row so the exact file and the leaderboard screenshot can be reproduced for the report.",
+   "priority": "high",
+   "sources": [
+    {
+     "title": "Profiling Top Kagglers: Bestfitting (2018), Wayback snapshot",
+     "url": "https://web.archive.org/web/20180515173145id_/http://blog.kaggle.com/2018/05/07/profiling-top-kagglers-bestfitting-currently-1-in-the-world/",
+     "accessed_ok": true,
+     "what_it_supports": "Conservative final selection: a safe weighted-average ensemble plus one relatively risky submission; never choose an unexplainable submission."
+    },
+    {
+     "title": "Santander Product Recommendation, 2nd Place Write-Up (2017), Wayback snapshot",
+     "url": "https://web.archive.org/web/20170115012200id_/http://blog.kaggle.com:80/2017/01/12/santander-product-recommendation-competition-2nd-place-winners-solution-write-up-tom-van-de-wiele/",
+     "accessed_ok": true,
+     "what_it_supports": "Two final ensembles; the subset chosen 'to make the submissions as uncorrelated as possible'."
+    },
+    {
+     "title": "Greg Park - Kaggle postmortem (2012)",
+     "url": "https://gregpark.io/blog/Kaggle-Psychopathy-Postmortem",
+     "accessed_ok": true,
+     "what_it_supports": "'I chose my five final submissions based on cross-validation estimates, which turned out to be a poor predictor of true score' because the CV was mis-specified, and he 'did not include my best submissions in the final five'."
+    },
+    {
+     "title": "NVIDIA - The Kaggle Grandmasters Playbook (2025)",
+     "url": "https://developer.nvidia.com/blog/the-kaggle-grandmasters-playbook-7-battle-tested-modeling-techniques-for-tabular-data/",
+     "accessed_ok": true,
+     "what_it_supports": "Final models: multiple seeds plus retraining on all data."
+    }
+   ]
+  },
+  {
+   "name": "Study analogous competitions first, and keep a living solution document",
+   "description": "Bestfitting's cycle starts with 'Find similar Kaggle competitions' and 'Read solutions of similar competitions'. His 'most creative trick' is to 'prepare the solution document in the very beginning' (challenges, CV strategies, risks, ways to add model diversity) and keep it updated.",
+   "why_it_works": "The closest analogues have already found what works under a time-shifted target and a MAP@K metric. A written plan keeps a short project focused, and here it doubles as the report.",
+   "how_to_apply_to_sweettv": "Close analogues and what to take from each: Santander Product Recommendation (MAP@7, next-period target, lag and recency features, seasonality-aligned windows, MAP-aware post-processing, the public-LB overfitting lesson). Instacart (user-by-item repeat-purchase features, seed-averaged GBDTs, expected-metric post-processing). H&M (MAP@12, recall strategies plus LightGBM ranker or classifier, ensembling). OTTO and KDD Cup 2023 (co-visitation candidates plus a GBT reranker, temporal validation). Start a solution document now with sections for label definition, CV plan (folds A and B, user filter), candidate generators, features, models, ensembling, risks and the submission plan. Update it after every experiment; it becomes the IEEE report skeleton and the method-comparison table.",
+   "priority": "medium",
+   "sources": [
+    {
+     "title": "Profiling Top Kagglers: Bestfitting (2018), Wayback snapshot",
+     "url": "https://web.archive.org/web/20180515173145id_/http://blog.kaggle.com/2018/05/07/profiling-top-kagglers-bestfitting-currently-1-in-the-world/",
+     "accessed_ok": true,
+     "what_it_supports": "Iteration cycle (find similar competitions, read their solutions, build a stable CV, ...) and the solution document prepared 'in the very beginning'."
+    },
+    {
+     "title": "Santander Product Recommendation, 2nd Place Write-Up (2017), Wayback snapshot",
+     "url": "https://web.archive.org/web/20170115012200id_/http://blog.kaggle.com:80/2017/01/12/santander-product-recommendation-competition-2nd-place-winners-solution-write-up-tom-van-de-wiele/",
+     "accessed_ok": true,
+     "what_it_supports": "Closest public analogue: MAP@7, predict new products in the next month for each user; 2nd of 1785 teams."
+    },
+    {
+     "title": "Instacart 2nd place interview (2017), Wayback snapshot",
+     "url": "https://web.archive.org/web/20170922014019id_/http://blog.kaggle.com/2017/09/21/instacart-market-basket-analysis-winners-interview-2nd-place-kazuki-onodera/",
+     "accessed_ok": true,
+     "what_it_supports": "Repeat-consumption analogue (predict reorders), with features, seed averaging and metric optimisation."
+    },
+    {
+     "title": "NVIDIA - Pro Tips for Building Multilingual Recommender Systems (Chris Deotte, 2023)",
+     "url": "https://developer.nvidia.com/blog/pro-tips-for-building-multilingual-recommender-systems/",
+     "accessed_ok": true,
+     "what_it_supports": "KDD Cup 2023 winning two-stage candidate reranker."
+    },
+    {
+     "title": "Wp-Zhang/H-M-Fashion-RecSys README",
+     "url": "https://github.com/Wp-Zhang/H-M-Fashion-RecSys",
+     "accessed_ok": true,
+     "what_it_supports": "H&M (MAP@12) silver solution structure."
+    }
+   ]
+  }
+ ],
+ "notes": "I found 19 tricks for the general Kaggle playbook track. Every quote was checked against a page I opened. Pages that blocked direct fetching were read from archived copies, as listed below.\n\nAccess notes:\n- **Kaggle pages could not be read.** kaggle.com/docs/competitions and Kaggle discussion threads render only through JavaScript, and the H&M 1st-place post (discussion/324070) came back empty. So three things are unverified: Kaggle's own rules on late submissions and probing, the exact public/private split of the sweettv competition, and whether Kaggle's MAP@{K} code matches the ml_metrics apk semantics. The ~50% split (about 630 public users) comes from the task brief. The first baseline submission can check the metric match: compare its LB score with your local score on fold A.\n- **Archived copies used:**\n  - medium.com/kaggle-blog returned 403, so the bestfitting interview, the Santander 2nd-place write-up and the Instacart 2nd-place interview were read from Wayback copies of the original blog.kaggle.com posts.\n  - mlwave.com no longer resolves, so the Kaggle Ensembling Guide was read from a Wayback copy.\n  - The HSE/Coursera course page has been retired, so it was read from a 2020 Wayback copy.\n- **The Kaggle Book** text is paywalled (Packt and O'Reilly returned 403). Only its official GitHub repo was used: the README and the chapter-6 adversarial-validation notebook.\n- **Text-extracted PDFs:** the Roelofs et al. PDF was extracted locally with pdftotext. The Reciprocal Rank Fusion PDF was downloaded and extracted.\n- **API-checked sources:** Caruana 2004 was confirmed via Crossref and OpenAlex. The Whitehill and Zheng abstracts were confirmed via the arXiv API; Zheng is not cited.\n\nTwo findings that change how to set up validation for sweet.tv:\n1. **Only one full-horizon time window fits.** Weeks 11–30 contain exactly one non-overlapping 12-week target window after a usable history: cutoff week 18, target weeks 19–30.\n   - Model-free methods (popularity, association rules, ALS, PPR) can be scored directly on that window.\n   - A learned ranker must be validated by user-grouped folds inside it, with no raw tv_show_id feature.\n   - A shorter-horizon fold at cutoff 22 or 24 serves as a robustness check.\n   - Extra rows from earlier cutoffs (14, 16) overlap the validation period in time. They are usable only with user-disjoint folds, and CV will be slightly optimistic.\n2. **The public LB is too noisy to steer by.** About 630 public users is far below the ~10,000 test examples Roelofs et al. suggest. A rough standard error is per-user AP sd / √630, about 0.012 if sd ≈ 0.3; measure the real sd on fold A. The original 1st and 2nd private scores differ by 0.00007, so near-top ranks are largely luck. Decide on CV and treat the LB as a sanity check.\n\nPractical gotchas:\n- implicit's `recommend()` defaults to `filter_already_liked_items=True`. That removes already-watched shows, the strongest TV signal; set it to False and pass `items=` the shows that air in the target window.\n- LightGBM's built-in ranking metric only sees candidate rows. Score the full MAP@5 with the existing `/Users/konstantin/Documents/вшэ/recsys_course/midterm/src/metrics.py`; its `mapk` and `recall_at_n` already follow ml_metrics semantics.\n- Per SESSION.md, the real downloaded files are named dataset11-30.csv, export_arh_11-20-final.csv, export_arh_21-30-final.csv and export_arh_31-42-final.csv, not the names in the slides.\n\nSuggested order:\n1. Label builder and harness.\n2. Baselines and comparison table, then submission 1 (calibration).\n3. Candidates, LightGBM reranker and error analysis.\n4. Rank-fusion and stacking, then seed averaging.\n5. Submissions 2–4 by CV, keeping submission 5 in reserve.\n\nAsk the instructor whether the graded public score is your best submission or a selected/last one; that decides how much risk the final submission should take.\n\nLocal copies of the downloaded sources are in `/private/tmp/claude-501/-Users-konstantin-Documents-----recsys-course/8c34e5a1-52dd-4d84-beda-c2ce400d5147/scratchpad/web/` (subfolders bestfitting, santander, instacart, mlwave, coursera, kagglebook, otto, metrics, roelofs, rrf, gregpark)."
+}

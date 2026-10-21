@@ -1,0 +1,271 @@
+{
+ "checked": [
+  {
+   "item": "NVIDIA Kaggle Grandmasters Playbook (Onodera, Viel, Titericz, Deotte; 18 Sep 2025): все цитаты, на которые опираются приёмы про CV, EDA, бейзлайны, генерацию признаков, hill climbing, stacking, сиды, переобучение на 100% данных и скорость экспериментов",
+   "url_or_doi": "https://developer.nvidia.com/blog/the-kaggle-grandmasters-playbook-7-battle-tested-modeling-techniques-for-tabular-data/",
+   "status": "verified",
+   "evidence": "Страница открыта (HTTP 200, полный текст). На ней 'Sep 18, 2025' и 'By Kazuki Onodera, Théo Viel, Gilberto Titericz and Chris Deotte'. Дословно найдено: 'If you can’t trust your validation score, you’re flying blind.'; 'Pro tip: Match your CV strategy to how the test data is structured.'; 'Use TimeSeriesSplit for time-dependent data'; 'Use GroupKFold for grouped data (like users or patients)'; 'Spot when evaluation data differs from training'; 'Analyze target variable for temporal patterns: Check for trends or seasonality'; 'We spin up a diverse set of baselines across model types right away.'; 'hundreds or thousands of engineered features'; 'Start with your strongest single model, then systematically add others with different weights, keeping only the combinations that improve validation. Repeat until no further gains.'; 'builds a second-level model that learns how best to combine the outputs of other models'; 'Train with different random seeds'; 'Retrain on 100% of the data. After finding optimal hyperparameters, fitting your final model on all training data squeezes out extra accuracy.'; 'ensembling XGBoost models across 100 different seeds clearly outperformed single-seed training' (Predicting Optimal Fertilizers, MAP@3). Значения ~0.379 и ~0.376 действительно есть только в alt-тексте рисунка 5. Также дословно: 'The biggest lever we have in any competition or real-world project is the number of high-quality experiments we can run'; 'the faster we catch when a model is failing, drifting, or overfitting'; 'we optimize our entire pipeline for speed, not just our model training step.' Нюанс: основная схема статьи — k-fold, а TimeSeriesSplit и GroupKFold поданы как 'Pro tip'.",
+   "corrected_value": ""
+  },
+  {
+   "item": "Bestfitting, Profiling Top Kagglers (Kaggle Team, 7 May 2018), снимок Wayback: цитаты про CV, LB, error analysis и выбор финального сабмита",
+   "url_or_doi": "https://web.archive.org/web/20180515173145id_/http://blog.kaggle.com/2018/05/07/profiling-top-kagglers-bestfitting-currently-1-in-the-world/",
+   "status": "verified",
+   "evidence": "Снимок открыт, подпись 'Kaggle Team|05.07.2018' (формат MM.DD, даты комментариев 'May 7, 2018'). Дословно: 'A good CV is half of success. I won’t go to the next step if I can’t find a good way to evaluate my model.'; 'I’ll also check and make sure the validation set has similar distribution to the training set and test set and I’ll try to make sure my models improve both on my local CV and on the public LB.'; 'In some time series competitions, I set aside data for a period of time as a validation set.'; 'I often choose my final submissions in a conservative way, I always choose a weighted average ensemble of my safe models and select a relatively risky one ... But, I never chose a submission I can’t explain, even with high public LB scores.'; 'Result analysis such as prediction distribution, error analysis, hard examples.'; 'design models to add diversities or solve hard samples'; 'you often need very good single models'. Небольшая неточность: в источнике 'a period of time', а в JSON — именно 'a later period'.",
+   "corrected_value": ""
+  },
+  {
+   "item": "Santander, 2nd place write-up (Tom Van de Wiele, 12 Jan 2017), снимок Wayback: основные утверждения (симуляция теста, лаги, ранговое усреднение, сплит 30/70, переобучение на public LB, пробинг, MAP-оптимизация)",
+   "url_or_doi": "https://web.archive.org/web/20170115012200id_/http://blog.kaggle.com:80/2017/01/12/santander-product-recommendation-competition-2nd-place-winners-solution-write-up-tom-van-de-wiele/",
+   "status": "verified",
+   "evidence": "Снимок открыт: 'Tom Van de Wiele|01.12.2017' (в URL /2017/01/12/), метрика MAP@7, 'using a 30-70% random split'. Дословно: 'This approach mimics the test data'; 'in order to have similar feature interpretations'; 'June 2015 new product information is by far the best indicator of new products in June 2016'; 'These are all trained on a single month of data'; 'separate feature files for all months'; 'the model trained on June 2015 which uses 5 lag months is evaluated on the test features calculated on only the lag data starting in January 2016'; 'lagged features of all products at month lags 1 to 6 and 12'; 'number of months since the (second) last positive (new product) and negative (dropped product) flanks'; 'in order to optimize the expected MAP, less confident predictions should be shrunk with respect to more confident predictions'; пример с nomina/nom_pens про коррелированные товары; '(~0.2% boost)'; 'the probed public leaderboard scores don’t translate directly into positive leaderboard counts'; 'only discovered after the deadline that rank averaging typically works better than probability averaging'; 'as uncorrelated as possible'; 'I would only keep those changes if they improved my public score. With a 30-70% public/private leaderboard split this approach is prone to overfitting and in hindsight I wish that I had put more trust in my local validation.'; 'Running all steps on my 48GB workstation would take about a week.'",
+   "corrected_value": ""
+  },
+  {
+   "item": "Santander: детали в пересказе — 'MAP-оптимизация выглядела бесполезной на public LB' и '~0.031 за 90 минут на top-10 признаках'",
+   "url_or_doi": "https://web.archive.org/web/20170115012200id_/http://blog.kaggle.com:80/2017/01/12/santander-product-recommendation-competition-2nd-place-winners-solution-write-up-tom-van-de-wiele/",
+   "status": "corrected",
+   "evidence": "(а) В тексте: 'This MAP optimization had great effects in local validation (~0.2% boost) but limited value on the public leaderboard. It turns out that the effect on the private leaderboard had similar positive value'. Автор пишет 'limited value', а не 'useless'. (б) В тексте: 'Generating a ~0.031 private leaderboard score (good for 11th place) could however be achieved in about 90 minutes by focusing on the most important base model features using my feature ranking and only using one model for each product-lag combination. I would suggest to consider only the top 10 features ...'. Совет про top 10 features — отдельная рекомендация, а не условие, при котором получено 0.031.",
+   "corrected_value": "MAP-оптимизация: 'great effects in local validation (~0.2% boost) but limited value on the public leaderboard', на private эффект был так же положительным. ~0.031 на private (11-е место) за ~90 минут получено за счёт самых важных признаков из его ранжирования и одной модели на пару product-lag. 'Top 10 features' — его отдельный совет для упрощённого прогона."
+  },
+  {
+   "item": "NVIDIA, Co-Visitation Matrices and cuDF (Théo Viel, 21 Aug 2024): временной сплит для офлайн-валидации recsys",
+   "url_or_doi": "https://developer.nvidia.com/blog/build-efficient-recommender-systems-with-co-visitation-matrices-and-rapids-cudf/",
+   "status": "verified",
+   "evidence": "Страница открыта: 'Aug 21, 2024', 'By Théo Viel'. Дословно: 'The first three weeks are used for building the matrices, and the last week for evaluation.' и 'Note that it’s important to use a temporal split to avoid leaking information.'",
+   "corrected_value": ""
+  },
+  {
+   "item": "OTTO, KAGGLE.md: организаторы дали testset.py для офлайн-оценки; тест — сессии, обрезанные по времени",
+   "url_or_doi": "https://github.com/otto-de/recsys-dataset/blob/main/KAGGLE.md",
+   "status": "verified",
+   "evidence": "Открыты GitHub-страница и raw-версия файла. Дословно: 'Participants of the competition could create their truncated test sets from the training sessions to evaluate their models offline. For this purpose, we include a Python script called `testset.py`' и 'the test data contains sessions truncated by timestamp'.",
+   "corrected_value": ""
+  },
+  {
+   "item": "benhamner/Metrics, apk/mapk: семантика метрики и соответствие ей локального src/metrics.py",
+   "url_or_doi": "https://raw.githubusercontent.com/benhamner/Metrics/master/Python/ml_metrics/average_precision.py",
+   "status": "verified",
+   "evidence": "Код открыт. Docstring: 'A list of elements that are to be predicted (order doesn't matter)' и 'A list of predicted elements (order does matter)'. Условие 'if p in actual and p not in predicted[:i]' — дубликаты не засчитываются. 'return score / min(len(actual), k)'. Вклад начисляется только на позициях попаданий, поэтому лишние неверные элементы после них счёт не снижают. Локальный файл /Users/konstantin/Documents/вшэ/recsys_course/midterm/src/metrics.py содержит apk и mapk (k=5) с той же семантикой (дубликаты не засчитываются, деление на min(|actual|, k), пустой actual даёт 0), а также recall_at_n. Файл /Users/konstantin/Documents/вшэ/recsys_course/midterm/tests/test_metrics.py существует.",
+   "corrected_value": ""
+  },
+  {
+   "item": "Greg Park, Kaggle postmortem (6 Jul 2012): падение со 2-го места на 52-е, 42 сабмита при медиане 6, ухудшение после ~25 сабмитов, CV вне фолдов",
+   "url_or_doi": "https://gregpark.io/blog/Kaggle-Psychopathy-Postmortem",
+   "status": "verified",
+   "evidence": "Страница открыта: 'July 06, 2012'. Дословно: 'I made 42 submissions'; 'the median number of submissions in this contest was six'; 'I dropped from 2nd place on the public leaderboard to 52nd on the private leaderboard'; 'After about 25 submissions or so, private leaderboard standings get worse with the number of submissions.'; 'my first two submissions to the contest turned out to be my best'; 'This lead to increasingly optimistic cross-validation estimates'; 'Be more selective with submissions.'; 'include all training (feature selection, preprocessing, etc.) in each fold.'; 'Try to ignore the public leaderboard, even when it is telling you nice things about yourself.'; 'One of my best submissions ... was actually one of my own benchmarks that took very little thought'; 'I did not include my best submissions in the final five'.",
+   "corrected_value": ""
+  },
+  {
+   "item": "Roelofs et al., NeurIPS 2019: цитаты про 100+ соревнований, патологии выбросов, минимум 10 000 примеров, шум рангов и 'only approximately equal'",
+   "url_or_doi": "https://papers.nips.cc/paper_files/paper/2019/file/ee39e503b6bedf0c98c388b7e8589aca-Paper.pdf",
+   "status": "verified",
+   "evidence": "Открыты страница с аннотацией (paper/9117-... редиректит на .../hash/ee39e503...-Abstract.html) и PDF; текст PDF извлечён pdftotext. В аннотации: 'over one hundred machine learning competitions hosted on the Kaggle platform' (во введении — 120 соревнований) и 'little evidence of substantial overfitting'. В PDF дословно: 'these competitions usually have pathologies such as non-i.i.d. data splits or (effectively) small test sets'; 'large rank changes can be a natural consequence of random noise in the evaluation'; 'the public scores are only approximately equal to the private scores (even in the absence of any adaptive overfitting)'. Важная оговорка: полная фраза — 'our results for accuracy competitions suggest that at least 10,000 examples is a reasonable minimum test set size to protect against adaptive overfitting'. Порог выведен для соревнований на accuracy (классификация, не меньше 1000 сабмитов) и на MAP@5 напрямую не переносится.",
+   "corrected_value": ""
+  },
+  {
+   "item": "ML Contests 2024: 'overfitting to the public leaderboard', доминирование GBDT, 16/13/8 и утверждение 'LightGBM — самая частая библиотека среди победителей 2024'",
+   "url_or_doi": "https://mlcontests.com/state-of-machine-learning-competitions-2024/",
+   "status": "corrected",
+   "evidence": "Страница открыта. Дословно: 'the experience required to avoid common pitfalls like overfitting to the public leaderboard' (в контексте оценки AI-агентов на задачах Kaggle); 'Gradient-boosted decision trees (GBDTs) largely continue to dominate competitions with tabular data'; 'We found 16 winning solutions using LightGBM, 13 using Catboost, and 8 using XGBoost, the three major GBDT libraries.' Но фраза JSON 'LightGBM was the most frequent library among 2024 winners' неверна. В отчёте: 'PyTorch and gradient-boosted tree models were most common among winners' и 'Out of the 60 winning solutions we found using deep learning, 53 used PyTorch'; всего найдено 79 победных решений.",
+   "corrected_value": "LightGBM — самая частая GBDT-библиотека в победных решениях 2024 года: 16 против 13 у CatBoost и 8 у XGBoost. Самая частая библиотека в целом — PyTorch: 53 из 60 решений с глубоким обучением, всего найдено 79 решений."
+  },
+  {
+   "item": "NVIDIA, Feature Engineering Using cuDF pandas (Chris Deotte, 17 Apr 2025): groupby-агрегации, вложенная CV для target encoding, более 10 000 признаков, лучшие 500",
+   "url_or_doi": "https://developer.nvidia.com/blog/grandmaster-pro-tip-winning-first-place-in-kaggle-competition-with-feature-engineering-using-nvidia-cudf-pandas/",
+   "status": "verified",
+   "evidence": "Страница открыта: 'Apr 17, 2025', 'By Chris Deotte'. Дословно: 'The most powerful feature engineering technique is groupby aggregations.'; 'When COL2 is the target column, then we use nested cross-validation to avoid leakage in our validation computation.'; 'rapidly generate and test over 10,000 engineered features'; 'the best 500 discovered features significantly boosted the accuracy of my XGBoost model'.",
+   "corrected_value": ""
+  },
+  {
+   "item": "FastML, Adversarial validation, part one (2016-05-23)",
+   "url_or_doi": "http://fastml.com/adversarial-validation-part-one/",
+   "status": "verified",
+   "evidence": "Страница открыта: '2016-05-23', 'Posted by Zygmunt Zając'. Дословно: 'We propose a method for selecting training examples most similar to test examples and using them as a validation set. The core of this idea is training a probabilistic classifier to distinguish train/test examples.' и 'This would correspond to ROC AUC of 0.5.'",
+   "corrected_value": ""
+  },
+  {
+   "item": "The Kaggle Book: README репозитория и ноутбук chapter_06/adversarial-validation-example.ipynb",
+   "url_or_doi": "https://raw.githubusercontent.com/PacktPublishing/The-Kaggle-Book/main/chapter_06/adversarial-validation-example.ipynb",
+   "status": "verified",
+   "evidence": "README открыт (https://raw.githubusercontent.com/PacktPublishing/The-Kaggle-Book/main/README.md). В нём: строка таблицы '|06| Designing Good Validation| adversarial-validation-example', 'Design good validation schemes, learning about k-fold, probabilistic, and adversarial validation', '... mean average precision at k ...', 'Luca and Konradˈs book', 'Published by Packt Publishing'. Ноутбук открыт: X = pd.concat([train, test]); y = [0] * len(train) + [1] * len(test); RandomForestClassifier с cross_val_predict(cv=5, method='predict_proba'); roc_auc_score; затем сортировка feature_importances_.",
+   "corrected_value": ""
+  },
+  {
+   "item": "The Kaggle Book: авторы Banachewicz и Massaron, Packt, год 2022",
+   "url_or_doi": "https://openlibrary.org/isbn/9781801817479.json",
+   "status": "unverifiable",
+   "evidence": "Авторы подтверждены записью Open Library по ISBN 9781801817479: Konrad Banachewicz и Luca Massaron, издатель Packt Publishing. Но это предрелизная запись с названием 'Data Analysis and Machine Learning with Kaggle' и publish_date '2021'. Страницы Packt и O'Reilly отдают 403 и через curl, и через WebFetch. Год 2022 виден только в сниппетах поиска, сами страницы открыть не удалось.",
+   "corrected_value": "K. Banachewicz and L. Massaron, The Kaggle Book: Data Analysis and Machine Learning for Competitive Data Science. Packt Publishing, 2022. Год взят из сниппетов поиска и открытой страницей не подтверждён."
+  },
+  {
+   "item": "Pan et al., arXiv:2004.03045 (Uber): adversarial validation для обнаружения дрейфа до инференса",
+   "url_or_doi": "https://arxiv.org/abs/2004.03045",
+   "status": "verified",
+   "evidence": "Страница открыта: 'Submitted on 7 Apr 2020 (v1), last revised 26 Jun 2020 (this version, v2)', авторы 'Jing Pan, Vincent Pham, Mohan Dorairaj, Huigang Chen, Jeong-Yoon Lee'. Дословно: 'the system detects concept drift in new data before making inference', система MaLTA в Uber. В OpenAlex есть только препринт arXiv (doi 10.48550/arXiv.2004.03045), опубликованной версии не найдено.",
+   "corrected_value": "IEEE: J. Pan, V. Pham, M. Dorairaj, H. Chen, and J.-Y. Lee, 'Adversarial validation approach to concept drift problem in user targeting automation systems at Uber,' arXiv:2004.03045, 2020, doi: 10.48550/arXiv.2004.03045."
+  },
+  {
+   "item": "Документация implicit, AlternatingLeastSquares: сигнатура recommend(), параметр items=, filter_already_liked_items, random_state",
+   "url_or_doi": "https://benfred.github.io/implicit/api/models/cpu/als.html",
+   "status": "verified",
+   "evidence": "Страница открыта ('Implicit 0.7.2 documentation'). Дословно: 'recommend(userid, user_items, N=10, filter_already_liked_items=True, filter_items=None, recalculate_user=False, items=None)'. Про items: 'When set this will only rank the items in this array instead of ranking every item the model was fit for. This parameter cannot be used with filter_items'. Про filter_already_liked_items: 'When true, don’t return items present in the training set that were rated by the specified user.' Про random_state: 'The random state for seeding the initial item and user factors.'",
+   "corrected_value": ""
+  },
+  {
+   "item": "Instacart, интервью с 2-м местом (Kazuki Onodera; Edwin Chen, 21 Sep 2017), снимок Wayback: группы признаков, окна _n5, 6 сидов, максимизация ожидаемого F1",
+   "url_or_doi": "https://web.archive.org/web/20170922014019id_/http://blog.kaggle.com/2017/09/21/instacart-market-basket-analysis-winners-interview-2nd-place-kazuki-onodera/",
+   "status": "verified",
+   "evidence": "Снимок открыт: 'Edwin Chen|09.21.2017' (Edwin Chen — интервьюер). Дословно: 'User features - what is this user like?', 'Item features - what is this item like?', 'User x item features - how does this user feel about this item?', 'Datetime features - what is this day and hour like?'; про суффикс _n5 — 'near5', 'features extracted from the 5 most recent orders'; 'six different gradient boosted tree models (each GBDT uses a different random seed). I average their predictions together'. Есть раздел 'F1 Maximization': через симуляцию для каждого заказа подбирается свой порог.",
+   "corrected_value": ""
+  },
+  {
+   "item": "Instacart: атрибуция цитаты 'how ready the user is to repurchase'",
+   "url_or_doi": "https://web.archive.org/web/20170922014019id_/http://blog.kaggle.com/2017/09/21/instacart-market-basket-analysis-winners-interview-2nd-place-kazuki-onodera/",
+   "status": "corrected",
+   "evidence": "В JSON сказано, что эту готовность отражает 'days since last order of this item'. В тексте иначе: 'Days_last_order-max(User A, Item B) is the difference between these two features. So this feature tells us how ready the user is to repurchase the item.' Здесь 'these two features' — это Days_since_last_order_this_item и Useritem_orders_days_max, то есть самый долгий исторический перерыв пользователя для этого товара.",
+   "corrected_value": "Готовность к повторной покупке отражает Days_last_order-max: число дней с последней покупки товара минус самый долгий прошлый перерыв пользователя для этого товара. Сам Days_since_last_order_this_item этой цитатой не описывается."
+  },
+  {
+   "item": "NVIDIA, Multilingual Recommender Systems (Chris Deotte, 10 Aug 2023): two-stage candidate reranker, цели обучения ранкера, победа в KDD Cup 2023",
+   "url_or_doi": "https://developer.nvidia.com/blog/pro-tips-for-building-multilingual-recommender-systems/",
+   "status": "verified",
+   "evidence": "Страница открыта: 'Aug 10, 2023', 'By Chris Deotte'. Дословно: 'A powerful modeling approach is called the two-stage candidate reranker.'; 'In the first stage, the model identifies hundreds of candidate items'; 'You train your reranker with either a binary classification objective or a pairwise or listwise ranking objective.' Победа подтверждена текстом самой статьи, а не только AI-summary: 'techniques that the Kaggle Grandmasters of NVIDIA and NVIDIA Merlin teams used to win the recent KDD cup 2023 Multilingual Recommender System competition hosted by Amazon.'",
+   "corrected_value": ""
+  },
+  {
+   "item": "Параметры LightGBM (lambdarank и rank_xendcg, метрика map, eval_at, query/group, сиды, deterministic) и предупреждение JSON о встроенной метрике map",
+   "url_or_doi": "https://lightgbm.readthedocs.io/en/latest/Parameters.html ; https://raw.githubusercontent.com/microsoft/LightGBM/master/src/metric/map_metric.hpp",
+   "status": "verified",
+   "evidence": "Документация открыта. В objective есть 'lambdarank' и 'rank_xendcg'. Метрика: 'map, MAP, aliases: mean_average_precision'. eval_at: 'default = 1,2,3,4,5', алиасы 'map_eval_at, map_at'. Также: 'For learning to rank, it needs query information for training data.' и 'Note: data should be ordered by the query.' Есть seed (алиас random_state), bagging_seed и feature_fraction_seed. Про deterministic: 'used only with cpu device type - setting this to true should ensure the stable results when using the same data and the same parameters (and different num_threads)'. Дополнительно открыт исходник map_metric.hpp. AP там делится на std::min(npos, k), где npos — число позитивов среди строк-кандидатов запроса, а запрос без позитивов получает 1.0. Значит, встроенный map@5 оптимистичнее Kaggle-метрики: это подтверждает и уточняет предупреждение JSON.",
+   "corrected_value": ""
+  },
+  {
+   "item": "XGBoost, Learning to Rank: rank:map против rank:ndcg, отсортированный qid",
+   "url_or_doi": "https://xgboost.readthedocs.io/en/stable/tutorials/learning_to_rank.html",
+   "status": "verified",
+   "evidence": "Страница открыта. Дословно: 'When the target metric is MAP and you are using a large dataset that can provide a sufficient amount of effective pairs, rank:map can in theory yield higher MAP value than rank:ndcg.' и 'we need an additional sorted array called qid'.",
+   "corrected_value": ""
+  },
+  {
+   "item": "Wp-Zhang/H-M-Fashion-RecSys (H&M, серебро, 45/3006): 2 стратегии отбора кандидатов, LGB ranker, LGB classifier и DNN, ~50 кандидатов, рост с 0.0286 до 0.0292",
+   "url_or_doi": "https://github.com/Wp-Zhang/H-M-Fashion-RecSys",
+   "status": "verified",
+   "evidence": "GitHub-страница открыта, README прочитан через https://raw.githubusercontent.com/Wp-Zhang/H-M-Fashion-RecSys/main/README.md. Дословно: 'Silver Medal Solution 45/3006'; 'LB score of 0.0292 and a PB score of 0.02996'; 'Our final solution contains 2 recall strategies and we trained 3 different ranking models (LGB ranker, LGB classifier, DNN) for each strategy.'; 'LB score of a single recall strategy can only reach 0.0286 and ensembling helps us to boost up to 0.0292'; 'we only generated avg 50 candidates for each user'. Рост с 0.0286 до 0.0292 — это public LB.",
+   "corrected_value": ""
+  },
+  {
+   "item": "H&M: утверждение 'A MAP@12 recsys competition' со ссылкой на README Wp-Zhang",
+   "url_or_doi": "https://raw.githubusercontent.com/bhuebner3/Recommender-System-LightGBM/main/README.md",
+   "status": "corrected",
+   "evidence": "В README Wp-Zhang метрика не названа. MAP@12 подтверждается другим открытым README: 'The evaluation metric used was Mean Average Precision @ 12 (MAP@12)' (bhuebner3/Recommender-System-LightGBM). Официальная страница Kaggle — JS-оболочка, её не открывал.",
+   "corrected_value": "MAP@12 нужно подкреплять описанием соревнования или другим источником, а не README Wp-Zhang."
+  },
+  {
+   "item": "MLWave, Kaggle Ensembling Guide (11 Jun 2015), снимок Wayback: ранговое усреднение, некоррелированные модели, минусы blending, OOF-stacking; mlwave.com не резолвится",
+   "url_or_doi": "https://web.archive.org/web/20160206102007id_/http://mlwave.com/kaggle-ensembling-guide/",
+   "status": "verified",
+   "evidence": "Снимок открыт: 'Kaggle Ensembling Guide June 11, 2015'. Дословно: 'Our solution is to first turn the predictions into ranks, then averaging these ranks.'; 'Uncorrelated submissions clearly do better when ensembled than correlated submissions.'; в списке минусов blending — 'The final model may overfit to the holdout set.' и 'Your CV is more solid with stacking (calculated over more folds) than using a single small holdout set.'; описан stacking на out-of-fold предсказаниях. Проверка https://mlwave.com/kaggle-ensembling-guide/ дала 'Could not resolve host: mlwave.com'.",
+   "corrected_value": ""
+  },
+  {
+   "item": "Cormack, Clarke, Büttcher — Reciprocal Rank Fusion (SIGIR 2009): формула, k=60, выигрыш 4–5%, библиографические данные",
+   "url_or_doi": "http://cormack.uwaterloo.ca/cormack/cormacksigir09-rrf.pdf ; doi:10.1145/1571941.1572114",
+   "status": "verified",
+   "evidence": "PDF открыт (редирект на https://cormack.uwaterloo.ca/cormacksigir09-rrf.pdf). В нём формула RRFscore(d) = Σ_r 1/(k + r(d)) и дословно: 'k = 60 was near-optimal, but that the choice was not critical'; 'RRF outperforms Condorcet, CombMNZ and the best system by 4% to 5% on average'. Crossref по DOI 10.1145/1571941.1572114: заголовок 'Reciprocal rank fusion outperforms condorcet and individual rank learning methods', Proceedings of the 32nd international ACM SIGIR conference..., страницы '758-759', дата 19 Jul 2009, Boston MA USA, авторы Gordon V. Cormack, Charles L A Clarke, Stefan Buettcher. В PDF и OpenAlex — 'Büttcher'. Данные JSON (SIGIR 2009) совпадают.",
+   "corrected_value": "IEEE: G. V. Cormack, C. L. A. Clarke, and S. Büttcher, 'Reciprocal rank fusion outperforms Condorcet and individual rank learning methods,' in Proc. 32nd Int. ACM SIGIR Conf. Res. Develop. Inf. Retrieval (SIGIR '09), Boston, MA, USA, Jul. 2009, pp. 758–759, doi: 10.1145/1571941.1572114."
+  },
+  {
+   "item": "Caruana et al., Ensemble selection from libraries of models (ICML 2004): метаданные и цитаты из аннотации",
+   "url_or_doi": "https://api.openalex.org/works/doi:10.1145/1015330.1015432 ; doi:10.1145/1015330.1015432",
+   "status": "verified",
+   "evidence": "Метаданные получены из OpenAlex и Crossref через curl. Заголовок 'Ensemble selection from libraries of models'; авторы Rich Caruana, Alexandru Niculescu-Mizil, Geoff Crew, Alex Ksikes; издание 'Twenty-first international conference on Machine learning - ICML '04' (Banff, Alberta, Canada, 4–8 Jul 2004), ACM Press; page '18'; год 2004. В аннотации OpenAlex дословно: 'Forward stepwise selection is used to add to the ensemble the models that maximize its performance. Ensemble selection allows ensembles to be optimized to performance metric such as accuracy, cross entropy, mean precision, or ROC Area.'",
+   "corrected_value": "IEEE: R. Caruana, A. Niculescu-Mizil, G. Crew, and A. Ksikes, 'Ensemble selection from libraries of models,' in Proc. 21st Int. Conf. Mach. Learn. (ICML '04), Banff, AB, Canada, Jul. 2004, p. 18, doi: 10.1145/1015330.1015432."
+  },
+  {
+   "item": "NVIDIA, Stacking Using cuML (Chris Deotte, 22 May 2025): 75 моделей первого уровня из 500, OOF как признаки, усреднение на уровне 3, CV 11.54 против private 11.44",
+   "url_or_doi": "https://developer.nvidia.com/blog/grandmaster-pro-tip-winning-first-place-in-a-kaggle-competition-with-stacking-using-cuml/",
+   "status": "verified",
+   "evidence": "Страница открыта: 'May 22, 2025', 'By Chris Deotte'. Дословно: 'The final solution uses 75 Level 1 models that were chosen from 500 experimental models.'; 'the out-of-fold (OOF) predictions from the Level 1 models are added as features for the Level 2 models'; 'simple Level 3 models are trained, which average the Level 2 models’ outputs'; 'CV validation metric RMSE = 11.54 and private leaderboard RMSE = 11.44'.",
+   "corrected_value": ""
+  },
+  {
+   "item": "Курс НИУ ВШЭ на Coursera 'How to Win a Data Science Competition', снимок Wayback 2020: модули Ensembling, Metrics Optimization и Data Leakages (leaderboard probing)",
+   "url_or_doi": "https://web.archive.org/web/20200416102958id_/https://www.coursera.org/learn/competitive-data-science",
+   "status": "verified",
+   "evidence": "Снимок открыт. Дословно: 'Every winning solution incorporates ensembles of models.'; чтение 'Validation schemes for 2-nd level models'; модуль 'Metrics Optimization' со словами 'how we can efficiently optimize a metric given in a competition'; модуль 'Data Leakages' с видео 'Leaderboard probing and examples of rare data leaks'. Курс ведёт National Research University Higher School of Economics.",
+   "corrected_value": ""
+  },
+  {
+   "item": "NVIDIA, Generative AI–Assisted Coding (Chris Deotte, 23 Apr 2026): 850 экспериментов, 4-уровневый стек из 150 моделей, сохранять OOF и тестовые предсказания",
+   "url_or_doi": "https://developer.nvidia.com/blog/winning-a-kaggle-competition-with-generative-ai-assisted-coding/",
+   "status": "verified",
+   "evidence": "Страница открыта: 'Apr 23, 2026', 'By Chris Deotte'. Дословно: 'ran 850 experiments'; 'The first-place solution is a four-level stack of 150 models, selected from 850.'; 'For each experiment, good or bad, always save the OOF and test prediction to disk.'; имена файлов 'train_oof_[MODEL]_[VERSION].npy' и 'test_preds_[MODEL]_[VERSION].npy'. Соревнование — March 2026 Kaggle Playground (churn, метрика AUC).",
+   "corrected_value": ""
+  },
+  {
+   "item": "Blum & Hardt, The Ladder (arXiv:1502.04585): цитаты и опубликованная версия",
+   "url_or_doi": "https://arxiv.org/abs/1502.04585 ; https://proceedings.mlr.press/v37/blum15.html",
+   "status": "verified",
+   "evidence": "Страница arXiv открыта: 'Avrim Blum, Moritz Hardt', 'Submitted on 16 Feb 2015'. Дословно: 'they may begin to overfit to the holdout data that supports the leaderboard' и 'poorly understood heuristics such as limiting the bit precision of answers and the rate of re-submission'. Страница PMLR открыта: 'Proceedings of the 32nd International Conference on Machine Learning, PMLR 37:1006-1014, 2015', Lille, France. JSON ссылается только на arXiv — это не ошибка, но для отчёта лучше указать опубликованную версию.",
+   "corrected_value": "IEEE: A. Blum and M. Hardt, 'The Ladder: A reliable leaderboard for machine learning competitions,' in Proc. 32nd Int. Conf. Mach. Learn. (ICML), Lille, France, Jul. 2015, vol. 37, Proc. Mach. Learn. Res., pp. 1006–1014."
+  },
+  {
+   "item": "Whitehill, Climbing the Kaggle Leaderboard by Exploiting the Log-Loss Oracle (arXiv:1707.01825): цитаты и опубликованная версия",
+   "url_or_doi": "https://arxiv.org/abs/1707.01825 ; https://cdn.aaai.org/ocs/ws/ws0421/16161-75972-1-PB.pdf",
+   "status": "verified",
+   "evidence": "Страница arXiv открыта: 'Jacob Whitehill', 'Submitted on 6 Jul 2017'. Дословно: 'all of the test labels can eventually be inferred'; 'attain a rank of #4 out of 848 contestants), without ever training a classifier'; 'These results underline the importance of evaluating contestants based only on test data that the oracle does not examine.' Опубликованная версия открыта на cdn.aaai.org: в шапке 'The Workshops of the Thirty-Second AAAI Conference on Artificial Intelligence', в метаданных PDF 'AAAI Technical Report WS-18 (Engineering Dependable and Secure Machine Learning Systems Workshop)', 8 страниц. OpenAlex указывает pp. 392–399, в самом PDF номера страниц не проверял.",
+   "corrected_value": "IEEE: J. Whitehill, 'Climbing the Kaggle leaderboard by exploiting the log-loss oracle,' in Workshops 32nd AAAI Conf. Artif. Intell., AAAI Tech. Rep. WS-18 (Engineering Dependable and Secure Machine Learning Systems), 2018 (pp. 392–399 по OpenAlex); preprint arXiv:1707.01825, 2017."
+  },
+  {
+   "item": "Roelofs et al., NeurIPS 2019: библиографическая запись (порядок авторов, страницы, издатель)",
+   "url_or_doi": "https://papers.nips.cc/paper_files/paper/2019/file/ee39e503b6bedf0c98c388b7e8589aca-Bibtex.bib ; https://web.archive.org/web/20200904061818id_/http://papers.nips.cc/paper/9117-a-meta-analysis-of-overfitting-in-machine-learning/bibtex",
+   "status": "corrected",
+   "evidence": "Текущий BibTeX NeurIPS: author = {Roelofs, Rebecca and Shankar, Vaishaal and Recht, Benjamin and Fridovich-Keil, Sara and Hardt, Moritz and Miller, John and Schmidt, Ludwig}, volume 32, pages = {} (пусто), Curran Associates. Архивный BibTeX 2020 года: pages = {9179--9189}, booktitle 'Advances in Neural Information Processing Systems 32'. OpenAlex даёт pp. 9175–9185, что расходится с архивным BibTeX. В самом PDF авторы стоят в другом порядке: Roelofs*, Fridovich-Keil*, Miller, Shankar, Hardt, Recht, Schmidt (* — равный вклад). DOI у статьи нет. В JSON только 'Roelofs et al.' и верный заголовок.",
+   "corrected_value": "IEEE: R. Roelofs, V. Shankar, B. Recht, S. Fridovich-Keil, M. Hardt, J. Miller, and L. Schmidt, 'A meta-analysis of overfitting in machine learning,' in Advances in Neural Information Processing Systems 32 (NeurIPS 2019), H. Wallach, H. Larochelle, A. Beygelzimer, F. d'Alché-Buc, E. Fox, and R. Garnett, Eds. Curran Associates, Inc., 2019, pp. 9179–9189."
+  },
+  {
+   "item": "sweet.tv: 1-е и 2-е место на private LB — 0.42912 и 0.42905 (разница 0.00007)",
+   "url_or_doi": "local: /Users/konstantin/Documents/вшэ/recsys_course/midterm/evidence/kaggle_meta/topics_leaderboard.txt ; https://www.kaggle.com/competitions/sweettv-tv-program-recommender/leaderboard",
+   "status": "verified",
+   "evidence": "Kaggle API без авторизации отвечает 401 'Unauthenticated', а страница соревнования через WebFetch — пустая JS-оболочка. Поэтому сверено по локальному дампу Kaggle API, снятому ранее в этой сессии: 'Magic City' score '0.42912', 'Nikita Melentev' score '0.42905'; разница 0.00007 верна. Для справки, public LB 2020 года: 0.44297 и 0.44252 (/Users/konstantin/Documents/вшэ/recsys_course/midterm/evidence/kaggle_meta/public_leaderboard_2020_final.csv).",
+   "corrected_value": ""
+  },
+  {
+   "item": "sweet.tv: '≈50% public split из брифа курса, ≈630 пользователей'",
+   "url_or_doi": "local: /Users/konstantin/Documents/вшэ/recsys_course/midterm/evidence/kaggle_meta/pages.txt (дамп страницы Data через Kaggle API)",
+   "status": "corrected",
+   "evidence": "На странице Data соревнования: 'Private/public test data is split BY USERS (50/50) - not by time.' В /Users/konstantin/Documents/вшэ/recsys_course/midterm/evidence/eda.json: n_sub_users = 1260. Значит, это не допущение из брифа, а официальное правило: в public ровно 630 пользователей, деление по пользователям, а не по времени.",
+   "corrected_value": "Public LB — ровно 50% пользователей (630 из 1260), разбиение по пользователям, а не по времени. Источник — официальное описание данных Kaggle."
+  },
+  {
+   "item": "Приём 'Rebuild the organisers' label': 'MAP@5 считается по множеству до 5 шоу' и неопределённость 'минуты или число просмотров, минимальное перекрытие'",
+   "url_or_doi": "local: /Users/konstantin/Documents/вшэ/recsys_course/midterm/evidence/kaggle_meta/pages.txt ; /Users/konstantin/Documents/вшэ/recsys_course/midterm/evidence/eda.json ; /Users/konstantin/Documents/вшэ/recsys_course/midterm/evidence/tiebreak_sensitivity_F1.json",
+   "status": "corrected",
+   "evidence": "На странице Data (дамп Kaggle API) правило задано явно: 'all entries with tv_show_id = 0 were removed'; 'for each user and each TV show user screen time (time user watched the show divided by total duration of the show) was calculated. Only TV shows with high screen time (>= 0.8) were taken into account.'; 'for each user high-screen time TV shows frequency was calculated'; 'for each user **strictly** 5 most frequent TV shows were selected DESC'; 'Every user from the solution has strictly 5 preferred TV programs'. Отсюда два вывода. Первое: 'up to 5' неверно — у каждого тестового пользователя ровно 5 меток, и знаменатель apk всегда равен 5. Второе: выбор между минутами и числом показов и порог минимального перекрытия уже заданы правилом — считаются показы с долей досмотра не меньше 0.8 от длительности. Открытыми остаются два вопроса. (а) Как складывать несколько сессий внутри одного показа, суммой или максимумом: в /Users/konstantin/Documents/вшэ/recsys_course/midterm/evidence/prep.json это 615 979 против 562 939 полных просмотров. (б) Как разбивать ничьи на 5-м месте: в eda.json share_users_with_tie_at_5th = 0.63 (медианный счёт 5-го шоу = 2), а tiebreak_sensitivity_F1.json даёт CV 0.415, 0.373 и ~0.390 при тай-брейке по возрастанию id, по убыванию id и случайном.",
+   "corrected_value": "make_target: для каждого показа считать долю досмотра (просмотренное время / длительность показа) и учитывать показы с долей не меньше 0.8. Метка — 5 шоу с наибольшим числом таких показов, ровно 5 на пользователя. Настраиваемыми оставить только способ сложения сессий внутри показа (sum или max) и правило тай-брейка."
+  },
+  {
+   "item": "Приём 'Time-split validation': fold A (11–18 → 19–30) — '12 weeks, the same horizon as the test'; fold B с целью 25–30",
+   "url_or_doi": "local: /Users/konstantin/Documents/вшэ/recsys_course/midterm/evidence/eda.json",
+   "status": "corrected",
+   "evidence": "В eda.json (full_views_per_week) недели 25, 26 и 27 дают 13 770, 9 983 и 10 978 полных просмотров. В остальных неделях окна 19–30 — от 27 580 до 49 453; в неделях 28–30 — 48 734, 49 453 и 41 744. Значит, в целевом окне fold A есть провал логирования, и по сути оно не равно полному 12-недельному горизонту теста 31–42. Цель fold B (25–30) наполовину приходится на этот провал.",
+   "corrected_value": "Fold A номинально охватывает 12 недель, но в неделях 25–27 логи неполные: полных просмотров в 2–5 раз меньше. Отсюда меньшие счётчики и больше ничьих в метках, поэтому CV-шкала fold A не равна тестовой. Fold B с целью 25–30 как проверку робастности стоит использовать осторожно."
+  },
+  {
+   "item": "Приём 'Adversarial validation': пользователи сабмита могут быть отобранной подвыборкой (например, активные зрители)",
+   "url_or_doi": "local: /Users/konstantin/Documents/вшэ/recsys_course/midterm/evidence/eda.json ; /Users/konstantin/Documents/вшэ/recsys_course/midterm/evidence/tiebreak_sensitivity_F1.json ; /Users/konstantin/Documents/вшэ/recsys_course/midterm/evidence/kaggle_submissions.csv",
+   "status": "verified",
+   "evidence": "По eda.json пользователи сабмита (1260) активнее остальных: медиана 1 933 267 секунд против 1 224 337, медиана активных недель 20 против 18, в неделе 30 активны 96.5% против 91.7%. CV первой модели — 0.41537 на всех пользователях и 0.44419 на пользователях сабмита, а public в kaggle_submissions.csv — 0.44705. LB ближе к CV на похожей популяции, что подтверждает совет JSON отчитываться о CV на пользователях, похожих на тестовых.",
+   "corrected_value": ""
+  },
+  {
+   "item": "Общий CONTEXT: соревнование шло 'Nov 18-22 2020'",
+   "url_or_doi": "local: /Users/konstantin/Documents/вшэ/recsys_course/midterm/evidence/kaggle_meta/pages.txt ; /Users/konstantin/Documents/вшэ/recsys_course/midterm/evidence/kaggle_meta/public_leaderboard_2020_final.csv",
+   "status": "corrected",
+   "evidence": "В описании соревнования (дамп Kaggle API): 'Deadline - 21.11.2020, 11.59 PM', '10 submissions/day'. Самый поздний сабмит на LB — '2020-11-21 23:58:19'. Дата 22 ноября для Kaggle-этапа не подтверждается (возможно, это дата финала хакатона). Начало 18 ноября по этим файлам не проверялось. Это касается общего CONTEXT, а не самих приёмов.",
+   "corrected_value": "Kaggle-этап завершился 21.11.2020 в 23:59 (дедлайн по описанию соревнования)."
+  }
+ ],
+ "summary": "Проверены все 30 URL из JSON: каждая страница открылась и содержит то, что ей приписано, ни одной ошибочной страницы. Почти все цитаты дословны. Дополнительно опрошены Crossref и OpenAlex, открыты страница PMLR, PDF воркшопа AAAI, архивный BibTeX NeurIPS и исходник метрики map в LightGBM. Страницы Kaggle — пустая JS-оболочка, а API без авторизации отвечает 401. Поэтому факты о соревновании сверены по локальным файлам в /Users/konstantin/Documents/вшэ/recsys_course/midterm/evidence.\n\nГлавные исправления:\n1. Таргет sweet.tv официально определён на странице Data. Считаются показы, досмотренные минимум на 0.8 длительности; метка — 5 шоу с наибольшим числом таких показов, ровно 5 у каждого пользователя. Поэтому 'up to 5' неверно, а варианты 'минуты или просмотры' и 'минимальное перекрытие' уже решены. Открыты только два вопроса: как складывать сессии внутри показа (sum или max) и как разбивать ничьи на 5-м месте. Ничьи есть у 63% пользователей, и в зависимости от правила CV меняется от 0.373 до 0.415.\n2. В целевом окне fold A (недели 19–30) есть провал логов в неделях 25–27: полных просмотров в 2–5 раз меньше. Это окно не равно тестовому горизонту, а цель fold B (25–30) наполовину попадает в провал.\n3. Деление public/private 50/50 по пользователям (630 человек) — официальное правило со страницы Data, а не допущение из брифа курса.\n4. ML Contests: LightGBM — самая частая GBDT-библиотека (16 против 13 у CatBoost и 8 у XGBoost), но не самая частая библиотека вообще. PyTorch есть в 53 из 60 решений с глубоким обучением, всего решений 79.\n\nМелкие исправления:\n- Santander: MAP-оптимизация на public дала 'limited value', а не была бесполезной; 0.031 за 90 минут получено не на 'top 10 features'.\n- Instacart: 'how ready the user is to repurchase' относится к признаку Days_last_order-max.\n- MAP@12 для H&M не указан в цитируемом README Wp-Zhang.\n- Порог Roelofs в 10 000 примеров выведен для соревнований на accuracy.\n- Встроенная метрика map в LightGBM делит на число позитивов среди кандидатов и даёт 1.0 пользователям без позитивов, то есть оптимистичнее Kaggle-метрики. Это подтверждает предупреждение JSON.\n\nПодтверждено:\n- 1-е и 2-е место на private LB: 0.42912 и 0.42905.\n- Пользователи сабмита активнее остальных, и public 0.447 близок к CV на них (0.444), а не на всех (0.415).\n- Локальный src/metrics.py совпадает по семантике с ml_metrics.\n\nБиблиография (IEEE-строки в corrected_value):\n- Roelofs: страницы 9179–9189 по архивному BibTeX NeurIPS; OpenAlex даёт 9175–9185, а в PDF другой порядок авторов.\n- Cormack: doi 10.1145/1571941.1572114, pp. 758–759.\n- Caruana: doi 10.1145/1015330.1015432, p. 18.\n- Blum и Hardt: ICML 2015, PMLR 37:1006–1014.\n- Whitehill: воркшопы AAAI-18, AAAI Tech. Rep. WS-18.\n- Pan et al.: только arXiv.\n\nНе подтверждено: год 2022 у The Kaggle Book — Packt и O'Reilly отдают 403, а в Open Library только предрелизная запись 2021 года.\n\nВходной JSON обрезан на втором источнике последнего приёма ('Final submission'), поэтому его хвост и возможные следующие приёмы не проверены. Скачанные копии и текстовые версии всех страниц лежат в /private/tmp/claude-501/-Users-konstantin-Documents-----recsys-course/8c34e5a1-52dd-4d84-beda-c2ce400d5147/scratchpad/verify_kaggle_general/ (подпапки raw/ и txt/)."
+}

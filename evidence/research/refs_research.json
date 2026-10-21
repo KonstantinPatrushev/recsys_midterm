@@ -1,0 +1,165 @@
+{
+ "refs": [
+  {
+   "key": "hu2008",
+   "ieee": "Y. Hu, Y. Koren, and C. Volinsky, \"Collaborative filtering for implicit feedback datasets,\" in Proc. 8th IEEE Int. Conf. Data Mining (ICDM), Pisa, Italy, 2008, pp. 263–272, doi: 10.1109/ICDM.2008.22.",
+   "doi": "10.1109/ICDM.2008.22",
+   "url": "https://doi.org/10.1109/ICDM.2008.22",
+   "topic": "(a) Implicit-feedback matrix factorization (weighted ALS) on TV viewing data",
+   "why_relevant": "This is the core paper for the MF method. It treats implicit signals (the abstract names 'watching habits') as binary preference with varying confidence, and its optimization scales linearly with data size. The abstract says the algorithm 'is used successfully within a recommender system for television shows', which makes it the closest classical precedent for sweet.tv viewing logs. The docs of implicit's AlternatingLeastSquares (benfred.github.io/implicit/api/models/cpu/als.html) say the model is based on this paper.",
+   "verified_via": "Crossref api.crossref.org/works/10.1109/ICDM.2008.22 gives the authors (Yifan Hu, Yehuda Koren, Chris Volinsky), the venue '2008 Eighth IEEE International Conference on Data Mining' (Pisa, Italy), pp. 263-272, Dec 2008, IEEE. OpenAlex W2101409192 has the same pages and the abstract. doi.org returns 302 to ieeexplore.ieee.org/document/4781121.",
+   "verified": true
+  },
+  {
+   "key": "rendle2009",
+   "ieee": "S. Rendle, C. Freudenthaler, Z. Gantner, and L. Schmidt-Thieme, \"BPR: Bayesian personalized ranking from implicit feedback,\" in Proc. 25th Conf. Uncertainty Artif. Intell. (UAI), Montreal, Canada, 2009, pp. 452–461. [Online]. Available: https://arxiv.org/abs/1205.2618",
+   "doi": "10.48550/arXiv.1205.2618",
+   "url": "https://arxiv.org/abs/1205.2618",
+   "topic": "(b) Pairwise ranking loss for implicit feedback (BPR)",
+   "why_relevant": "BPR gives a pairwise ranking objective for implicit data, so it is a natural MF variant to compare with ALS under MAP@5. The docs of implicit's BayesianPersonalizedRanking say it minimizes the pairwise ranking loss from this paper.",
+   "verified_via": "The DOI in the doi field belongs to the arXiv version; the UAI proceedings version has no DOI. DataCite api.datacite.org/dois/10.48550/arxiv.1205.2618 confirms the title, the 4 authors and the note 'Appears in Proceedings of the Twenty-Fifth Conference on Uncertainty in Artificial Intelligence (UAI2009)'. The arXiv abs page shows 'Report number: UAI-P-2009-PG-452-461', which gives pp. 452-461. The paper is listed on the official UAI 2009 proceedings page (archived at web.archive.org/web/20170708073403/http://auai.org/uai2009/proceedings.html). 'Montreal, Canada on June 18-21, 2009' comes from the archived official UAI 2009 home page (web.archive.org/web/20170107225139/http://auai.org/uai2009/); the live auai.org returned HTTP 503. OpenAlex W2140310134 (the arXiv record) matches the title and authors.",
+   "verified": true
+  },
+  {
+   "key": "page1999",
+   "ieee": "L. Page, S. Brin, R. Motwani, and T. Winograd, \"The PageRank citation ranking: Bringing order to the Web,\" Stanford InfoLab, Stanford, CA, USA, Tech. Rep. 1999-66, Nov. 1999. [Online]. Available: https://web.archive.org/web/20200103151426/http://ilpubs.stanford.edu:8090/422/",
+   "doi": "",
+   "url": "https://web.archive.org/web/20200103151426/http://ilpubs.stanford.edu:8090/422/",
+   "topic": "(c) PageRank (original random-surfer formulation)",
+   "why_relevant": "This is the original PageRank definition (an idealized random Web surfer, computed efficiently over large graphs). Personalized PageRank on the user-show or user-channel graph builds on it, so it belongs where the PPR method is defined.",
+   "verified_via": "The live page ilpubs.stanford.edu:8090/422/ is broken: it returns HTTP 200 with the body 'Failed to connect to database', and /422/1/1999-66.pdf returns HTTP 500. The official InfoLab EPrints record was used through the Wayback snapshot 20200103151426, which shows the authors, 1999, 'Technical Report. Stanford InfoLab' and 'Previous number = SIDL-WP-1999-0120'. Its archived BibTeX export (web.archive.org/web/20200212102823/http://ilpubs.stanford.edu:8090/cgi/export/422/BibTeX/ilprints-eprint-422.bib) gives number={1999-66}, month={November}, year={1999}. The archived PDF (web.archive.org/web/20200103154414/http://ilpubs.stanford.edu:8090/422/1/1999-66.pdf) was opened and its title page matches. There is no DOI.",
+   "verified": true
+  },
+  {
+   "key": "haveliwala2002",
+   "ieee": "T. H. Haveliwala, \"Topic-sensitive PageRank,\" in Proc. 11th Int. Conf. World Wide Web (WWW), Honolulu, HI, USA, 2002, pp. 517–526, doi: 10.1145/511446.511513.",
+   "doi": "10.1145/511446.511513",
+   "url": "https://doi.org/10.1145/511446.511513",
+   "topic": "(c) Personalized / biased PageRank",
+   "why_relevant": "The paper computes a set of PageRank vectors, each biased toward a topic through the teleport set (abstract). This is the formal basis for personalized PageRank in which the teleport set is a user's own watched shows or channels.",
+   "verified_via": "Crossref api.crossref.org/works/10.1145/511446.511513 gives the author Taher H. Haveliwala, the venue 'Proceedings of the 11th international conference on World Wide Web' (Honolulu Hawaii USA), pp. 517-526, 2002-05-07, ACM. The abstract was checked in OpenAlex. doi.org returns 302 to dl.acm.org; the ACM DL itself returns 403 to scripts. The journal version (IEEE TKDE 15(4):784-796, 2003, doi:10.1109/TKDE.2003.1208999) was also checked in Crossref.",
+   "verified": true
+  },
+  {
+   "key": "jeh2003",
+   "ieee": "G. Jeh and J. Widom, \"Scaling personalized web search,\" in Proc. 12th Int. Conf. World Wide Web (WWW), Budapest, Hungary, 2003, pp. 271–279, doi: 10.1145/775152.775191.",
+   "doi": "10.1145/775152.775191",
+   "url": "https://doi.org/10.1145/775152.775191",
+   "topic": "(c) Personalized PageRank computation",
+   "why_relevant": "The paper biases importance scores toward a user-specified set of initially interesting pages and computes them from shared partial vectors (abstract). This maps directly onto per-user PPR with restart to the user's own viewing history.",
+   "verified_via": "Crossref api.crossref.org/works/10.1145/775152.775191 gives the authors (Glen Jeh, Jennifer Widom), the venue 'Proceedings of the twelfth international conference on World Wide Web - WWW '03' (Budapest, Hungary), 2003, ACM Press. Crossref and OpenAlex both give only the first page, 271. The end page 279 comes from the Semantic Scholar API (api.semanticscholar.org/graph/v1/paper/DOI:10.1145/775152.775191 returns journal.pages '271-279', DBLP key conf/www/JehW03). doi.org returns 302 to portal.acm.org.",
+   "verified": true
+  },
+  {
+   "key": "gori2007",
+   "ieee": "M. Gori and A. Pucci, \"ItemRank: A random-walk based scoring algorithm for recommender engines,\" in Proc. 20th Int. Joint Conf. Artif. Intell. (IJCAI), 2007, pp. 2766–2771. [Online]. Available: https://www.ijcai.org/Proceedings/07/Papers/444.pdf",
+   "doi": "",
+   "url": "https://www.ijcai.org/Proceedings/07/Papers/444.pdf",
+   "topic": "(c) Personalized PageRank / random walks applied to recommendation",
+   "why_relevant": "This is a PageRank-style random-walk scoring algorithm that ranks items by expected user preference, evaluated on MovieLens against other graph scoring methods (abstract). It is the closest recommender-systems precedent for the course's PPR method.",
+   "verified_via": "The official IJCAI proceedings index www.ijcai.org/proceedings/2007 ('Proceedings of the Twentieth International Joint Conference on Artificial Intelligence') lists 'ItemRank: ... / 2766 Marco Gori, Augusto Pucci', and the next paper starts at 2772. The official PDF was opened: the footer of page 1 reads 'IJCAI-07 2766' and the footer of the last (6th) page reads '2771'. There is no DOI.",
+   "verified": true
+  },
+  {
+   "key": "agrawal1993",
+   "ieee": "R. Agrawal, T. Imieliński, and A. Swami, \"Mining association rules between sets of items in large databases,\" in Proc. ACM SIGMOD Int. Conf. Manage. Data, Washington, DC, USA, 1993, pp. 207–216, doi: 10.1145/170035.170072.",
+   "doi": "10.1145/170035.170072",
+   "url": "https://doi.org/10.1145/170035.170072",
+   "topic": "(d) Association rules (support/confidence)",
+   "why_relevant": "This paper introduces association-rule mining over a database of customer transactions. It is the formal basis for the association-rules method, with each user's viewed tv_show_ids treated as a transaction and show-to-show rules used for ranking.",
+   "verified_via": "Crossref api.crossref.org/works/10.1145/170035.170072 gives the authors (Rakesh Agrawal, Tomasz Imieliński, Arun Swami), the venue 'Proceedings of the 1993 ACM SIGMOD international conference on Management of data' (Washington D.C. USA), pp. 207-216, June 1993, ACM. Crossref marks it 'is-identical-to' ACM SIGMOD Record 22(2):207-216, doi:10.1145/170036.170072. The abstract was checked in OpenAlex. doi.org returns 302 to dl.acm.org.",
+   "verified": true
+  },
+  {
+   "key": "agrawal1994",
+   "ieee": "R. Agrawal and R. Srikant, \"Fast algorithms for mining association rules,\" in Proc. 20th Int. Conf. Very Large Data Bases (VLDB), Santiago, Chile, 1994, pp. 487–499. [Online]. Available: https://www.vldb.org/conf/1994/P487.PDF",
+   "doi": "",
+   "url": "https://www.vldb.org/conf/1994/P487.PDF",
+   "topic": "(d) Apriori algorithm for frequent itemsets / association rules",
+   "why_relevant": "The paper presents the Apriori, AprioriTid and AprioriHybrid algorithms (page-1 abstract). Apriori is the standard frequent-itemset algorithm behind rule mining, so cite it when describing how the show-to-show rules are mined.",
+   "verified_via": "The official VLDB Endowment PDF www.vldb.org/conf/1994/P487.PDF was opened. It shows the title 'Fast Algorithms for Mining Association Rules', the authors Rakesh Agrawal and Ramakrishnan Srikant (IBM Almaden), and the footer 'Proceedings of the 20th VLDB Conference Santiago, Chile, 1994'. The first page is numbered 487 and the last page (references) is numbered 499. The directory index vldb.org/conf/1994/ shows the next paper as P500. VLDB 1994 has no DOI.",
+   "verified": true
+  },
+  {
+   "key": "pazzani2007",
+   "ieee": "M. J. Pazzani and D. Billsus, \"Content-based recommendation systems,\" in The Adaptive Web: Methods and Strategies of Web Personalization (Lecture Notes in Computer Science, vol. 4321), P. Brusilovsky, A. Kobsa, and W. Nejdl, Eds. Berlin, Heidelberg, Germany: Springer, 2007, pp. 325–341, doi: 10.1007/978-3-540-72079-9_10.",
+   "doi": "10.1007/978-3-540-72079-9_10",
+   "url": "https://doi.org/10.1007/978-3-540-72079-9_10",
+   "topic": "(e) Content-based filtering",
+   "why_relevant": "This is the canonical overview of content-based recommenders: item descriptions, a user profile, and matching between them. Its abstract explicitly lists television programs among the domains. It grounds the CBF method built on programme metadata from the schedule files.",
+   "verified_via": "Crossref api.crossref.org/works/10.1007/978-3-540-72079-9_10 gives the authors, title, pp. 325-341 and the publisher Springer Berlin Heidelberg; the chapter's issued date is empty there. The Crossref book record 10.1007/978-3-540-72079-9 gives the editors (Brusilovsky, Kobsa, Nejdl), the year 2007 and the LNCS series. The Springer citation export (citation-needed.springer.com, BibTeX and RIS) confirms the year 2007, the full book title and the abstract. Neither export carries the LNCS volume; vol. 4321 comes from the library catalog record librarycatalog.ecu.edu/catalog/3959546 ('Lecture notes in computer science ; 4321'). link.springer.com sits behind a JS challenge and could not be fetched. doi.org returns 302 to link.springer.com.",
+   "verified": true
+  },
+  {
+   "key": "aharon2015",
+   "ieee": "M. Aharon, E. Hillel, A. Kagian, R. Lempel, H. Makabee, and R. Nissim, \"Watch-It-Next: A contextual TV recommendation system,\" in Machine Learning and Knowledge Discovery in Databases (ECML PKDD 2015, Part III) (Lecture Notes in Computer Science, vol. 9286), A. Bifet et al., Eds. Cham, Switzerland: Springer, 2015, pp. 180–195, doi: 10.1007/978-3-319-23461-8_12.",
+   "doi": "10.1007/978-3-319-23461-8_12",
+   "url": "https://doi.org/10.1007/978-3-319-23461-8_12",
+   "topic": "(f) Contextual TV recommendation (shared devices, viewing context)",
+   "why_relevant": "This is a TV-specific recommender. Its abstract notes that TV sets are often shared by several users and that viewing data is typically collected and modelled per device, which hides individual tastes; it uses context to cope with this. That is relevant because the sweet.tv logs are per user_id and may mix household viewing, and it supports context (time-of-day) features.",
+   "verified_via": "Crossref api.crossref.org/works/10.1007/978-3-319-23461-8_12 gives the 6 authors, pp. 180-195, 2015, Springer Cham and the LNCS ISSN. The Crossref book record 10.1007/978-3-319-23461-8 gives the 8 editors and the subtitle 'European Conference, ECML PKDD 2015, Porto, Portugal, September 7-11, 2015, Proceedings, Part III'. The abstract comes from the Springer citation export. LNCS vol. 9286 comes from the KIT library catalog record katalog.bibliothek.kit.edu/bib/1159226 ('Lecture notes in computer science ; 9286'). doi.org returns 302 to link.springer.com.",
+   "verified": true
+  },
+  {
+   "key": "turrin2014",
+   "ieee": "R. Turrin, A. Condorelli, P. Cremonesi, and R. Pagano, \"Time-based TV programs prediction,\" presented at the 1st Workshop Recommender Syst. Television Online Video (RecSysTV), held with ACM RecSys 2014, Foster City, CA, USA, Oct. 2014. [Online]. Available: https://recsys.deib.polimi.it/wp-content/uploads/Time-basedTVprogramsprediction.pdf",
+   "doi": "",
+   "url": "https://recsys.deib.polimi.it/wp-content/uploads/Time-basedTVprogramsprediction.pdf",
+   "topic": "(f) Time-aware linear-TV recommendation",
+   "why_relevant": "The paper explains why linear-TV recommendation differs from VoD: programmes air at fixed times, so the catalog is dynamic (the new-item problem), consumption depends strongly on time context and channel preferences, and a viewer watches one channel at a time. It then extends standard recommenders with the current viewing context, tested on a large linear-TV dataset (abstract and introduction). This matches the sweet.tv setup, where the weeks 31-42 schedule is known.",
+   "verified_via": "The PDF on the Politecnico di Milano recommender-systems group site was opened. It shows the title, the 4 authors (Moviri/ContentWise R&D; Politecnico di Milano, DEIB) and the footer 'RecSysTv 2014 Foster City, Silicon Valley USA'. The official workshop programme (recsystv.org, archived at web.archive.org/web/20150129093541/http://boxfish.com/recsys) lists '11:15-11:30 Time-based TV Programs Prediction, R. Turrin et al.' and names the 'First Workshop on Recommender Systems for Television and online Video (RecSysTV) ... in conjunction with the ACM RecSys 2014 conference in Foster City, Silicon Valley, USA from 6th-10th October 2014'. recsys.acm.org/recsys14/recsystv/ confirms the workshop (Oct 10). There is no DOI, no formal proceedings and no page numbers, and the paper is not indexed in OpenAlex, so cite it as a workshop presentation.",
+   "verified": true
+  },
+  {
+   "key": "veras2015",
+   "ieee": "D. Véras, T. Prota, A. Bispo, R. Prudêncio, and C. Ferraz, \"A literature review of recommender systems in the television domain,\" Expert Syst. Appl., vol. 42, no. 22, pp. 9046–9076, Dec. 2015, doi: 10.1016/j.eswa.2015.06.052.",
+   "doi": "10.1016/j.eswa.2015.06.052",
+   "url": "https://doi.org/10.1016/j.eswa.2015.06.052",
+   "topic": "(f) Survey of TV-domain recommender systems",
+   "why_relevant": "A single survey citation that places the work within TV, IPTV and EPG recommendation in Related Work.",
+   "verified_via": "Crossref api.crossref.org/works/10.1016/j.eswa.2015.06.052 gives the 5 authors, Expert Systems with Applications 42(22):9046-9076, Dec 2015, Elsevier. doi.org returns 302 to linkinghub.elsevier.com. Crossref and OpenAlex have no abstract, so only the title-level content is checked.",
+   "verified": true
+  },
+  {
+   "key": "ke2017",
+   "ieee": "G. Ke, Q. Meng, T. Finley, T. Wang, W. Chen, W. Ma, Q. Ye, and T.-Y. Liu, \"LightGBM: A highly efficient gradient boosting decision tree,\" in Proc. Adv. Neural Inf. Process. Syst. (NIPS), vol. 30, 2017. [Online]. Available: https://proceedings.neurips.cc/paper/2017/hash/6449f44a102fde848669bdd9eb6b76fa-Abstract.html",
+   "doi": "",
+   "url": "https://proceedings.neurips.cc/paper/2017/hash/6449f44a102fde848669bdd9eb6b76fa-Abstract.html",
+   "topic": "(g) GBDT learner / second-stage ranker (LightGBM)",
+   "why_relevant": "This is the paper behind the GBDT library used for a hybrid ranker or re-ranker over candidates from CBF, AR, MF and PPR. GOSS and EFB, from the abstract, make GBDT training fast on many candidate rows.",
+   "verified_via": "The official NeurIPS proceedings page shows the authors, 'Advances in Neural Information Processing Systems 30 (NIPS 2017)' and the abstract with GOSS and EFB. The official BibTeX (proceedings.neurips.cc/paper_files/paper/2017/file/6449f44a102fde848669bdd9eb6b76fa-Bibtex.bib) gives the editors (Guyon et al.), publisher Curran Associates, volume 30, year 2017, and an empty pages field. There is no DOI. Page numbers are left out on purpose: the official page gives none and the OpenAlex/MAG page data conflict.",
+   "verified": true
+  },
+  {
+   "key": "burges2010",
+   "ieee": "C. J. C. Burges, \"From RankNet to LambdaRank to LambdaMART: An overview,\" Microsoft Research, Redmond, WA, USA, Tech. Rep. MSR-TR-2010-82, Jun. 2010. [Online]. Available: https://www.microsoft.com/en-us/research/publication/from-ranknet-to-lambdarank-to-lambdamart-an-overview/",
+   "doi": "",
+   "url": "https://www.microsoft.com/en-us/research/publication/from-ranknet-to-lambdarank-to-lambdamart-an-overview/",
+   "topic": "(g) Learning to rank: LambdaMART",
+   "why_relevant": "A self-contained description of LambdaMART, the boosted-tree version of LambdaRank. LightGBM has a 'lambdarank' objective, and its docs point to 'Sec. 3 of LambdaMART paper' for lambdarank_truncation_level (lightgbm.readthedocs.io/en/latest/Parameters.html). Cite it if the ranker optimizes a per-user top-k ranking metric.",
+   "verified_via": "The official MSR publication page shows the title, 'Chris J.C. Burges' and 'MSR-TR-2010-82 | June 2010'. The linked PDF (www.microsoft.com/en-us/research/wp-content/uploads/2016/02/MSR-TR-2010-82.pdf) was opened and reads 'Microsoft Research Technical Report MSR-TR-2010-82' and 'Microsoft Research, Redmond, WA'. There is no DOI.",
+   "verified": true
+  },
+  {
+   "key": "meng2020",
+   "ieee": "Z. Meng, R. McCreadie, C. Macdonald, and I. Ounis, \"Exploring data splitting strategies for the evaluation of recommendation models,\" in Proc. 14th ACM Conf. Recommender Syst. (RecSys), Virtual Event, Brazil, 2020, pp. 681–686, doi: 10.1145/3383313.3418479.",
+   "doi": "10.1145/3383313.3418479",
+   "url": "https://doi.org/10.1145/3383313.3418479",
+   "topic": "(h) Offline evaluation: data-splitting strategy",
+   "why_relevant": "The paper shows that the splitting strategy is a confounding variable that can markedly change how recommenders rank against each other (abstract). This justifies comparing all methods on one fixed global temporal split that mirrors the 12-week test horizon.",
+   "verified_via": "Crossref api.crossref.org/works/10.1145/3383313.3418479 gives the 4 authors, the venue 'Fourteenth ACM Conference on Recommender Systems' (RecSys '20, Virtual Event Brazil), pp. 681-686, 2020-09-22, ACM. The abstract was checked in OpenAlex. doi.org returns 302 to dl.acm.org.",
+   "verified": true
+  },
+  {
+   "key": "ji2023",
+   "ieee": "Y. Ji, A. Sun, J. Zhang, and C. Li, \"A critical study on data leakage in recommender system offline evaluation,\" ACM Trans. Inf. Syst., vol. 41, no. 3, Art. no. 75, pp. 1–27, Jul. 2023, doi: 10.1145/3569930.",
+   "doi": "10.1145/3569930",
+   "url": "https://doi.org/10.1145/3569930",
+   "topic": "(h) Data leakage and global-timeline evaluation",
+   "why_relevant": "The paper shows that splits ignoring the global timeline leak future interactions, change accuracy and make the relative order of models unpredictable, and it proposes a timeline scheme for evaluation (abstract). It supports the course rule against using future viewing for training and the use of a global time cut for validation.",
+   "verified_via": "Crossref api.crossref.org/works/10.1145/3569930 gives the authors (Yitong Ji, Aixin Sun, Jie Zhang, Chenliang Li), ACM TOIS vol. 41, issue 3, pp. 1-27, published online 2023-02-07 and in print 2023-07-31. Crossref has no article-number field and the ACM DL returns 403. Article number 75 comes from arXiv:2010.11060, whose journal reference reads 'ACM Trans. Inf. Syst. 41, 3 (2023), 75:1-75:27'. Semantic Scholar agrees (vol. 41, pages 1-27). The abstract was checked in OpenAlex.",
+   "verified": true
+  }
+ ],
+ "notes": "I verified 16 primary candidates, at least one per requested topic (a)-(h). Every DOI was checked against Crossref (and OpenAlex where it had a record) and resolves at doi.org (HTTP 302). Items without a DOI were checked against an official page, sometimes an archived one, as described in each ref's verified_via. Raw evidence (Crossref JSON, OpenAlex JSON, fetched pages, PDFs) is in /private/tmp/claude-501/-Users-konstantin-Documents-----recsys-course/8c34e5a1-52dd-4d84-beda-c2ce400d5147/scratchpad/refs_track/ (subfolders cr/, oa/, web/, pdf/).\n\nCAVEATS\n1. The Page et al. tech report: ilpubs.stanford.edu:8090/422/ is confirmed broken. It returns HTTP 200 with the body 'Failed to connect to database', and the PDF link returns HTTP 500. Use the Wayback URL given in the ref; the archived BibTeX gives Tech. Rep. 1999-66, Nov. 1999 (earlier number SIDL-WP-1999-0120). If a DOI-backed PageRank citation is preferred, use Brin & Page 1998 (A9 below).\n2. Several sources could not be read directly:\n   - dl.acm.org returns 403 to scripts and WebFetch, so ACM items rely on Crossref.\n   - dblp is behind an anti-bot challenge (429).\n   - link.springer.com is behind a JS challenge.\n   - auai.org returns 503.\n   Each was worked around: Springer data came from its citation export, LNCS volumes from library catalogs, and UAI and Stanford pages from Wayback snapshots.\n3. Jeh & Widom: Crossref and OpenAlex give only the first page (271). The end page (279) is from Semantic Scholar.\n4. LightGBM: cited without page numbers. The official NeurIPS BibTeX has an empty pages field and the OpenAlex/MAG page data conflict, so do not add the pages commonly seen elsewhere.\n5. BPR: the UAI version has no DOI. The DOI given is the arXiv one, and the pages come from the arXiv report number UAI-P-2009-PG-452-461.\n6. Ji et al.: Art. no. 75 comes from the arXiv journal reference, since Crossref has no article number.\n7. Turrin et al. 2014: workshop paper with no proceedings, DOI or pages. It is confirmed by the official programme (archived) and the authors' PDF.\n8. Campos et al. 2014 (A1): Crossref gives issue '1-2' but the Springer export says '1'. A1 follows Crossref.\n9. Hu et al. 2008: only the abstract-level claim ('used ... within a recommender system for television shows') was verified. Do not quote dataset sizes for that paper from memory.\n10. A guessed DOI 10.1145/1555349.1555363 turned out to be an unrelated paper. The correct DOI for Qiu et al. is 10.1145/1555349.1555381 (A19).\n\nSUGGESTED 3-7 FOR RELATED WORK\n- MF: hu2008 (plus rendle2009 if BPR is run).\n- PPR: haveliwala2002 or jeh2003, plus gori2007.\n- Association rules: agrawal1993 (or agrawal1994 for Apriori).\n- Content-based: pazzani2007.\n- TV: turrin2014 or aharon2015.\n- Evaluation: ji2023 or meng2020.\n- ke2017 and burges2010 only if a LightGBM ranker is used.\n\nEXTRA VERIFIED ALTERNATES (each checked in Crossref, DOI resolves)\nA1. P. G. Campos, F. Díez, and I. Cantador, \"Time-aware recommender systems: A comprehensive survey and analysis of existing evaluation protocols,\" User Model. User-Adapt. Interact., vol. 24, no. 1–2, pp. 67–119, Feb. 2014, doi: 10.1007/s11257-012-9136-x. Its abstract says different evaluation protocols yield remarkably different relative rankings of methods.\nA2. M. Cha, P. Rodriguez, J. Crowcroft, S. Moon, and X. Amatriain, \"Watching television over an IP network,\" in Proc. 8th ACM SIGCOMM Conf. Internet Meas. (IMC), Vouliagmeni, Greece, 2008, pp. 71–84, doi: 10.1145/1452520.1452529. IPTV viewing habits from channel-change traces of 250,000 households over 6 months: viewing sessions, channel popularity and switching.\nA3. A. Anderson, R. Kumar, A. Tomkins, and S. Vassilvitskii, \"The dynamics of repeat consumption,\" in Proc. 23rd Int. Conf. World Wide Web (WWW), Seoul, Korea, 2014, pp. 419–430, doi: 10.1145/2566486.2568018. Finds recency is the strongest predictor of repeat consumption, which supports a habit or re-watch baseline.\nA4. M. S. Kristoffersen, S. E. Shepstone, and Z.-H. Tan, \"The importance of context when recommending TV content: Dataset and algorithms,\" IEEE Trans. Multimedia, vol. 22, no. 6, pp. 1531–1541, Jun. 2020, doi: 10.1109/TMM.2019.2944214.\nA5. A. B. Barragáns-Martínez, E. Costa-Montenegro, J. C. Burguillo, M. Rey-López, F. A. Mikic-Fonte, and A. Peleteiro, \"A hybrid content-based and item-based collaborative filtering approach to recommend TV programs enhanced with singular value decomposition,\" Inf. Sci., vol. 180, no. 22, pp. 4290–4311, Nov. 2010, doi: 10.1016/j.ins.2010.07.024.\nA6. R. Bambini, P. Cremonesi, and R. Turrin, \"A recommender system for an IPTV service provider: A real large-scale production environment,\" in Recommender Systems Handbook, F. Ricci, L. Rokach, B. Shapira, and P. B. Kantor, Eds. Boston, MA, USA: Springer, 2011, pp. 299–331, doi: 10.1007/978-0-387-85820-3_9.\nA7. N.-R. Kim, S. Oh, and J.-H. Lee, \"A television recommender system learning a user's time-aware watching patterns using quadratic programming,\" Appl. Sci., vol. 8, no. 8, Art. no. 1323, Aug. 2018, doi: 10.3390/app8081323.\nA8. T. H. Haveliwala, \"Topic-sensitive PageRank: A context-sensitive ranking algorithm for web search,\" IEEE Trans. Knowl. Data Eng., vol. 15, no. 4, pp. 784–796, 2003, doi: 10.1109/TKDE.2003.1208999.\nA9. S. Brin and L. Page, \"The anatomy of a large-scale hypertextual Web search engine,\" Comput. Netw. ISDN Syst., vol. 30, no. 1–7, pp. 107–117, Apr. 1998, doi: 10.1016/S0169-7552(98)00110-X.\nA10. F. Christoffel, B. Paudel, C. Newell, and A. Bernstein, \"Blockbusters and wallflowers: Accurate, diverse, and scalable recommendations with random walks,\" in Proc. 9th ACM Conf. Recommender Syst. (RecSys), Vienna, Austria, 2015, pp. 163–170, doi: 10.1145/2792838.2800180. This is the RP3beta paper.\nA11. G. Takács, I. Pilászy, and D. Tikk, \"Applications of the conjugate gradient method for implicit feedback collaborative filtering,\" in Proc. 5th ACM Conf. Recommender Syst. (RecSys), Chicago, IL, USA, 2011, pp. 297–300, doi: 10.1145/2043932.2043987. The implicit ALS docs cite it for their CG solver.\nA12. J. H. Friedman, \"Greedy function approximation: A gradient boosting machine,\" Ann. Statist., vol. 29, no. 5, pp. 1189–1232, Oct. 2001, doi: 10.1214/aos/1013203451.\nA13. T. Chen and C. Guestrin, \"XGBoost: A scalable tree boosting system,\" in Proc. 22nd ACM SIGKDD Int. Conf. Knowl. Discovery Data Mining (KDD), San Francisco, CA, USA, 2016, pp. 785–794, doi: 10.1145/2939672.2939785.\nA14. Y. Koren, \"Collaborative filtering with temporal dynamics,\" in Proc. 15th ACM SIGKDD Int. Conf. Knowl. Discovery Data Mining (KDD), Paris, France, 2009, pp. 447–456, doi: 10.1145/1557019.1557072.\nA15. Y. Ding and X. Li, \"Time weight collaborative filtering,\" in Proc. 14th ACM Int. Conf. Inf. Knowl. Manage. (CIKM), Bremen, Germany, 2005, pp. 485–492, doi: 10.1145/1099554.1099689.\nA16. B. Sarwar, G. Karypis, J. Konstan, and J. Riedl, \"Analysis of recommendation algorithms for e-commerce,\" in Proc. 2nd ACM Conf. Electron. Commerce (EC), Minneapolis, MN, USA, 2000, pp. 158–167, doi: 10.1145/352871.352887.\nA17. B. Mobasher, H. Dai, T. Luo, and M. Nakagawa, \"Effective personalization based on association rule discovery from web usage data,\" in Proc. 3rd Int. Workshop Web Inf. Data Manage. (WIDM), Atlanta, GA, USA, 2001, pp. 9–15, doi: 10.1145/502932.502935.\nA18. M. Ferrari Dacrema, P. Cremonesi, and D. Jannach, \"Are we really making much progress? A worrying analysis of recent neural recommendation approaches,\" in Proc. 13th ACM Conf. Recommender Syst. (RecSys), Copenhagen, Denmark, 2019, pp. 101–109, doi: 10.1145/3298689.3347058.\nA19. T. Qiu, Z. Ge, S. Lee, J. Wang, Q. Zhao, and J. Xu, \"Modeling channel popularity dynamics in a large IPTV system,\" in Proc. 11th Int. Joint Conf. Meas. Model. Comput. Syst. (SIGMETRICS), Seattle, WA, USA, 2009, pp. 275–286, doi: 10.1145/1555349.1555381.\nA20. Also checked in Crossref:\n   - Smyth & Cotter, Knowl.-Based Syst. 13(2–3):53–59, 2000, doi:10.1016/S0950-7051(00)00046-0 (personalised TV listings).\n   - Yu et al., UMUAI 16(1):63–82, 2006, doi:10.1007/s11257-006-9005-6 (TV recommendation for multiple viewers).\n   - E. Kim et al., IEEE Trans. Broadcast. 57(3):674–684, 2011, doi:10.1109/TBC.2011.2161409 ((IP)TV programme recommendation).\n   - Linden et al., IEEE Internet Comput. 7(1):76–80, 2003, doi:10.1109/MIC.2003.1167344.\n   - Cooper et al., WWW 2014, pp. 811–816, doi:10.1145/2567948.2579244 (P3alpha random walks)."
+}

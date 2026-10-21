@@ -1,0 +1,9 @@
+{
+  "F1_rows_eval_users": 417915,
+  "F1_candidates_per_user_median": 96.0,
+  "F1_recall_all": 0.795,
+  "F1_recall_sub": 0.8344,
+  "test_rows": 152091,
+  "test_candidates_per_user_median": 115.5,
+  "n_features": 84
+}

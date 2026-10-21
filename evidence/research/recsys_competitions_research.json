@@ -1,0 +1,731 @@
+{
+ "tricks": [
+  {
+   "name": "Двухэтапная схема: генерация кандидатов, затем GBDT-ранжировщик (гибрид методов курса)",
+   "description": "Почти все призёры строят решение одинаково. Для каждого пользователя объединяют кандидатов из нескольких стратегий: повтор, item-CF, популярное, эмбеддинги/MF, правила. Затем строят таблицу (user, item, признаки, метка «вошёл в будущее окно») и обучают GBDT (LightGBM/CatBoost/XGBoost), который выбирает финальные K. Так устроены 1–3 места H&M, 1–3 места OTTO, победитель RecSys Challenge 2018 и 2-е место Rekko (онлайн-кинотеатр Okko).",
+   "why_it_works": "Генераторы дёшево сужают каталог с высокой полнотой. Ранжировщик смешивает сигналы через признаки user×item, которых не видит ни одна отдельная модель. У Rekko 2nd второй уровень поднял LB с 0.0347 до 0.0457. У Volkovs 2018 вторая стадия дала RPREC 0.1985 против 0.1866 у лучшего бленда первой.",
+   "how_to_apply_to_sweettv": "Генераторами сделать методы курса: (1) повтор просмотров; (2) ассоциативные правила / ко-просмотр; (3) MF (ALS/BPR); (4) PPR; (5) CBF по каналу, жанру и слоту; (6) популярное в эфире 31–42 на каналах пользователя. Сначала каждый генератор оценить отдельно по MAP@5 на одном сплите — это нужно для сравнения в отчёте. Потом объединить 100–300 кандидатов на пользователя, посчитать признаки и обучить LightGBM с группой = user_id. Итог — гибрид. Масштаб маленький: 4914 пользователей, 6636 шоу в сетке 31–42. Поэтому можно попробовать вообще без отсева: скорить все шоу в эфире на каналах пользователя.",
+   "priority": "high",
+   "sources": [
+    {
+     "title": "H&M — Addressing common questions and what the competition is really about (Paweł Jankiewicz, 2-е место)",
+     "url": "https://www.kaggle.com/competitions/h-and-m-personalized-fashion-recommendations/discussion/307288",
+     "accessed_ok": true,
+     "what_it_supports": "Схема: 'For each customer generate candidates', затем 'Build a ranking model that ranks the items within Customer'; LGBMRanker, 'The customer id can be treated as a query'."
+    },
+    {
+     "title": "H&M — 1st place solution (senkin13 & 30CrMnSiA)",
+     "url": "https://www.kaggle.com/competitions/h-and-m-personalized-fashion-recommendations/discussion/324070",
+     "accessed_ok": true,
+     "what_it_supports": "'various retrieval strategies + feature engineering + GBDT'; 'the candinate generation strategy is the key to beyond limitation of accuracy'."
+    },
+    {
+     "title": "H&M 1st place — схема пайплайна (картинка из поста победителя)",
+     "url": "https://i.postimg.cc/bwBm7GVv/overview.png",
+     "accessed_ok": true,
+     "what_it_supports": "Retrieval: repurchase, Itemcf, items of same product_code, Popularity, graph embedding, logistic regression — Top N каждый, всего 100–500. Ranking: 5 LightGBM + 7 CatBoost classifier, итог — top 12."
+    },
+    {
+     "title": "OTTO — How To Build a GBT Ranker Model (Chris Deotte, 3-е место)",
+     "url": "https://www.kaggle.com/competitions/otto-recommender-system/discussion/370210",
+     "accessed_ok": true,
+     "what_it_supports": "'for each session ... we find 50-200 candidates ... then we train an GBT ranker model to select our final 20'; пошаговая сборка обучающей таблицы."
+    },
+    {
+     "title": "Volkovs et al. Two-stage Model for Automatic Playlist Continuation at Scale (RecSys Challenge 2018, 1-е место), doi:10.1145/3267471.3267480",
+     "url": "https://www.cs.toronto.edu/~mvolkovs/recsys2018_challenge.pdf",
+     "accessed_ok": true,
+     "what_it_supports": "Первая стадия (WRMF) для быстрого отбора, вторая (XGBoost) переранжирует. Table 1: Blend RPREC 0.1866, 2nd Stage 0.1985."
+    },
+    {
+     "title": "Rekko Challenge — как занять 2-е место (Е. Смирнов, Habr)",
+     "url": "https://habr.com/ru/post/454818/",
+     "accessed_ok": true,
+     "what_it_supports": "Онлайн-кинотеатр: kNN + LightFM, бленд 0.0347. Затем top-200 кандидатов и второй уровень на LightGBM (бинарная классификация), LB 0.0457."
+    }
+   ]
+  },
+  {
+   "name": "Повторное потребление — главный генератор кандидатов (repurchase / revisit / reorder)",
+   "description": "Где поведение привычное, обязательный источник — то, что пользователь уже потреблял. H&M 1st: стратегия repurchase Top N. H&M 2nd добавлял к 130 отобранным кандидатам все когда-либо купленные пользователем товары. OTTO 2nd: 'only repeat action, next action and itemcf work'. OTTO 1st: среди кандидатов ранее просмотренные в сессии товары. Instacart целиком про повторную покупку.",
+   "why_it_works": "Привычка — самый сильный и дешёвый сигнал. В Instacart лучшие признаки — частота покупки товара пользователем за последние 5 заказов. TV-сериалы и регулярные программы выходят по сетке, поэтому повтор, скорее всего, ещё сильнее.",
+   "how_to_apply_to_sweettv": "Атрибутировать сессии (vsetv_id, start_time, stop_time) к передачам: пересечь их с эфиром из export_arh по каналу и времени и получить секунды просмотра для пары (user, tv_show_id). Кандидаты — все шоу из истории пользователя, которые есть в сетке целевого окна. Эталон для всех методов — простая линия «топ-5 по затухающим секундам среди шоу в эфире». Это тяжёлые зрители: у 1260 пользователей сабмита медиана 537 ч за недели 11–30 и 71 канал (мой подсчёт). Первая диагностика: какая доля будущих топ-5 шоу уже встречалась в истории. Это потолок повторной стратегии. Порог отсева коротких сессий (зэппинг) подобрать на CV.",
+   "priority": "high",
+   "sources": [
+    {
+     "title": "H&M 1st place — схема пайплайна",
+     "url": "https://i.postimg.cc/bwBm7GVv/overview.png",
+     "accessed_ok": true,
+     "what_it_supports": "Первая стратегия отбора — 'repurchase - Top N'."
+    },
+    {
+     "title": "H&M — 2nd place solution (wht1996, Paweł Jankiewicz)",
+     "url": "https://www.kaggle.com/competitions/h-and-m-personalized-fashion-recommendations/discussion/324197",
+     "accessed_ok": true,
+     "what_it_supports": "'select 130 candidates for each user ... and then add all the products purchased by the user in the history as the final candidate'; признаки повторной покупки."
+    },
+    {
+     "title": "OTTO — 2nd Place Solution (senkin13&30CrMnSiA part)",
+     "url": "https://www.kaggle.com/competitions/otto-recommender-system/discussion/382839",
+     "accessed_ok": true,
+     "what_it_supports": "'we found only repeat action,next action and itemcf work'."
+    },
+    {
+     "title": "OTTO — 1st place solution (mrkmakr)",
+     "url": "https://www.kaggle.com/competitions/otto-recommender-system/writeups/mrkmakr-1st-place-solution",
+     "accessed_ok": true,
+     "what_it_supports": "Кандидаты: 'visited aids in session'. Абляция без них: weighted recall 0.588359 → 0.586126."
+    },
+    {
+     "title": "Instacart Market Basket Analysis, Winner's Interview: 2nd place, Kazuki Onodera (No Free Hunch, копия Wayback)",
+     "url": "https://web.archive.org/web/20170929051359/http://blog.kaggle.com/2017/09/21/instacart-market-basket-analysis-winners-interview-2nd-place-kazuki-onodera/",
+     "accessed_ok": true,
+     "what_it_supports": "Задача — повторная покупка. Важнейшие признаки: total_buy_n5 (покупки товара в 5 последних заказах), total_buy_ratio_n5 и др."
+    }
+   ]
+  },
+  {
+   "name": "Признаки user×item по нескольким окнам давности плюс затухание и ранговая популярность",
+   "description": "Счётчики взаимодействий пользователя с товаром и категорией за последнюю неделю, месяц, сезон и всю историю, счёт со временным весом, дни с первого и последнего взаимодействия. Популярность считают с весом 1/дни и по нескольким окнам; в OTTO 1st её подавали в ранговой форме.",
+   "why_it_works": "Интерес дрейфует, и окна разной длины позволяют модели выбрать нужную глубину памяти. H&M 1st: 'user and item interaction information are always the most important'. Затухание по времени — главный рычаг даже без ранжировщика: у Rekko 14th одна item-kNN модель с весом по времени и обрезкой истории дошла до 14-го места.",
+   "how_to_apply_to_sweettv": "Для пары (user, show): секунды за последние 1/2/4/8 недель и за всю историю; доля от общего времени пользователя; число разных недель и дней с просмотром; недели с последнего просмотра; экспоненциальное затухание с half-life 1/2/4/8 недель (выбрать на CV). То же для пар (user, channel), (user, tv_show_category / genre) и (user, слот «день недели × час»). Популярность шоу: число зрителей и секунды за последние 1 и 4 недели, тренд (последние 2 недели к предыдущим 2). Внутри пользователя давать ранги, а не абсолютные значения.",
+   "priority": "high",
+   "sources": [
+    {
+     "title": "H&M — 1st place solution (senkin13 & 30CrMnSiA)",
+     "url": "https://www.kaggle.com/competitions/h-and-m-personalized-fashion-recommendations/discussion/324070",
+     "accessed_ok": true,
+     "what_it_supports": "Таблица признаков: 'user-item, user-category of last week/month/season/same week of last year/all, time weighted count'; 'first,last days of tranactions'."
+    },
+    {
+     "title": "H&M — 3rd place solution (sirius)",
+     "url": "https://www.kaggle.com/competitions/h-and-m-personalized-fashion-recommendations/discussion/324129",
+     "accessed_ok": true,
+     "what_it_supports": "'counts ... in the last 7 days, 30 days and all transactions'; 'time weighted popularity, where the weight is 1/days'; weekly trend."
+    },
+    {
+     "title": "OTTO — 1st place solution (mrkmakr)",
+     "url": "https://www.kaggle.com/competitions/otto-recommender-system/writeups/mrkmakr-1st-place-solution",
+     "accessed_ok": true,
+     "what_it_supports": "Популярность товаров: 'It worked well when ranked', 'calculated by multiple time windows'."
+    },
+    {
+     "title": "OTTO — 3rd Place: Using Only Rules Achieves LB 0.590 (Chris Deotte)",
+     "url": "https://www.kaggle.com/competitions/otto-recommender-system/writeups/g-b-d-t-3rd-place-using-only-rules-achieves-lb-0-5",
+     "accessed_ok": true,
+     "what_it_supports": "Затухание по времени в весах co-visitation: wgt = (1/2)**(|ts_x - ts_y|/60/60); матрицы только по последним 1–3 неделям."
+    },
+    {
+     "title": "Rekko Challenge 2019: как это было (А. Козлов, 14-е место, Habr)",
+     "url": "https://habr.com/ru/post/461055/",
+     "accessed_ok": true,
+     "what_it_supports": "Вес взаимодействий по времени: 0.03627 локально / 0.03685 public. Оставить последние 25 взаимодействий: 0.03870 / 0.03990 public/private."
+    }
+   ]
+  },
+  {
+   "name": "Признаки «готовности» и регулярности: интервалы, серии подряд (streak), доля использованных возможностей",
+   "description": "Instacart 2nd: Days_last_order-max — разница между днями с последнего заказа товара и максимальным перерывом пользователя, то есть насколько он «готов» повторить. Там же order_ratio_by_chance — доля возможностей, когда товар был куплен, и streak. H&M 2nd: «время следующей покупки» = последняя покупка + средний интервал. Paweł (H&M 2nd): streaks по атрибутам товара.",
+   "why_it_works": "Эти признаки отличают устойчивую привычку от случайного контакта и от «надоело». В Instacart признаки этого типа — среди самых важных в модели повторной покупки.",
+   "how_to_apply_to_sweettv": "В TV «возможность» — эфир шоу, когда пользователь был у экрана. Признаки: (а) секунды просмотра шоу / секунды эфира шоу на каналах пользователя; (б) число недель подряд с просмотром (streak); (в) недели с последнего просмотра минус типичный интервал между просмотрами; (г) доля времени пользователя в слотах «день × час», где шоу выйдет в целевом окне (по export_arh_31-42); (д) число выпусков шоу в целевом окне.",
+   "priority": "high",
+   "sources": [
+    {
+     "title": "Instacart Winner's Interview: 2nd place, Kazuki Onodera (копия Wayback)",
+     "url": "https://web.archive.org/web/20170929051359/http://blog.kaggle.com/2017/09/21/instacart-market-basket-analysis-winners-interview-2nd-place-kazuki-onodera/",
+     "accessed_ok": true,
+     "what_it_supports": "Days_last_order-max: 'tells us how ready the user is to repurchase the item'; order_ratio_by_chance_n5; суффикс _n5 означает 5 последних заказов."
+    },
+    {
+     "title": "Instacart Market Basket Analysis 2nd place solution — README (Kazuki Onodera)",
+     "url": "https://github.com/KazukiOnodera/Instacart",
+     "accessed_ok": true,
+     "what_it_supports": "User×Item: 'Days since the user last purchased the item', 'Streak (number of orders in a row ...)', 'Number of orders in which the user purchases the item'."
+    },
+    {
+     "title": "H&M — 2nd place solution (wht1996, Paweł Jankiewicz)",
+     "url": "https://www.kaggle.com/competitions/h-and-m-personalized-fashion-recommendations/discussion/324197",
+     "accessed_ok": true,
+     "what_it_supports": "'predict when the user will next purchase the product'. В ответе в комментариях: последняя покупка + средний интервал. Отдельно у Paweł: streaks."
+    }
+   ]
+  },
+  {
+   "name": "Доступность и сетка целевого окна, сезонность",
+   "description": "Paweł (H&M 2nd): 'A large part of the competition was about predicting the availability of the products'. H&M 1st: товары без истории никогда не попадают в топ-12; генерировали недавно популярное, потому что мода сезонна. Santander 1st и 3rd: сезонные продукты (reca, cco) скорили моделями того же месяца прошлого года. BreakfastPirate: важным оказалось распределение продуктов июня 2015, а не сами клиенты.",
+   "why_it_works": "Метка состоит только из того, что доступно в целевом периоде, а сезонный сдвиг ломает стационарные модели.",
+   "how_to_apply_to_sweettv": "Будущая сетка дана, и курс разрешает её использовать. По моему подсчёту: в 31–42 эфир у 6636 шоу; 3035 шоу из истории больше не выходят; 1437 шоу новые (около 7.3% эфирного времени). (1) Фильтровать кандидатов: только шоу в эфире 31–42 на каналах, которые пользователь смотрел. В просмотрах 202 канала, в сетке 404; vsetv_id и channel_id по заданию — одно пространство id. Потерю полноты от фильтра по каналам измерить на валидации. (2) Признаки будущего эфира: секунды и число выпусков в окне, доля прайм-тайма, будущий эфир к прошлому, флаг «новое / продолжается / заканчивается». (3) На валидационном якоре те же признаки считать по сетке окна 19–30, чтобы train и test были симметричны. (4) В тест попадает старт телесезона (сентябрь), который валидация на мае–июле не воспроизводит. Устойчивость к этому сдвигу проверять отдельно.",
+   "priority": "high",
+   "sources": [
+    {
+     "title": "H&M — 2nd place solution (wht1996, Paweł Jankiewicz)",
+     "url": "https://www.kaggle.com/competitions/h-and-m-personalized-fashion-recommendations/discussion/324197",
+     "accessed_ok": true,
+     "what_it_supports": "'A large part of the competition was about predicting the availability of the products for different postal_codes'."
+    },
+    {
+     "title": "H&M — 1st place solution (senkin13 & 30CrMnSiA)",
+     "url": "https://www.kaggle.com/competitions/h-and-m-personalized-fashion-recommendations/discussion/324070",
+     "accessed_ok": true,
+     "what_it_supports": "'We mainly generate recent popular items because fashion changing fast and has seasonality'; холодные товары 'will never be ranked to top12'."
+    },
+    {
+     "title": "Santander — #1 solution (idle_speculation)",
+     "url": "https://www.kaggle.com/competitions/santander-product-recommendation/writeups/idle-speculation-1-solution",
+     "accessed_ok": true,
+     "what_it_supports": "Каждую подмодель скорили как Jun-16, Jun-15 и Dec-15. Для reca брали скор Jun-15, для cco — Dec-15."
+    },
+    {
+     "title": "Santander — 3rd place solution (Jack (Japan))",
+     "url": "https://www.kaggle.com/competitions/santander-product-recommendation/writeups/jack-japan-3rd-place-solution-with-code",
+     "accessed_ok": true,
+     "what_it_supports": "'Pr of cco_fin was predicted only by 2015-12-28 data'; 'Pr of reca_fin was predicted only by 2015-06-28 data'."
+    },
+    {
+     "title": "Santander — Solution sharing (BreakfastPirate)",
+     "url": "https://www.kaggle.com/competitions/santander-product-recommendation/discussion/26786",
+     "accessed_ok": true,
+     "what_it_supports": "'The distribution of products in June 2015 turned out to be what was important about June 2015'; поправки на тренды продуктов."
+    }
+   ]
+  },
+  {
+   "name": "Item-CF, ко-просмотр, ассоциативные правила — и генератор, и признак",
+   "description": "OTTO 3rd: одни правила на 20 матрицах co-visitation дали LB 0.590 (49-е место). Счётчики этих матриц как признаки плюс XGB-ранжировщик дали 0.601. OTTO 2nd: главная работа — улучшение itemcf (разные матрицы, веса по типу события, временному расстоянию и порядку). H&M 1st: стратегия ItemCF Top N. Volkovs 2018: item-item kNN (RPREC 0.1772) не хуже WRMF (0.1641). Rekko 14th: cosine item-kNN 0.03170 против ALS 0.02646 и LightFM около 0.026.",
+   "why_it_works": "Соседние модели на со-встречаемости устойчивы на разреженном неявном фидбэке, легко взвешиваются по времени и дают ранжировщику сильные признаки.",
+   "how_to_apply_to_sweettv": "Построить матрицу ко-просмотра шоу: пользователь смотрел A и B хотя бы X минут в одном окне. Варианты: та же неделя или тот же день; с затуханием по времени; направленная «A раньше B»; соседние слоты одного канала (передача после любимой). Нормировки cosine / confidence / lift — это и есть ассоциативные правила из курса (support, confidence, lift). Кандидаты: top-N соседей для топ-шоу пользователя. Признаки: max, sum и взвешенная сумма CF-скоров по истории пользователя, ранг кандидата.",
+   "priority": "high",
+   "sources": [
+    {
+     "title": "OTTO — 3rd Place: Using Only Rules Achieves LB 0.590 (Chris Deotte)",
+     "url": "https://www.kaggle.com/competitions/otto-recommender-system/writeups/g-b-d-t-3rd-place-using-only-rules-achieves-lb-0-5",
+     "accessed_ok": true,
+     "what_it_supports": "Только правила: LB 0.590. Счётчики co-visit + XGB-ранжировщик: '+0.011 and achieve LB 0.601'. Описаны 20 матриц: consecutive, forward, time decay, по часу дня, по длине истории."
+    },
+    {
+     "title": "OTTO — 2nd Place Solution (senkin13&30CrMnSiA part)",
+     "url": "https://www.kaggle.com/competitions/otto-recommender-system/discussion/382839",
+     "accessed_ok": true,
+     "what_it_supports": "'the most important work is to improve itemcf'; веса: type, co-occurrence time distance, order, popularity."
+    },
+    {
+     "title": "OTTO — 2nd Place Solution (ONODERA part) и комментарии Silogram",
+     "url": "https://www.kaggle.com/competitions/otto-recommender-system/writeups/sos3-2nd-place-solution-onodera-part",
+     "accessed_ok": true,
+     "what_it_supports": "item2item-признаки (count, time difference, sequence difference). Silogram: кандидаты 'almost entirely by joining the events ... to the various co-visitation matrices'."
+    },
+    {
+     "title": "Volkovs et al. RecSys Challenge 2018, doi:10.1145/3267471.3267480",
+     "url": "https://www.cs.toronto.edu/~mvolkovs/recsys2018_challenge.pdf",
+     "accessed_ok": true,
+     "what_it_supports": "Table 1: Item-Item RPREC 0.1772, User-User 0.1768, WRMF 0.1641; 'neighbor-based models produce strong performance either matching or outperforming the latent models'."
+    },
+    {
+     "title": "Rekko Challenge 2019: как это было (А. Козлов, 14-е место, Habr)",
+     "url": "https://habr.com/ru/post/461055/",
+     "accessed_ok": true,
+     "what_it_supports": "Implicit Cosine kNN CF 0.03170 против ALS 0.02646 и LightFM 0.0257–0.0264: 'классическая коллаборативная фильтрация показала себя намного лучше'."
+    }
+   ]
+  },
+  {
+   "name": "Признаки происхождения кандидата: флаг, ранг и скор каждого генератора",
+   "description": "H&M 3rd: признаки «найден ли стратегией X» и «ранг внутри стратегии X» вместе с расширением кандидатов до сотни подняли LB с 0.02855 до 0.03262. Без этих признаков рост числа кандидатов давал 'very very poor' CV. Volkovs 2018: пять скоров первой стадии — прямые входы второй. Rekko 2nd: ранг и скор моделей первого уровня оказались самыми значимыми признаками. OTTO 1st: ранг по co-visitation как признак.",
+   "why_it_works": "Ранжировщик сразу получает качество лучшего генератора и учится, какому источнику доверять в каком контексте. По сути это обучаемый гибрид.",
+   "how_to_apply_to_sweettv": "Для каждого генератора (повтор, AR / item-CF, ALS/BPR, PPR, CBF, популярное в эфире): is_from_g, rank_g внутри пользователя, score_g, плюс число генераторов, предложивших кандидата. Ранги считать после фильтра доступности: у Rekko 2nd перенос подсчёта рангов на после удаления исключаемых объектов дал прирост 0.0388 → 0.0395.",
+   "priority": "high",
+   "sources": [
+    {
+     "title": "H&M — 3rd place solution (sirius)",
+     "url": "https://www.kaggle.com/competitions/h-and-m-personalized-fashion-recommendations/discussion/324129",
+     "accessed_ok": true,
+     "what_it_supports": "Флаг и ранг стратегии вместе с ростом числа кандидатов: 'from 0.02855 to 0.03262'. Без признаков: 'the CV score is very very poor'."
+    },
+    {
+     "title": "Volkovs et al. RecSys Challenge 2018",
+     "url": "https://www.cs.toronto.edu/~mvolkovs/recsys2018_challenge.pdf",
+     "accessed_ok": true,
+     "what_it_supports": "'We use five scores from the first stage directly as input features ... quickly recover the performance of the first stage and then focus on improving it'."
+    },
+    {
+     "title": "Rekko Challenge — как занять 2-е место (Е. Смирнов, Habr)",
+     "url": "https://habr.com/ru/post/454818/",
+     "accessed_ok": true,
+     "what_it_supports": "Ранг и скор моделей первого уровня: 0.0359. Ранги после удаления просмотренного: 0.0395. 'Наиболее значимыми оказались признаки от моделей первого уровня'."
+    },
+    {
+     "title": "OTTO — 1st place solution (mrkmakr)",
+     "url": "https://www.kaggle.com/competitions/otto-recommender-system/writeups/mrkmakr-1st-place-solution",
+     "accessed_ok": true,
+     "what_it_supports": "Признаки session×aid: 'rank by covisitation matrix at candidate generation', 'cosine similarity by NN at candidate generation'."
+    }
+   ]
+  },
+  {
+   "name": "Потолок полноты кандидатов (recall@N) — отдельная метрика генерации",
+   "description": "H&M 1st на раннем этапе максимизировал HitNum@100 — число позитивов среди 100 кандидатов. N для каждой стратегии подбирал вручную при фиксированной сумме 100; популярный top-100 шёл всем пользователям. Volkovs 2018: 20K кандидатов с полнотой выше 90%, top-1K — около 60%. OTTO 1st: в среднем около 1200 кандидатов, абляции по источникам.",
+   "why_it_works": "MAP@K после ранжирования не может превысить долю позитивов, попавших в кандидаты. Отдельная метрика разводит ошибки генерации и ошибки ранжирования.",
+   "how_to_apply_to_sweettv": "На валидационном якоре для каждого генератора и для объединения считать: recall@N — долю шоу из будущего топ-5, попавших в кандидаты, при N = 10/20/50/100/200; и «оракульный» MAP@5 при идеальном упорядочивании кандидатов. Добавлять генераторы, пока растёт полнота объединения. N каждого подбирать под максимум попаданий при фиксированном общем размере. Смотреть отдельно по сегментам активности пользователей.",
+   "priority": "high",
+   "sources": [
+    {
+     "title": "H&M — 1st place solution (senkin13 & 30CrMnSiA)",
+     "url": "https://www.kaggle.com/competitions/h-and-m-personalized-fashion-recommendations/discussion/324070",
+     "accessed_ok": true,
+     "what_it_supports": "'we focus on increasing the hit number of retrieved 100 candidates'; таблица HitNum@100 по неделям. В комментариях: 'different N by adjusting manually to optimize the hit number', 'At least we have top 100 popular items for all users'."
+    },
+    {
+     "title": "Volkovs et al. RecSys Challenge 2018",
+     "url": "https://www.cs.toronto.edu/~mvolkovs/recsys2018_challenge.pdf",
+     "accessed_ok": true,
+     "what_it_supports": "'retrieve 20K candidates for each playlist with over 90% recall'; 'top-1K songs ... cover close to 60% recall'."
+    },
+    {
+     "title": "OTTO — 1st place solution (mrkmakr)",
+     "url": "https://www.kaggle.com/competitions/otto-recommender-system/writeups/mrkmakr-1st-place-solution",
+     "accessed_ok": true,
+     "what_it_supports": "'The average number of candidates is around 1200'; таблица абляций по источникам кандидатов."
+    }
+   ]
+  },
+  {
+   "name": "Валидация, повторяющая тест: время, горизонт, популяция и метка как у организаторов",
+   "description": "Radek (OTTO): последние 7 дней train как валидация, 'local validation tracks public LB perfectly'. OTTO 2nd: 3 недели с метками, последняя — валидация, затем дообучение на всём с фиксированным числом итераций; 'we don't need to watch LB by submission'. H&M 1st: 6 недель train, последняя — валидация, стабильная корреляция CV и LB; 'we need to generate train and test by ourself'. Volkovs 2018: валидационные плейлисты с тем же распределением длины, что в тесте. Rekko 2nd: валидация не всегда совпадала с LB, и на private был шейк-ап.",
+   "why_it_works": "Когда валидация в точности повторяет тест, LB для подбора не нужен. Это важно при 5 сабмитах и шумном public LB на 1260 пользователях.",
+   "how_to_apply_to_sweettv": "Основной якорь T=19: история — недели 11–18, метка — топ-5 шоу пользователя за недели 19–30, тот же 12-недельный горизонт. Метку считать как организаторы: пересечение сессий с сеткой, без tv_show_id=0, сумма секунд; точная формула «preference» неизвестна, поэтому проверить чувствительность к порогам. Популяция: пользователи сабмита тяжелее остальных (медиана 537 ч против 393 ч у всех 4914), поэтому MAP@5 считать на похожих по активности пользователях или с весами по децилям. Все методы курса сравнивать на одном сплите; доверительные интервалы — бутстрепом по пользователям. Сабмиты тратить на санити-проверки, а не на подбор. Финал — переобучение на последнем якоре с тем же числом итераций.",
+   "priority": "high",
+   "sources": [
+    {
+     "title": "OTTO — local validation tracks public LB perfectly (Radek Osmulski)",
+     "url": "https://www.kaggle.com/competitions/otto-recommender-system/discussion/364991",
+     "accessed_ok": true,
+     "what_it_supports": "'I am using the last 7 days of train set for validation (similarly to the test set)'; 'local validation tracks public LB perfectly'."
+    },
+    {
+     "title": "OTTO — 2nd Place Solution (senkin13&30CrMnSiA part)",
+     "url": "https://www.kaggle.com/competitions/otto-recommender-system/discussion/382839",
+     "accessed_ok": true,
+     "what_it_supports": "'3 weeks' train data with labels, use last week as validation,then retrain all train data with fixed round number'; 'the CV matched LB very well'."
+    },
+    {
+     "title": "H&M — 1st place solution (senkin13 & 30CrMnSiA)",
+     "url": "https://www.kaggle.com/competitions/h-and-m-personalized-fashion-recommendations/discussion/324070",
+     "accessed_ok": true,
+     "what_it_supports": "'We use 6 weeks data as train,last week as valid ... it has stable cv-lb correlation'; 'we need to generate train and test by ourself'."
+    },
+    {
+     "title": "Volkovs et al. RecSys Challenge 2018",
+     "url": "https://www.cs.toronto.edu/~mvolkovs/recsys2018_challenge.pdf",
+     "accessed_ok": true,
+     "what_it_supports": "Fig. 3: 'We sample 9K playlists from the MPD with same length distribution as in challenge test set'."
+    },
+    {
+     "title": "Rekko Challenge — как занять 2-е место (Е. Смирнов, Habr)",
+     "url": "https://habr.com/ru/post/454818/",
+     "accessed_ok": true,
+     "what_it_supports": "Валидация по времени 80/20, потом переобучение на всём датасете; 'Валидация не всегда коррелировала с LB, что говорило о возможном шейк апе'."
+    }
+   ]
+  },
+  {
+   "name": "Одинаковые окна признаков на train и test, защита от «угадывания времени»",
+   "description": "Santander 2nd (Tom Van de Wiele): модели обучались на месяцах с разной глубиной истории и применялись к тесту с тем же числом лагов, что при обучении. BreakfastPirate: со всей доступной историей алгоритм «угадывал месяц» и предсказывал его распределение. Rekko 2nd: удалили признак, похожий на дату появления фильма, на котором модель переобучалась, — LB вырос с 0.0359 до 0.0367.",
+   "why_it_works": "Если окна признаков в обучении и в тесте разной длины, модель видит другой масштаб и сдвинутое распределение. Абсолютное время — утечка, которая не переносится в будущее.",
+   "how_to_apply_to_sweettv": "На обучающих якорях 4–8 недель истории, а на тесте — 20. Поэтому признаки строить на фиксированных окнах (последние 1/2/4/8 недель) и в нормировке «за неделю». Длинную историю давать только долями. Не использовать номер недели, дату и id якоря. Популярность — ранги и доли внутри окна, а не абсолютные секунды. Проверка: квантили ключевых признаков на якоре T=19 и на тестовом T=31 должны совпадать (или adversarial validation).",
+   "priority": "high",
+   "sources": [
+    {
+     "title": "Santander — 2nd Place Solution (Tom Van de Wiele)",
+     "url": "https://www.kaggle.com/competitions/santander-product-recommendation/writeups/tom-van-de-wiele-2nd-place-solution",
+     "accessed_ok": true,
+     "what_it_supports": "'The base models ... were fit to the test data where the number of used test lags was set to the number of lags in the train data'."
+    },
+    {
+     "title": "Santander — Solution sharing (BreakfastPirate)",
+     "url": "https://www.kaggle.com/competitions/santander-product-recommendation/discussion/26786",
+     "accessed_ok": true,
+     "what_it_supports": "'I tried including all available history for every month, but I found that the algorithm was using that to figure out which month the data came from'."
+    },
+    {
+     "title": "Rekko Challenge — как занять 2-е место (Е. Смирнов, Habr)",
+     "url": "https://habr.com/ru/post/454818/",
+     "accessed_ok": true,
+     "what_it_supports": "Анонимный признак, похожий на дату появления фильма: 'модель сильно переобучалась на этот признак'. Удаление: 0.0367."
+    }
+   ]
+  },
+  {
+   "name": "Несколько обучающих якорей (data augmentation по времени)",
+   "description": "Instacart 2nd добавил к обучению 3 последних заказа каждого пользователя. H&M 1st учился на 6 неделях, H&M 3rd — на 18 неделях. Santander 2nd строил модели на всех 16 месяцах и брал взвешенное среднее. OTTO 2nd использовал 3 недели с метками.",
+   "why_it_works": "Больше групп и больше разных периодов — устойчивее ранжировщик и меньше подгонки под одно окно.",
+   "how_to_apply_to_sweettv": "Ограничение: всего 20 недель и 12-недельный горизонт. Вариант (а): якоря T=15/17/19 с 12-недельной меткой. Окна меток перекрываются, поэтому выбор моделей делать только GroupKFold по пользователям внутри якоря. Вариант (б): короткий горизонт (6 недель) для якорей T=19…25. Им же проверить перенос во времени: обучение на T=19 с меткой 19–24, валидация на T=25 с меткой 25–30. Использовать только фиксированные окна признаков (паттерн про одинаковые окна), id якоря не подавать. Берём только то, что улучшает CV на 12-недельной цели.",
+   "priority": "medium",
+   "sources": [
+    {
+     "title": "Instacart Winner's Interview: 2nd place (копия Wayback)",
+     "url": "https://web.archive.org/web/20170929051359/http://blog.kaggle.com/2017/09/21/instacart-market-basket-analysis-winners-interview-2nd-place-kazuki-onodera/",
+     "accessed_ok": true,
+     "what_it_supports": "'I increased the amount of training data available to me by adding in each user's 3 most recent orders as well'."
+    },
+    {
+     "title": "H&M — 3rd place solution (sirius)",
+     "url": "https://www.kaggle.com/competitions/h-and-m-personalized-fashion-recommendations/discussion/324129",
+     "accessed_ok": true,
+     "what_it_supports": "В ответах автора: обучение на 18 неделях; для сабмита переобучение, включая последнюю неделю ('The latter one')."
+    },
+    {
+     "title": "Santander — 2nd Place Solution (Tom Van de Wiele)",
+     "url": "https://www.kaggle.com/competitions/santander-product-recommendation/writeups/tom-van-de-wiele-2nd-place-solution",
+     "accessed_ok": true,
+     "what_it_supports": "'xgboost models for all 24 products for all of the 16 months'; 'use all the available data'; взвешенная комбинация месяцев."
+    },
+    {
+     "title": "H&M — 1st place solution (senkin13 & 30CrMnSiA)",
+     "url": "https://www.kaggle.com/competitions/h-and-m-personalized-fashion-recommendations/discussion/324070",
+     "accessed_ok": true,
+     "what_it_supports": "'We use 6 weeks data as train,last week as valid'."
+    }
+   ]
+  },
+  {
+   "name": "Матричная факторизация (ALS/BPR) — как признак сходства и генератор, а не финальная модель",
+   "description": "H&M 3rd: сходство пользователя и товара из BPR (implicit, отдельная модель на каждую неделю по данным до неё) — самый полезный признак, LB 0.03363 → 0.03510. Один этот признак давал AUC около 0.720 при 0.806 у всей модели. Paweł (H&M 2nd) использовал BPR только для части кандидатов. Volkovs 2018: WRMF как генератор первой стадии. Rekko 2nd: LightFM WARP около 0.033 сам по себе, а его биасы во втором уровне дали 0.0367 → 0.0388. Rekko 14th: ALS в одиночку слабее item-kNN.",
+   "why_it_works": "MF ловит глобальные вкусы (жанр, аудиторию) и дополняет повтор и соседей. В одиночку на привычном поведении она им обычно проигрывает.",
+   "how_to_apply_to_sweettv": "implicit ALS или BPR на матрице user×show; confidence = log(1 + минуты) с затуханием. На каждом якоре обучать только на истории до T. Признаки: скалярное произведение, ранг внутри пользователя, косинус с последними просмотренными шоу. Top-N идёт в кандидаты. Отдельно MF оценить как самостоятельный метод курса для таблицы сравнения.",
+   "priority": "medium",
+   "sources": [
+    {
+     "title": "H&M — 3rd place solution (sirius) и комментарий Paweł Jankiewicz в этой ветке",
+     "url": "https://www.kaggle.com/competitions/h-and-m-personalized-fashion-recommendations/discussion/324129",
+     "accessed_ok": true,
+     "what_it_supports": "'I've trained one BPR for each week' (implicit); 'from 0.03363 to 0.03510'; AUC 0.720 против 0.806. Paweł: 'used BPR from implicit package but only to generate limited candidates'."
+    },
+    {
+     "title": "Volkovs et al. RecSys Challenge 2018",
+     "url": "https://www.cs.toronto.edu/~mvolkovs/recsys2018_challenge.pdf",
+     "accessed_ok": true,
+     "what_it_supports": "'latent CF model Weighted Regularized Matrix Factorization (WRMF) [8] is used to quickly retrieve 20K candidate songs'."
+    },
+    {
+     "title": "Rekko Challenge — как занять 2-е место (Е. Смирнов, Habr)",
+     "url": "https://habr.com/ru/post/454818/",
+     "accessed_ok": true,
+     "what_it_supports": "LightFM WARP около 0.033 LB. Биасы item/user из LightFM как признаки второго уровня: 0.0388."
+    },
+    {
+     "title": "Rekko Challenge 2019: как это было (А. Козлов, 14-е место, Habr)",
+     "url": "https://habr.com/ru/post/461055/",
+     "accessed_ok": true,
+     "what_it_supports": "Implicit ALS 0.02646 против Cosine kNN 0.03170 (MNAP@20 на валидации)."
+    }
+   ]
+  },
+  {
+   "name": "Случайные блуждания и графовые эмбеддинги (PPR) как дополнительный генератор",
+   "description": "Paweł (H&M 2nd) брал кандидатов из 'random graph walk over item-user graph', из ко-встречаемости и популярности по группам. H&M 1st: стратегия graph embedding (ProNE) Top N и косинус user2item как признак, прирост около 0.002. OTTO 2nd: сходство сессии и товара по ProNE как признак.",
+   "why_it_works": "Многошаговые связи «пользователь – шоу – пользователь» находят релевантные шоу, которых нет в прямой ко-встречаемости, и разнообразят кандидатов.",
+   "how_to_apply_to_sweettv": "Personalized PageRank на двудольном графе user–show: веса рёбер — минуты с затуханием; можно добавить узлы каналов и жанров. Рестарт в пользователе, α примерно 0.15–0.3, подобрать на CV. Top-N шоу из сетки 31–42 идут в кандидаты, PPR-скор и ранг — в признаки. Это же закрывает метод PPR из списка курса.",
+   "priority": "medium",
+   "sources": [
+    {
+     "title": "H&M — 2nd place solution (wht1996, Paweł Jankiewicz)",
+     "url": "https://www.kaggle.com/competitions/h-and-m-personalized-fashion-recommendations/discussion/324197",
+     "accessed_ok": true,
+     "what_it_supports": "'random graph walk over item-user graph', 'cooccurences', счётчики популярности по группам — стратегии кандидатов Paweł."
+    },
+    {
+     "title": "H&M — 1st place solution (senkin13 & 30CrMnSiA)",
+     "url": "https://www.kaggle.com/competitions/h-and-m-personalized-fashion-recommendations/discussion/324070",
+     "accessed_ok": true,
+     "what_it_supports": "'cosine similarity of user2item(ProNE)'. На вопрос о вкладе графового эмбеддинга автор ответил 'about 0.002 up'."
+    },
+    {
+     "title": "OTTO — 2nd Place Solution (senkin13&30CrMnSiA part)",
+     "url": "https://www.kaggle.com/competitions/otto-recommender-system/discussion/382839",
+     "accessed_ok": true,
+     "what_it_supports": "'embedding similarity: cosine similarity of aid2aid(word2vec), cosine similarity of session2aid(ProNE)'."
+    }
+   ]
+  },
+  {
+   "name": "Content-based для новых шоу (холодные объекты): отдача ограниченная",
+   "description": "Layer6 выиграл RecSys Challenge 2017 и офлайн, и онлайн. Их признаки — сходство кандидата с объектами из истории пользователя по контенту вместо взаимодействий. H&M 1st: кандидаты 'items of same product_code'; изображения и текст не помогли; холодные товары в топ-12 не попадают. H&M 3rd: 'same prod_name' и jaccard по атрибутам. Rekko 14th: модель холодного старта дала около 0, новых фильмов было всего 240.",
+   "why_it_works": "Объект без истории можно оценить только по контенту, но его доля в метке обычно мала.",
+   "how_to_apply_to_sweettv": "Новых tv_show_id в 31–42 — 1437, около 7.3% эфирного времени. С прошлыми шоу по нормализованному названию совпадают 85, например новые сезоны («Солдаты 7» → «Солдаты 8»). Числа — мой подсчёт. (1) Связать новый id с «предком» по названию и перенести признаки повторного просмотра. (2) CBF-сходство с историей пользователя по channel_id, tv_show_category, tv_show_genre_1–3, слоту, году, режиссёру и актёрам — как признак. (3) Ограничить число таких кандидатов. Это закрывает CBF из курса.",
+   "priority": "medium",
+   "sources": [
+    {
+     "title": "Volkovs, Yu, Poutanen. Content-based Neighbor Models for Cold Start (RecSys Challenge 2017), doi:10.1145/3124791.3124792",
+     "url": "https://www.cs.toronto.edu/~guangweiyu/pdfs/recsys2017.pdf",
+     "accessed_ok": true,
+     "what_it_supports": "Признаки похожи на item-based neighbor CF, 'but with content similarity replacing interaction similarity'; победа в офлайн- и онлайн-фазах."
+    },
+    {
+     "title": "H&M — 1st place solution (senkin13 & 30CrMnSiA)",
+     "url": "https://www.kaggle.com/competitions/h-and-m-personalized-fashion-recommendations/discussion/324070",
+     "accessed_ok": true,
+     "what_it_supports": "'image and text features didn't help but should be useful for cold start problem'; холодные товары 'will never be ranked to top12'."
+    },
+    {
+     "title": "H&M — 3rd place solution (sirius)",
+     "url": "https://www.kaggle.com/competitions/h-and-m-personalized-fashion-recommendations/discussion/324129",
+     "accessed_ok": true,
+     "what_it_supports": "Отбор: 'items which have the same prod_name with what the user recently purchased'. Признак: jaccard по атрибутам купленного и целевого товара."
+    },
+    {
+     "title": "Rekko Challenge 2019: как это было (А. Козлов, 14-е место, Habr)",
+     "url": "https://habr.com/ru/post/461055/",
+     "accessed_ok": true,
+     "what_it_supports": "Холодный старт не окупился: новых фильмов в тесте было мало (240)."
+    }
+   ]
+  },
+  {
+   "name": "Objective и обучение ранжировщика: lambdarank или binary — решает CV; группа = пользователь",
+   "description": "Единого ответа нет. H&M 1st: лучшая одиночная модель — LightGBM-классификатор, негативы прорежены до 1–2 млн на неделю. H&M 2nd: binary на этапе отбора, lambdarank на финальном; самописный lambdarankmap немного лучше lambdarank. H&M 3rd: LGB, CatBoost и XGB близки, негативов в 30 раз больше позитивов. OTTO 1st: LGBMRanker, доля негативов 5/25/40%. OTTO 2nd: ранкер CatBoost лучше бинарного LGB. Volkovs 2018: pairwise ranking loss лучше бинарной кросс-энтропии. Chris: GroupKFold по пользователю.",
+   "why_it_works": "Ранжирующие лоссы оптимизируют порядок внутри пользователя, как и MAP, а бинарные — калибровку. При малом числе позитивов в группе разница небольшая.",
+   "how_to_apply_to_sweettv": "Группа = user_id, кандидаты пользователя идут подряд. Метка = 1, если шоу в будущем топ-5 — бинарно, как в MAP; градуированные метки MAP не вознаграждает. На одном сплите сравнить: LGBMRanker(objective='lambdarank', eval_at=[5], lambdarank_truncation_level около 8 — документация советует примерно k+3), rank_xendcg, LGBMClassifier и, по желанию, CatBoost YetiRank. GroupKFold по пользователям. Позитивы, которых нет среди кандидатов, в обучение не добавлять, как у H&M 3rd. Данных немного (4914 пользователей), так что прореживание негативов — только если не хватает памяти.",
+   "priority": "high",
+   "sources": [
+    {
+     "title": "H&M — 1st place solution (senkin13 & 30CrMnSiA)",
+     "url": "https://www.kaggle.com/competitions/h-and-m-personalized-fashion-recommendations/discussion/324070",
+     "accessed_ok": true,
+     "what_it_supports": "'Our best single model is a lightgbm' (классификатор). Прореживание: '1 million ~ 2 million negative samples for each week has better performace'."
+    },
+    {
+     "title": "H&M — 2nd place solution (wht1996, Paweł Jankiewicz)",
+     "url": "https://www.kaggle.com/competitions/h-and-m-personalized-fashion-recommendations/discussion/324197",
+     "accessed_ok": true,
+     "what_it_supports": "'lambdarankmap objective ... slightly better than lambdarank'. wht1996: 'The recall phase uses the binary objective and the sorting phase uses the lambdarank objective'."
+    },
+    {
+     "title": "H&M — 3rd place solution (sirius)",
+     "url": "https://www.kaggle.com/competitions/h-and-m-personalized-fashion-recommendations/discussion/324129",
+     "accessed_ok": true,
+     "what_it_supports": "Негативов '30*len(pos_samples)'; позитивы только среди найденных кандидатов; 'Xgboost, Catboost and Lightgbm give similar CV scores'."
+    },
+    {
+     "title": "OTTO — 2nd Place Solution (senkin13&30CrMnSiA part)",
+     "url": "https://www.kaggle.com/competitions/otto-recommender-system/discussion/382839",
+     "accessed_ok": true,
+     "what_it_supports": "Переход на ранкер CatBoost: orders +0.0007, carts +0.002, clicks +0.0012; лучшая одиночная модель — ранкер CatBoost."
+    },
+    {
+     "title": "Volkovs et al. RecSys Challenge 2018",
+     "url": "https://www.cs.toronto.edu/~mvolkovs/recsys2018_challenge.pdf",
+     "accessed_ok": true,
+     "what_it_supports": "'ranking loss performed better than binary cross entropy objective for this task'; выборка 20 релевантных и 20 нерелевантных на плейлист."
+    },
+    {
+     "title": "LightGBM Parameters (официальная документация)",
+     "url": "https://lightgbm.readthedocs.io/en/latest/Parameters.html",
+     "accessed_ok": true,
+     "what_it_supports": "lambdarank_truncation_level: оптимум 'slightly higher than k (e.g., k + 3)'; rank_xendcg 'achieves the similar performance as lambdarank'; группы запросов (query/group)."
+    },
+    {
+     "title": "OTTO — How To Build a GBT Ranker Model (Chris Deotte)",
+     "url": "https://www.kaggle.com/competitions/otto-recommender-system/discussion/370210",
+     "accessed_ok": true,
+     "what_it_supports": "'We must train using GroupKFold'; XGB objective: rank:pairwise / rank:ndcg / rank:map; прореживание негативов."
+    }
+   ]
+  },
+  {
+   "name": "Постобработка под MAP@5: ровно 5 уникальных id по убыванию скора, добивка из fallback",
+   "description": "Kaggle-метрика MAP@K не штрафует за заполнение всех K позиций (из правил H&M). В sweet.tv нужно строго 5 tv_show_id, порядок важен. H&M 3rd не допускал дублей пар. У Chris итог — сортировка по скору и первые K. Santander 2nd: перестановки для коррелированных объектов дали около +0.2% локально, но мало на LB.",
+   "why_it_works": "Пустые и дублированные позиции — потеря на ровном месте, а ранние позиции весят в MAP больше.",
+   "how_to_apply_to_sweettv": "Для каждого пользователя: убрать tv_show_id=0 и шоу вне сетки 31–42, удалить дубли, отсортировать по скору ансамбля, взять 5. Если кандидатов меньше 5, добить из fallback: сначала популярное в эфире на каналах пользователя, потом глобально популярное в эфире. Автотест формата: 1260 строк, по 5 уникальных целых id без нулей, порядок user_id как в submission.csv. Перестановки ради коррелированных шоу (например, соседних передач одного канала) — только при подтверждённом приросте CV.",
+   "priority": "high",
+   "sources": [
+    {
+     "title": "H&M — Evaluation (MAP@12)",
+     "url": "https://www.kaggle.com/competitions/h-and-m-personalized-fashion-recommendations/overview/evaluation",
+     "accessed_ok": true,
+     "what_it_supports": "Формула MAP@K; 'There is never a penalty for using the full 12 predictions ... it's advantageous to make 12 predictions for each customer'."
+    },
+    {
+     "title": "sweet.tv — TV program recommender: Overview и Evaluation",
+     "url": "https://www.kaggle.com/competitions/sweettv-tv-program-recommender/overview/evaluation",
+     "accessed_ok": true,
+     "what_it_supports": "MAP@5; 'you must predict (strictly) 5 space-delimited tv_show_ids ... Order matters!'; горизонт — недели 31–42."
+    },
+    {
+     "title": "H&M — 3rd place solution (sirius)",
+     "url": "https://www.kaggle.com/competitions/h-and-m-personalized-fashion-recommendations/discussion/324129",
+     "accessed_ok": true,
+     "what_it_supports": "'there aren't duplicated (customer_id, article_id) in my prediction'."
+    },
+    {
+     "title": "OTTO — How To Build a GBT Ranker Model (Chris Deotte)",
+     "url": "https://www.kaggle.com/competitions/otto-recommender-system/discussion/370210",
+     "accessed_ok": true,
+     "what_it_supports": "Инференс: sort_values по предсказанию, cumcount < 20 — первые K по скору."
+    },
+    {
+     "title": "Santander — 2nd Place Solution (Tom Van de Wiele)",
+     "url": "https://www.kaggle.com/competitions/santander-product-recommendation/writeups/tom-van-de-wiele-2nd-place-solution",
+     "accessed_ok": true,
+     "what_it_supports": "MAP optimization для коррелированных продуктов: 'great effects in local validation (~0.2% boost) but limited value on the leaderboard'."
+    }
+   ]
+  },
+  {
+   "name": "Ансамбль ранжировщиков: усреднение рангов или скоров, разные модели и сиды",
+   "description": "H&M 1st: 5 LightGBM + 7 CatBoost, LB 0.0367 → 0.0371. H&M 2nd: одиночная 0.0355, с кандидатами партнёра 0.0362, ансамбль 0.0368. H&M 3rd: среднее 16 моделей. OTTO 1st: 9 LGBMRanker с разными гиперпараметрами, 0.604 → 0.605. OTTO 3rd: сумма рангов. OTTO 2nd: бленд по рангам. RecSys Challenge 2019 (LogicAI): 37 моделей LGBMRanker, веса подбирались по MRR на валидации. Rekko 2nd: сумма рангов, затем бленд 6 моделей, устойчивый к шейк-апу. Santander 2nd: взвешенное среднее лучше стекинга. Instacart 2nd: среднее 6 сидов.",
+   "why_it_works": "Ансамбль снижает дисперсию. Прирост обычно около 1% относительно, зато стабильный.",
+   "how_to_apply_to_sweettv": "Взять 3–5 разнородных ранжировщиков: lambdarank, binary, CatBoost, разные сиды, наборы признаков и якоря. Усреднять ранги внутри пользователя или нормированные скоры. Веса подбирать по CV, не по LB. Стекинг второго уровня — только с честным сплитом по пользователям и времени.",
+   "priority": "medium",
+   "sources": [
+    {
+     "title": "H&M — 1st place solution (senkin13 & 30CrMnSiA)",
+     "url": "https://www.kaggle.com/competitions/h-and-m-personalized-fashion-recommendations/discussion/324070",
+     "accessed_ok": true,
+     "what_it_supports": "'best single model is a lightgbm(cv:0.0441,lb:0.0367),finally we trained 5 lightgbm classifier and 7 catboost classifier for ensemble(lb:0.0371)'."
+    },
+    {
+     "title": "OTTO — 1st place solution (mrkmakr)",
+     "url": "https://www.kaggle.com/competitions/otto-recommender-system/writeups/mrkmakr-1st-place-solution",
+     "accessed_ok": true,
+     "what_it_supports": "Одиночный LGBMRanker LB 0.604, ансамбль 9 ранкеров 0.605, усреднение скоров."
+    },
+    {
+     "title": "OTTO — 3rd Place: Using Only Rules Achieves LB 0.590 (Chris Deotte)",
+     "url": "https://www.kaggle.com/competitions/otto-recommender-system/writeups/g-b-d-t-3rd-place-using-only-rules-achieves-lb-0-5",
+     "accessed_ok": true,
+     "what_it_supports": "'ensembled all our work together by adding the ranks of each of our predictions'."
+    },
+    {
+     "title": "logicai-io/recsys2019 — код 1-го места ACM RecSys Challenge 2019",
+     "url": "https://github.com/logicai-io/recsys2019",
+     "accessed_ok": true,
+     "what_it_supports": "'merged 37 LGBMLight models with different datasets and different hyper parameters'; make_blend.py 'optimizes directly MRR using validation predictions'."
+    },
+    {
+     "title": "Rekko Challenge — как занять 2-е место (Е. Смирнов, Habr)",
+     "url": "https://habr.com/ru/post/454818/",
+     "accessed_ok": true,
+     "what_it_supports": "Бленд суммой рангов 0.0347. Финальный бленд 6 моделей — 0.0469678 (5-е место на public, 2-е на private): 'решение оказалось устойчивым благодаря блендингу'."
+    },
+    {
+     "title": "Santander — 2nd Place Solution (Tom Van de Wiele)",
+     "url": "https://www.kaggle.com/competitions/santander-product-recommendation/writeups/tom-van-de-wiele-2nd-place-solution",
+     "accessed_ok": true,
+     "what_it_supports": "Стекинг не помог против взвешенного среднего базовых моделей; бутстреп давал 'consistently worse' результаты."
+    }
+   ]
+  },
+  {
+   "name": "Что не сработало у призёров: чего не делать при 5 сабмитах",
+   "description": "H&M 1st: признаки изображений и текста не помогли. H&M 2nd: глубокие модели из RecBole хуже; у wht1996 кандидаты item-CF уступили простой популярности; image-эмбеддинги без значимого прироста. OTTO 2nd (Silogram): кандидаты и признаки на сходстве пользователей (сессий) не улучшили CV. Santander: признаки «домохозяйства» не дали прироста (BreakfastPirate, Tom). Rekko 2nd: анонимные атрибуты контента, понижение веса популярного, ранжирующие метрики CatBoost. Rekko 14th: стекинг на top-200 LightFM оказался хуже одиночной модели; TensorRec. Layer6 2017: сглаживание по времени трудно настроить, значимого выигрыша нет.",
+   "why_it_works": "Экономит итерации: эти направления дорогие и на неявных данных с привычками обычно не окупаются.",
+   "how_to_apply_to_sweettv": "Не браться за нейросетевые последовательные модели, эмбеддинги названий и актёров и user-user kNN, пока не выжаты повтор, расписание, ко-просмотр, MF и ранжировщик. Стекинг — только с правильным сплитом. Каждую «модную» идею сначала проверять как признак в ранжировщике на CV.",
+   "priority": "medium",
+   "sources": [
+    {
+     "title": "H&M — 1st place solution (senkin13 & 30CrMnSiA)",
+     "url": "https://www.kaggle.com/competitions/h-and-m-personalized-fashion-recommendations/discussion/324070",
+     "accessed_ok": true,
+     "what_it_supports": "'image and text features didn't help'."
+    },
+    {
+     "title": "H&M — 2nd place solution (wht1996, Paweł Jankiewicz)",
+     "url": "https://www.kaggle.com/competitions/h-and-m-personalized-fashion-recommendations/discussion/324197",
+     "accessed_ok": true,
+     "what_it_supports": "'Deep learning models - I tried several recbole models but they weren't so good'. itemCF 'not even as good as directly selecting popular products'. Image embeddings: 'didn't see any significant boost'."
+    },
+    {
+     "title": "OTTO — 2nd Place Solution (ONODERA part) и комментарии Silogram",
+     "url": "https://www.kaggle.com/competitions/otto-recommender-system/writeups/sos3-2nd-place-solution-onodera-part",
+     "accessed_ok": true,
+     "what_it_supports": "Silogram: признаки на сходстве пользователей (сессий) — 'couldn't find anything that helped the cv score'."
+    },
+    {
+     "title": "Rekko Challenge — как занять 2-е место (Е. Смирнов, Habr)",
+     "url": "https://habr.com/ru/post/454818/",
+     "accessed_ok": true,
+     "what_it_supports": "Раздел «Не зашло»: анонимные атрибуты, векторы контента LightFM, атрибуты устройств, понижение веса популярного, ранжирующие метрики CatBoost."
+    },
+    {
+     "title": "Rekko Challenge 2019: как это было (А. Козлов, 14-е место, Habr)",
+     "url": "https://habr.com/ru/post/461055/",
+     "accessed_ok": true,
+     "what_it_supports": "Стекинг на top-200 LightFM: 'скор, получаемый мной на валидации, был хуже, чем на одной модели'."
+    },
+    {
+     "title": "Volkovs, Yu, Poutanen (RecSys Challenge 2017)",
+     "url": "https://www.cs.toronto.edu/~guangweiyu/pdfs/recsys2017.pdf",
+     "accessed_ok": true,
+     "what_it_supports": "Сглаживание по времени: 'difficult to tune and did not produce significant improvements'."
+    }
+   ]
+  },
+  {
+   "name": "Малоактивные пользователи: отдельный fallback на сегментной популярности",
+   "description": "H&M 1st: популярный top-100 у всех пользователей; почти у половины пользователей не было покупок за 3 месяца, для них строили кумулятивные признаки. H&M 3rd: популярное с учётом атрибутов пользователя. Paweł: популярность за 1/3/7 дней по комбинациям атрибутов давала кандидатов с точностью 10–11%. Volkovs 2018: отдельная модель для холодных (Name SVD RPREC 0.1106 против 0.0395 у популярного). Chris (OTTO): отдельные co-visit матрицы для новых пользователей и коротких историй.",
+   "why_it_works": "У таких пользователей слабые персональные сигналы, и популярность внутри сегмента работает лучше глобальной.",
+   "how_to_apply_to_sweettv": "В sweet.tv все 1260 пользователей сабмита имеют историю. За недели 27–30 медиана 108 ч; без просмотров в эти недели — 20 пользователей (мой подсчёт). Поэтому приоритет низкий: fallback нужен только для добивки до 5 и для пользователей с затуханием активности в конце. Источник — популярность в эфире 31–42 среди пользователей со схожим профилем каналов и слотов (сегменты по любимому каналу и по прайм-тайму).",
+   "priority": "low",
+   "sources": [
+    {
+     "title": "H&M — 1st place solution (senkin13 & 30CrMnSiA)",
+     "url": "https://www.kaggle.com/competitions/h-and-m-personalized-fashion-recommendations/discussion/324070",
+     "accessed_ok": true,
+     "what_it_supports": "'Almost 50% users have no transactions in recent 3months,so we created many cumulative features'. В комментариях: 'At least we have top 100 popular items for all users'."
+    },
+    {
+     "title": "H&M — 2nd place solution (wht1996, Paweł Jankiewicz)",
+     "url": "https://www.kaggle.com/competitions/h-and-m-personalized-fashion-recommendations/discussion/324197",
+     "accessed_ok": true,
+     "what_it_supports": "Комментарий Paweł: 'Popularity in the last 1/3/7 days combined with postal_code + age ... Some combinations have 10-11% precision'."
+    },
+    {
+     "title": "Volkovs et al. RecSys Challenge 2018",
+     "url": "https://www.cs.toronto.edu/~mvolkovs/recsys2018_challenge.pdf",
+     "accessed_ok": true,
+     "what_it_supports": "Холодные плейлисты отдельно: Name SVD RPREC 0.1106 против Popular 0.0395 (Table 1)."
+    },
+    {
+     "title": "OTTO — 3rd Place: Using Only Rules Achieves LB 0.590 (Chris Deotte)",
+     "url": "https://www.kaggle.com/competitions/otto-recommender-system/writeups/g-b-d-t-3rd-place-using-only-rules-achieves-lb-0-5",
+     "accessed_ok": true,
+     "what_it_supports": "top_20_new / top_20_new2 для новых пользователей; top_40_less / top_40_more по длине истории."
+    }
+   ]
+  },
+  {
+   "name": "Инфраструктура быстрых итераций: кэш признаков, polars, подвыборки",
+   "description": "H&M 1st: хранилище признаков — промежуточные результаты в файлах, повторно не пересчитываются. OTTO 1st: эксперименты на 5% данных для обучения и 10% для оценки. Paweł: больше работать на сэмплах, быстрая локальная валидация. OTTO 2nd: join в polars в 40 раз быстрее pandas.merge.",
+   "why_it_works": "Решает число проверенных гипотез, а кэш убирает и ошибки, и пересчёт.",
+   "how_to_apply_to_sweettv": "Один раз построить таблицу «пользователь × шоу × неделя → секунды просмотра» (пересечение сессий с сеткой) и хранить в parquet. Все признаки и метки любого якоря — функции этой таблицы и окна. Работать в polars. Быстрые эксперименты — на подвыборке пользователей. Каждый прогон пишет метрики и конфиг в evidence/.",
+   "priority": "low",
+   "sources": [
+    {
+     "title": "H&M — 1st place solution (senkin13 & 30CrMnSiA)",
+     "url": "https://www.kaggle.com/competitions/h-and-m-personalized-fashion-recommendations/discussion/324070",
+     "accessed_ok": true,
+     "what_it_supports": "'create a feature store,save intermediate features files ... exsiting features will not be create again'."
+    },
+    {
+     "title": "OTTO — 1st place solution (mrkmakr)",
+     "url": "https://www.kaggle.com/competitions/otto-recommender-system/writeups/mrkmakr-1st-place-solution",
+     "accessed_ok": true,
+     "what_it_supports": "'I conducted experiments by training with 5% of the data and evaluating with other 10% of the data'."
+    },
+    {
+     "title": "H&M — Addressing common questions (Paweł Jankiewicz)",
+     "url": "https://www.kaggle.com/competitions/h-and-m-personalized-fashion-recommendations/discussion/307288",
+     "accessed_ok": true,
+     "what_it_supports": "'Sample the data as much as possible'; 'Fast local validation is key'."
+    },
+    {
+     "title": "OTTO — 2nd Place Solution (senkin13&30CrMnSiA part)",
+     "url": "https://www.kaggle.com/competitions/otto-recommender-system/discussion/382839",
+     "accessed_ok": true,
+     "what_it_supports": "'pandas.merge -> polars.join = 40X faster'."
+    }
+   ]
+  }
+ ],
+ "notes": "Доступ к страницам. WebFetch на Kaggle отдаёт только заголовок страницы, а curl получает reCAPTCHA. Поэтому все страницы Kaggle (обсуждения, writeups, leaderboard, evaluation) я читал через рендерер https://r.jina.ai/<url>. Сырые копии лежат в /private/tmp/claude-501/-Users-konstantin-Documents-----recsys-course/8c34e5a1-52dd-4d84-beda-c2ce400d5147/scratchpad/research_comp/. Старые URL обсуждений теперь редиректят на writeups:\n- H&M 324197 → https://www.kaggle.com/competitions/h-and-m-personalized-fashion-recommendations/writeups/hello-world-2nd-place-solution\n- H&M 324129 → https://www.kaggle.com/competitions/h-and-m-personalized-fashion-recommendations/writeups/sirius-3rd-place-solution\n\nOTTO 1st (mrkmakr) нашёлся только по ссылке в отрендеренном HTML лидерборда; поиск его не находил. Интервью Instacart взято из копии Wayback: blog.kaggle.com редиректит на medium, а список обсуждений Instacart на Kaggle закрыт CAPTCHA. Запись 1-го места Instacart не нашёл. Слайды ONODERA (Slideshare) прочитал только через пересказ WebFetch и как источник не использую.\n\nМеста. Santander: 1-е место — idle_speculation, 2-е — Tom Van de Wiele. Место BreakfastPirate в его посте не указано, я его не утверждаю. Числа из Rekko 2nd/14th и из PDF Layer6 сверены с исходным текстом. DOI статей Layer6 2017 и 2018 подтверждены через Crossref.\n\nМои быстрые подсчёты на данных из midterm/data/raw (не из источников; воспроизводятся скриптами в /private/tmp/claude-501/-Users-konstantin-Documents-----recsys-course/8c34e5a1-52dd-4d84-beda-c2ce400d5147/scratchpad/research_tools/quickstats.py, quickstats2.py, quickstats3.py):\n- Шоу с tv_show_id≠0: 6636 в сетке 31–42 и 8234 в 11–30. Новых в 31–42 — 1437, это около 7.3% эфирного времени шоу с id≠0; по нормализованному названию с прошлыми совпадают 85. Из истории больше не выходят 3035.\n- 88.8% строк сетки 31–42 имеют tv_show_id=0.\n- Просмотры: 5.82 млн строк, 4914 пользователей, 202 канала. В сетке 31–42 каналов 404.\n- Все 1260 пользователей сабмита есть в истории. Они тяжелее среднего: медиана 537 ч и 71 канал против 393 ч и 57 у всех 4914. За недели 27–30 медиана 108 ч; без просмотров в эти недели — 20 пользователей.\n\nОтсюда приоритеты: холодные пользователи почти не важны, холодные шоу важны мало. Главное — повтор и расписание, CF и ранжировщик, и валидация, которая повторяет тест.\n\nНе проверял (стоит проверить в пайплайне):\n- Совпадают ли часовые пояса start_time в просмотрах (формат YYYY-MM-DD) и в сетке (DD.MM.YYYY).\n- Точная формула «preference» у организаторов: сумма секунд или число просмотров.\n\nПорядок работы:\n1. Атрибуция сессий к шоу и кэш (паттерн про инфраструктуру).\n2. Метка и валидация на якоре T=19 с учётом популяции.\n3. Эталон «повтор + затухание + фильтр по эфиру».\n4. Отдельные методы курса (AR/item-CF, ALS/BPR, PPR, CBF) на одном сплите.\n5. Recall@N кандидатов.\n6. LightGBM-ранжировщик с признаками происхождения кандидата и сравнение objective.\n7. Ансамбль.\n8. Постобработка с тестом формата."
+}

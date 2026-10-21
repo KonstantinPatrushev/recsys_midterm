@@ -1,0 +1,22 @@
+{
+  "name": "cand_ens_lab_D",
+  "parts": [
+    "sub03_hybrid_recent8",
+    "cand_max_recent8"
+  ],
+  "users_filled_from_pop": 2,
+  "overlap": {
+    "sub01_ranker_v1": {
+      "identical_sets": 327,
+      "mean_overlap_of_5": 3.96
+    },
+    "sub02_hybrid_lr31_r250_s5": {
+      "identical_sets": 369,
+      "mean_overlap_of_5": 4.016
+    },
+    "sub03_hybrid_recent8": {
+      "identical_sets": 1038,
+      "mean_overlap_of_5": 4.823
+    }
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "sub02_hybrid_lr31_r250_s5",
+  "ensemble": "lr31_r250",
+  "seeds": 5,
+  "table": "hybrid",
+  "map5_all": 0.42288,
+  "map5_sub": 0.45488,
+  "n_all": 4254,
+  "n_sub": 1199,
+  "users_without_candidates": 39
+}

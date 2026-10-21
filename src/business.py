@@ -22,11 +22,8 @@ import polars as pl
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 from data import ROOT, ground_truth, load_schedule, load_users, load_views, submission_users  # noqa: E402
-from features import label_top5  # noqa: E402
-from hybrid import make_table  # noqa: E402
 from methods import Space, als_scores, ar_scores, cbf_scores, pop_scores, ppr_scores, repeat_scores, topk_from_matrix  # noqa: E402
 from metrics import apk  # noqa: E402
-from ranker import cv  # noqa: E402
 
 SEED = 42
 
@@ -52,7 +49,7 @@ def main():
     gt = ground_truth(views, (19, 30))
     sub = submission_users()
     sub_u = set(sub["u"].to_list())
-    uid_of = {u: uid for uid, u in load_users().iter_rows()}
+    uid_of = dict(load_users().select(["u", "user_id"]).iter_rows())
 
     hv = views.filter(pl.col("week").is_between(11, 18) & pl.col("full"))
     hcnt = hv.group_by(["u", "tv_show_id"]).len("n")
@@ -79,9 +76,9 @@ def main():
         "MF (ALS)": topk_from_matrix(space, als_scores(space, 64, 10.0, 1.0, iters=30), users),
         "PPR": topk_from_matrix(space, ppr_scores(space, 0.7, users=users)[0], users),
     }
-    X = label_top5(make_table(views, sched, hist, target), gt)
-    _, _, pred_h, _ = cv(X, gt)
-    preds["Hybrid (LGBM)"] = pred_h
+    # hybrid = out-of-fold top-5 of the exact submission-2 configuration (src/cv_final.py, 5 seeds)
+    cvp = json.loads((ROOT / "cache" / "cv_pred_sub02_hybrid_lr31_r250_s5.json").read_text())
+    preds["Hybrid (LGBM)"] = {int(u): v for u, v in cvp.items()}
 
     test_pred = {}
     if args.test_sub:
@@ -108,15 +105,21 @@ def main():
         hours = (uh.with_columns(pl.from_epoch("start_ts", time_unit="s").dt.hour().alias("h"))
                  .group_by("h").len("n").sort("n", descending=True).head(3))
         tcnt = views.filter((pl.col("u") == u) & pl.col("week").is_between(19, 30) & pl.col("full")).group_by(
-            "tv_show_id").len("n")
-        tc = {s: n for s, n in tcnt.iter_rows()}
+            "tv_show_id").agg(pl.len().alias("n"), pl.col("c").mode().min().alias("c"),
+                              pl.col("week").min().alias("first_week"))
+        tc = {s: n for s, n, _, _ in tcnt.iter_rows()}
+        tch = {s: (chan.get(c), w) for s, _, c, w in tcnt.iter_rows()}
+        hist_ch = set(views.filter((pl.col("u") == u) & pl.col("week").is_between(11, 18))["c"].unique().to_list())
+        ch_id = {t: c for c, t in chan.items()}
         rec = {
             "user_id": str(uid_of[u]), "u": int(u), "history_full_views_11_18": act[u],
             "novelty_of_truth": novelty[u],
             "top_history_shows": [dict(desc(s), full_views=n, channel=chan.get(c)) for s, n, c in top_hist.iter_rows()],
             "top_channels_by_time": [{"channel": chan.get(c), "share": round(sec / tot, 3)} for c, sec in ch.iter_rows()],
             "top_start_hours_of_full_views": [{"hour": h, "n": n} for h, n in hours.iter_rows()],
-            "truth_19_30": [dict(desc(s), full_views=tc.get(s), seen_in_history=s in seen.get(u, set())) for s in gt[u]],
+            "truth_19_30": [dict(desc(s), full_views=tc.get(s), seen_in_history=s in seen.get(u, set()),
+                                 channel=tch[s][0], first_full_view_week=tch[s][1],
+                                 channel_watched_in_history=ch_id.get(tch[s][0]) in hist_ch) for s in gt[u]],
             "methods": {},
         }
         for name, p in preds.items():
@@ -138,6 +141,15 @@ def main():
         nov[name] = {"share_new_in_top5": round(new_items / max(tot_items, 1), 4),
                      "precision_of_new_items": round(new_hits / max(new_items, 1), 4)}
     out["novelty_by_method_sub_users_F1"] = nov
+    cat_of = {s: c for s, (c, _) in meta.items()}
+    t_items = [s for u in gt for s in gt[u]]
+    cats = {}
+    for s in t_items:
+        cats[cat_of.get(s)] = cats.get(cat_of.get(s), 0) + 1
+    out["truth_category_share_F1"] = {str(k): round(v / len(t_items), 4) for k, v in sorted(cats.items(), key=lambda kv: -kv[1])}
+    st_ = sched.filter(pl.col("week").is_between(19, 30))
+    sc = st_.group_by("tv_show_category").len("n")
+    out["airing_category_share_weeks_19_30"] = {str(k): round(v / st_.height, 4) for k, v in sc.sort("n", descending=True).iter_rows()}
     (ROOT / "evidence" / "business_two_users.json").write_text(json.dumps(out, indent=2, ensure_ascii=False))
     print(json.dumps(out["selection"], indent=1))
     print(json.dumps(nov, indent=1))

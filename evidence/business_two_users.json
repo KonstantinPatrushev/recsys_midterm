@@ -1,0 +1,1116 @@
+{
+  "selection": {
+    "typical_activity_range_full_views_11_18": [
+      24.0,
+      88.0
+    ],
+    "n_typical_sub_users": 613,
+    "n_habitual": 90,
+    "n_explorer": 346,
+    "seed": 42,
+    "picked_u": {
+      "habitual": 4431,
+      "explorer": 1155
+    }
+  },
+  "habitual": {
+    "user_id": "16645026545281388702",
+    "u": 4431,
+    "history_full_views_11_18": 83,
+    "novelty_of_truth": 0,
+    "top_history_shows": [
+      {
+        "id": 12001682,
+        "title": "М/с 'Губка Боб Квадратные Штаны'.",
+        "category": "Детям",
+        "genre": "комедия",
+        "full_views": 41,
+        "channel": "Nickelodeon HD"
+      },
+      {
+        "id": 12001734,
+        "title": "М/с 'Волшебные покровители'.",
+        "category": "Детям",
+        "genre": "комедия",
+        "full_views": 18,
+        "channel": "Nickelodeon HD"
+      },
+      {
+        "id": 12002856,
+        "title": "М/с 'Элвиннн!!! и бурундуки'.",
+        "category": "Детям",
+        "genre": "приключения",
+        "full_views": 6,
+        "channel": "Nickelodeon HD"
+      },
+      {
+        "id": 200344,
+        "title": "'Чистоnews'.",
+        "category": "Развлечения",
+        "genre": "юмор",
+        "full_views": 3,
+        "channel": "1+1"
+      },
+      {
+        "id": 2400480,
+        "title": "ТСН.",
+        "category": "Инфо",
+        "genre": "общество и политика",
+        "full_views": 3,
+        "channel": "1+1"
+      },
+      {
+        "id": 12001732,
+        "title": "М/с 'Пингвины из 'Мадагаскара'.",
+        "category": "Детям",
+        "genre": "комедия",
+        "full_views": 2,
+        "channel": "NickToons"
+      },
+      {
+        "id": 12002753,
+        "title": "М/с 'Санджей и Крейг'.",
+        "category": "Детям",
+        "genre": "комедия",
+        "full_views": 2,
+        "channel": "NickToons"
+      },
+      {
+        "id": 240081,
+        "title": "Факты.",
+        "category": "Инфо",
+        "genre": "общество и политика",
+        "full_views": 1,
+        "channel": "ICTV"
+      },
+      {
+        "id": 1000589,
+        "title": "Т/с 'Отчаянные домохозяйки', 1 сезон, 10 с. 'Возвращайся'.",
+        "category": "Сериалы",
+        "genre": "комедия",
+        "full_views": 1,
+        "channel": "Новый канал"
+      },
+      {
+        "id": 2400467,
+        "title": "'Викна-Новости'.",
+        "category": "Инфо",
+        "genre": "информация (комплексная)",
+        "full_views": 1,
+        "channel": "СТБ"
+      }
+    ],
+    "top_channels_by_time": [
+      {
+        "channel": "1+1",
+        "share": 0.309
+      },
+      {
+        "channel": "Nickelodeon HD",
+        "share": 0.202
+      },
+      {
+        "channel": "Новый канал",
+        "share": 0.141
+      },
+      {
+        "channel": "NickToons",
+        "share": 0.101
+      },
+      {
+        "channel": "ПлюсПлюс",
+        "share": 0.088
+      }
+    ],
+    "top_start_hours_of_full_views": [
+      {
+        "hour": 11,
+        "n": 14
+      },
+      {
+        "hour": 12,
+        "n": 10
+      },
+      {
+        "hour": 15,
+        "n": 10
+      }
+    ],
+    "truth_19_30": [
+      {
+        "id": 12001682,
+        "title": "М/с 'Губка Боб Квадратные Штаны'.",
+        "category": "Детям",
+        "genre": "комедия",
+        "full_views": 535,
+        "seen_in_history": true,
+        "channel": "Nickelodeon HD",
+        "first_full_view_week": 19,
+        "channel_watched_in_history": true
+      },
+      {
+        "id": 12002856,
+        "title": "М/с 'Элвиннн!!! и бурундуки'.",
+        "category": "Детям",
+        "genre": "приключения",
+        "full_views": 224,
+        "seen_in_history": true,
+        "channel": "Nickelodeon HD",
+        "first_full_view_week": 19,
+        "channel_watched_in_history": true
+      },
+      {
+        "id": 12001734,
+        "title": "М/с 'Волшебные покровители'.",
+        "category": "Детям",
+        "genre": "комедия",
+        "full_views": 123,
+        "seen_in_history": true,
+        "channel": "NickToons",
+        "first_full_view_week": 19,
+        "channel_watched_in_history": true
+      },
+      {
+        "id": 12002355,
+        "title": "М/с 'Кунг-фу панда: Удивительные легенды'.",
+        "category": "Детям",
+        "genre": "комедия",
+        "full_views": 98,
+        "seen_in_history": true,
+        "channel": "NickToons",
+        "first_full_view_week": 19,
+        "channel_watched_in_history": true
+      },
+      {
+        "id": 12001732,
+        "title": "М/с 'Пингвины из 'Мадагаскара'.",
+        "category": "Детям",
+        "genre": "комедия",
+        "full_views": 44,
+        "seen_in_history": true,
+        "channel": "NickToons",
+        "first_full_view_week": 19,
+        "channel_watched_in_history": true
+      }
+    ],
+    "methods": {
+      "POP": {
+        "top5": [
+          {
+            "id": 2400480,
+            "title": "ТСН.",
+            "category": "Инфо",
+            "genre": "общество и политика",
+            "hit": false,
+            "seen_in_history": true
+          },
+          {
+            "id": 240081,
+            "title": "Факты.",
+            "category": "Инфо",
+            "genre": "общество и политика",
+            "hit": false,
+            "seen_in_history": true
+          },
+          {
+            "id": 2400467,
+            "title": "'Викна-Новости'.",
+            "category": "Инфо",
+            "genre": "информация (комплексная)",
+            "hit": false,
+            "seen_in_history": true
+          },
+          {
+            "id": 200344,
+            "title": "'Чистоnews'.",
+            "category": "Развлечения",
+            "genre": "юмор",
+            "hit": false,
+            "seen_in_history": true
+          },
+          {
+            "id": 2400508,
+            "title": "Сегодня.",
+            "category": "Инфо",
+            "genre": "информация (комплексная)",
+            "hit": false,
+            "seen_in_history": false
+          }
+        ],
+        "ap5": 0.0
+      },
+      "REPEAT": {
+        "top5": [
+          {
+            "id": 12001682,
+            "title": "М/с 'Губка Боб Квадратные Штаны'.",
+            "category": "Детям",
+            "genre": "комедия",
+            "hit": true,
+            "seen_in_history": true
+          },
+          {
+            "id": 12001734,
+            "title": "М/с 'Волшебные покровители'.",
+            "category": "Детям",
+            "genre": "комедия",
+            "hit": true,
+            "seen_in_history": true
+          },
+          {
+            "id": 12002856,
+            "title": "М/с 'Элвиннн!!! и бурундуки'.",
+            "category": "Детям",
+            "genre": "приключения",
+            "hit": true,
+            "seen_in_history": true
+          },
+          {
+            "id": 2400480,
+            "title": "ТСН.",
+            "category": "Инфо",
+            "genre": "общество и политика",
+            "hit": false,
+            "seen_in_history": true
+          },
+          {
+            "id": 200344,
+            "title": "'Чистоnews'.",
+            "category": "Развлечения",
+            "genre": "юмор",
+            "hit": false,
+            "seen_in_history": true
+          }
+        ],
+        "ap5": 0.6
+      },
+      "CBF": {
+        "top5": [
+          {
+            "id": 12001682,
+            "title": "М/с 'Губка Боб Квадратные Штаны'.",
+            "category": "Детям",
+            "genre": "комедия",
+            "hit": true,
+            "seen_in_history": true
+          },
+          {
+            "id": 12001734,
+            "title": "М/с 'Волшебные покровители'.",
+            "category": "Детям",
+            "genre": "комедия",
+            "hit": true,
+            "seen_in_history": true
+          },
+          {
+            "id": 12002107,
+            "title": "М/с 'Аладдин'.",
+            "category": "Детям",
+            "genre": "приключения",
+            "hit": false,
+            "seen_in_history": false
+          },
+          {
+            "id": 12002753,
+            "title": "М/с 'Санджей и Крейг'.",
+            "category": "Детям",
+            "genre": "комедия",
+            "hit": false,
+            "seen_in_history": true
+          },
+          {
+            "id": 12001732,
+            "title": "М/с 'Пингвины из 'Мадагаскара'.",
+            "category": "Детям",
+            "genre": "комедия",
+            "hit": true,
+            "seen_in_history": true
+          }
+        ],
+        "ap5": 0.52
+      },
+      "AR": {
+        "top5": [
+          {
+            "id": 240081,
+            "title": "Факты.",
+            "category": "Инфо",
+            "genre": "общество и политика",
+            "hit": false,
+            "seen_in_history": true
+          },
+          {
+            "id": 2400480,
+            "title": "ТСН.",
+            "category": "Инфо",
+            "genre": "общество и политика",
+            "hit": false,
+            "seen_in_history": true
+          },
+          {
+            "id": 12001682,
+            "title": "М/с 'Губка Боб Квадратные Штаны'.",
+            "category": "Детям",
+            "genre": "комедия",
+            "hit": true,
+            "seen_in_history": true
+          },
+          {
+            "id": 12002856,
+            "title": "М/с 'Элвиннн!!! и бурундуки'.",
+            "category": "Детям",
+            "genre": "приключения",
+            "hit": true,
+            "seen_in_history": true
+          },
+          {
+            "id": 12002355,
+            "title": "М/с 'Кунг-фу панда: Удивительные легенды'.",
+            "category": "Детям",
+            "genre": "комедия",
+            "hit": true,
+            "seen_in_history": true
+          }
+        ],
+        "ap5": 0.2867
+      },
+      "MF (ALS)": {
+        "top5": [
+          {
+            "id": 12001682,
+            "title": "М/с 'Губка Боб Квадратные Штаны'.",
+            "category": "Детям",
+            "genre": "комедия",
+            "hit": true,
+            "seen_in_history": true
+          },
+          {
+            "id": 2400480,
+            "title": "ТСН.",
+            "category": "Инфо",
+            "genre": "общество и политика",
+            "hit": false,
+            "seen_in_history": true
+          },
+          {
+            "id": 12001734,
+            "title": "М/с 'Волшебные покровители'.",
+            "category": "Детям",
+            "genre": "комедия",
+            "hit": true,
+            "seen_in_history": true
+          },
+          {
+            "id": 12002856,
+            "title": "М/с 'Элвиннн!!! и бурундуки'.",
+            "category": "Детям",
+            "genre": "приключения",
+            "hit": true,
+            "seen_in_history": true
+          },
+          {
+            "id": 200344,
+            "title": "'Чистоnews'.",
+            "category": "Развлечения",
+            "genre": "юмор",
+            "hit": false,
+            "seen_in_history": true
+          }
+        ],
+        "ap5": 0.4833
+      },
+      "PPR": {
+        "top5": [
+          {
+            "id": 12001682,
+            "title": "М/с 'Губка Боб Квадратные Штаны'.",
+            "category": "Детям",
+            "genre": "комедия",
+            "hit": true,
+            "seen_in_history": true
+          },
+          {
+            "id": 12001734,
+            "title": "М/с 'Волшебные покровители'.",
+            "category": "Детям",
+            "genre": "комедия",
+            "hit": true,
+            "seen_in_history": true
+          },
+          {
+            "id": 2400480,
+            "title": "ТСН.",
+            "category": "Инфо",
+            "genre": "общество и политика",
+            "hit": false,
+            "seen_in_history": true
+          },
+          {
+            "id": 12002856,
+            "title": "М/с 'Элвиннн!!! и бурундуки'.",
+            "category": "Детям",
+            "genre": "приключения",
+            "hit": true,
+            "seen_in_history": true
+          },
+          {
+            "id": 200344,
+            "title": "'Чистоnews'.",
+            "category": "Развлечения",
+            "genre": "юмор",
+            "hit": false,
+            "seen_in_history": true
+          }
+        ],
+        "ap5": 0.55
+      },
+      "Hybrid (LGBM)": {
+        "top5": [
+          {
+            "id": 12001682,
+            "title": "М/с 'Губка Боб Квадратные Штаны'.",
+            "category": "Детям",
+            "genre": "комедия",
+            "hit": true,
+            "seen_in_history": true
+          },
+          {
+            "id": 12001734,
+            "title": "М/с 'Волшебные покровители'.",
+            "category": "Детям",
+            "genre": "комедия",
+            "hit": true,
+            "seen_in_history": true
+          },
+          {
+            "id": 12002856,
+            "title": "М/с 'Элвиннн!!! и бурундуки'.",
+            "category": "Детям",
+            "genre": "приключения",
+            "hit": true,
+            "seen_in_history": true
+          },
+          {
+            "id": 2400480,
+            "title": "ТСН.",
+            "category": "Инфо",
+            "genre": "общество и политика",
+            "hit": false,
+            "seen_in_history": true
+          },
+          {
+            "id": 12001697,
+            "title": "М/с 'Аватар: Легенда об Аанге'.",
+            "category": "Детям",
+            "genre": "фантазия",
+            "hit": false,
+            "seen_in_history": false
+          }
+        ],
+        "ap5": 0.6
+      }
+    },
+    "test_31_42_final_top5": [
+      {
+        "id": 12001682,
+        "title": "М/с 'Губка Боб Квадратные Штаны'.",
+        "category": "Детям",
+        "genre": "комедия",
+        "familiar": true
+      },
+      {
+        "id": 12002856,
+        "title": "М/с 'Элвиннн!!! и бурундуки'.",
+        "category": "Детям",
+        "genre": "приключения",
+        "familiar": true
+      },
+      {
+        "id": 12002355,
+        "title": "М/с 'Кунг-фу панда: Удивительные легенды'.",
+        "category": "Детям",
+        "genre": "комедия",
+        "familiar": true
+      },
+      {
+        "id": 12001734,
+        "title": "М/с 'Волшебные покровители'.",
+        "category": "Детям",
+        "genre": "комедия",
+        "familiar": true
+      },
+      {
+        "id": 12001697,
+        "title": "М/с 'Аватар: Легенда об Аанге'.",
+        "category": "Детям",
+        "genre": "фантазия",
+        "familiar": true
+      }
+    ]
+  },
+  "explorer": {
+    "user_id": "4497043602086387340",
+    "u": 1155,
+    "history_full_views_11_18": 63,
+    "novelty_of_truth": 4,
+    "top_history_shows": [
+      {
+        "id": 12001682,
+        "title": "М/с 'Губка Боб Квадратные Штаны'.",
+        "category": "Детям",
+        "genre": "комедия",
+        "full_views": 8,
+        "channel": "Nickelodeon HD"
+      },
+      {
+        "id": 12001734,
+        "title": "М/с 'Волшебные покровители'.",
+        "category": "Детям",
+        "genre": "комедия",
+        "full_views": 7,
+        "channel": "Nickelodeon HD"
+      },
+      {
+        "id": 12002806,
+        "title": "М/с 'Октонавты', 1 сезон.",
+        "category": "Детям",
+        "genre": "приключения",
+        "full_views": 6,
+        "channel": "TiJi Россия"
+      },
+      {
+        "id": 2400480,
+        "title": "ТСН.",
+        "category": "Инфо",
+        "genre": "общество и политика",
+        "full_views": 5,
+        "channel": "1+1"
+      },
+      {
+        "id": 12002955,
+        "title": "М/с 'Свинка Пеппа'.",
+        "category": "Детям",
+        "genre": "комедия",
+        "full_views": 5,
+        "channel": "Nick Jr"
+      },
+      {
+        "id": 12002856,
+        "title": "М/с 'Элвиннн!!! и бурундуки'.",
+        "category": "Детям",
+        "genre": "приключения",
+        "full_views": 4,
+        "channel": "NickToons"
+      },
+      {
+        "id": 12002070,
+        "title": "М/с 'Огги и кукарачи'.",
+        "category": "Детям",
+        "genre": "комедия",
+        "full_views": 3,
+        "channel": "Gulli Girl"
+      },
+      {
+        "id": 240081,
+        "title": "Факты.",
+        "category": "Инфо",
+        "genre": "общество и политика",
+        "full_views": 2,
+        "channel": "ICTV"
+      },
+      {
+        "id": 1100411,
+        "title": "'Вещдок'.",
+        "category": "Познавательное",
+        "genre": "преступления",
+        "full_views": 2,
+        "channel": "Интер"
+      },
+      {
+        "id": 2400508,
+        "title": "Сегодня.",
+        "category": "Инфо",
+        "genre": "информация (комплексная)",
+        "full_views": 2,
+        "channel": "Украина"
+      }
+    ],
+    "top_channels_by_time": [
+      {
+        "channel": "TV1000 CEE",
+        "share": 0.12
+      },
+      {
+        "channel": "ICTV",
+        "share": 0.112
+      },
+      {
+        "channel": "Интер",
+        "share": 0.096
+      },
+      {
+        "channel": "1+1",
+        "share": 0.095
+      },
+      {
+        "channel": "NickToons",
+        "share": 0.083
+      }
+    ],
+    "top_start_hours_of_full_views": [
+      {
+        "hour": 17,
+        "n": 9
+      },
+      {
+        "hour": 0,
+        "n": 8
+      },
+      {
+        "hour": 19,
+        "n": 7
+      }
+    ],
+    "truth_19_30": [
+      {
+        "id": 12002809,
+        "title": "М/с 'Ниндзяго: Мастера Кружитцу'.",
+        "category": "Детям",
+        "genre": "приключения",
+        "full_views": 22,
+        "seen_in_history": false,
+        "channel": "Cartoon network",
+        "first_full_view_week": 20,
+        "channel_watched_in_history": false
+      },
+      {
+        "id": 12002262,
+        "title": "М/с 'Бен 10'.",
+        "category": "Детям",
+        "genre": "боевик",
+        "full_views": 21,
+        "seen_in_history": false,
+        "channel": "Cartoon network",
+        "first_full_view_week": 20,
+        "channel_watched_in_history": false
+      },
+      {
+        "id": 12001682,
+        "title": "М/с 'Губка Боб Квадратные Штаны'.",
+        "category": "Детям",
+        "genre": "комедия",
+        "full_views": 15,
+        "seen_in_history": true,
+        "channel": "Nickelodeon HD",
+        "first_full_view_week": 19,
+        "channel_watched_in_history": true
+      },
+      {
+        "id": 12002378,
+        "title": "М/с 'Удивительный мир Гамбола'.",
+        "category": "Детям",
+        "genre": "комедия",
+        "full_views": 11,
+        "seen_in_history": false,
+        "channel": "Cartoon network",
+        "first_full_view_week": 20,
+        "channel_watched_in_history": false
+      },
+      {
+        "id": 12001697,
+        "title": "М/с 'Аватар: Легенда об Аанге'.",
+        "category": "Детям",
+        "genre": "фантазия",
+        "full_views": 7,
+        "seen_in_history": false,
+        "channel": "NickToons",
+        "first_full_view_week": 19,
+        "channel_watched_in_history": true
+      }
+    ],
+    "methods": {
+      "POP": {
+        "top5": [
+          {
+            "id": 2400480,
+            "title": "ТСН.",
+            "category": "Инфо",
+            "genre": "общество и политика",
+            "hit": false,
+            "seen_in_history": true
+          },
+          {
+            "id": 240081,
+            "title": "Факты.",
+            "category": "Инфо",
+            "genre": "общество и политика",
+            "hit": false,
+            "seen_in_history": true
+          },
+          {
+            "id": 2400467,
+            "title": "'Викна-Новости'.",
+            "category": "Инфо",
+            "genre": "информация (комплексная)",
+            "hit": false,
+            "seen_in_history": false
+          },
+          {
+            "id": 200344,
+            "title": "'Чистоnews'.",
+            "category": "Развлечения",
+            "genre": "юмор",
+            "hit": false,
+            "seen_in_history": false
+          },
+          {
+            "id": 2400508,
+            "title": "Сегодня.",
+            "category": "Инфо",
+            "genre": "информация (комплексная)",
+            "hit": false,
+            "seen_in_history": true
+          }
+        ],
+        "ap5": 0.0
+      },
+      "REPEAT": {
+        "top5": [
+          {
+            "id": 12001682,
+            "title": "М/с 'Губка Боб Квадратные Штаны'.",
+            "category": "Детям",
+            "genre": "комедия",
+            "hit": true,
+            "seen_in_history": true
+          },
+          {
+            "id": 12001734,
+            "title": "М/с 'Волшебные покровители'.",
+            "category": "Детям",
+            "genre": "комедия",
+            "hit": false,
+            "seen_in_history": true
+          },
+          {
+            "id": 12002806,
+            "title": "М/с 'Октонавты', 1 сезон.",
+            "category": "Детям",
+            "genre": "приключения",
+            "hit": false,
+            "seen_in_history": true
+          },
+          {
+            "id": 2400480,
+            "title": "ТСН.",
+            "category": "Инфо",
+            "genre": "общество и политика",
+            "hit": false,
+            "seen_in_history": true
+          },
+          {
+            "id": 12002955,
+            "title": "М/с 'Свинка Пеппа'.",
+            "category": "Детям",
+            "genre": "комедия",
+            "hit": false,
+            "seen_in_history": true
+          }
+        ],
+        "ap5": 0.2
+      },
+      "CBF": {
+        "top5": [
+          {
+            "id": 12001682,
+            "title": "М/с 'Губка Боб Квадратные Штаны'.",
+            "category": "Детям",
+            "genre": "комедия",
+            "hit": true,
+            "seen_in_history": true
+          },
+          {
+            "id": 12001734,
+            "title": "М/с 'Волшебные покровители'.",
+            "category": "Детям",
+            "genre": "комедия",
+            "hit": false,
+            "seen_in_history": true
+          },
+          {
+            "id": 12002201,
+            "title": "М/с 'Маша и Медведь'.",
+            "category": "Детям",
+            "genre": "комедия",
+            "hit": false,
+            "seen_in_history": true
+          },
+          {
+            "id": 12002753,
+            "title": "М/с 'Санджей и Крейг'.",
+            "category": "Детям",
+            "genre": "комедия",
+            "hit": false,
+            "seen_in_history": false
+          },
+          {
+            "id": 12001732,
+            "title": "М/с 'Пингвины из 'Мадагаскара'.",
+            "category": "Детям",
+            "genre": "комедия",
+            "hit": false,
+            "seen_in_history": true
+          }
+        ],
+        "ap5": 0.2
+      },
+      "AR": {
+        "top5": [
+          {
+            "id": 2400480,
+            "title": "ТСН.",
+            "category": "Инфо",
+            "genre": "общество и политика",
+            "hit": false,
+            "seen_in_history": true
+          },
+          {
+            "id": 240081,
+            "title": "Факты.",
+            "category": "Инфо",
+            "genre": "общество и политика",
+            "hit": false,
+            "seen_in_history": true
+          },
+          {
+            "id": 12001682,
+            "title": "М/с 'Губка Боб Квадратные Штаны'.",
+            "category": "Детям",
+            "genre": "комедия",
+            "hit": true,
+            "seen_in_history": true
+          },
+          {
+            "id": 12001734,
+            "title": "М/с 'Волшебные покровители'.",
+            "category": "Детям",
+            "genre": "комедия",
+            "hit": false,
+            "seen_in_history": true
+          },
+          {
+            "id": 12002856,
+            "title": "М/с 'Элвиннн!!! и бурундуки'.",
+            "category": "Детям",
+            "genre": "приключения",
+            "hit": false,
+            "seen_in_history": true
+          }
+        ],
+        "ap5": 0.0667
+      },
+      "MF (ALS)": {
+        "top5": [
+          {
+            "id": 12001682,
+            "title": "М/с 'Губка Боб Квадратные Штаны'.",
+            "category": "Детям",
+            "genre": "комедия",
+            "hit": true,
+            "seen_in_history": true
+          },
+          {
+            "id": 2400480,
+            "title": "ТСН.",
+            "category": "Инфо",
+            "genre": "общество и политика",
+            "hit": false,
+            "seen_in_history": true
+          },
+          {
+            "id": 240081,
+            "title": "Факты.",
+            "category": "Инфо",
+            "genre": "общество и политика",
+            "hit": false,
+            "seen_in_history": true
+          },
+          {
+            "id": 12002856,
+            "title": "М/с 'Элвиннн!!! и бурундуки'.",
+            "category": "Детям",
+            "genre": "приключения",
+            "hit": false,
+            "seen_in_history": true
+          },
+          {
+            "id": 12001734,
+            "title": "М/с 'Волшебные покровители'.",
+            "category": "Детям",
+            "genre": "комедия",
+            "hit": false,
+            "seen_in_history": true
+          }
+        ],
+        "ap5": 0.2
+      },
+      "PPR": {
+        "top5": [
+          {
+            "id": 2400480,
+            "title": "ТСН.",
+            "category": "Инфо",
+            "genre": "общество и политика",
+            "hit": false,
+            "seen_in_history": true
+          },
+          {
+            "id": 12001682,
+            "title": "М/с 'Губка Боб Квадратные Штаны'.",
+            "category": "Детям",
+            "genre": "комедия",
+            "hit": true,
+            "seen_in_history": true
+          },
+          {
+            "id": 12001734,
+            "title": "М/с 'Волшебные покровители'.",
+            "category": "Детям",
+            "genre": "комедия",
+            "hit": false,
+            "seen_in_history": true
+          },
+          {
+            "id": 240081,
+            "title": "Факты.",
+            "category": "Инфо",
+            "genre": "общество и политика",
+            "hit": false,
+            "seen_in_history": true
+          },
+          {
+            "id": 12002955,
+            "title": "М/с 'Свинка Пеппа'.",
+            "category": "Детям",
+            "genre": "комедия",
+            "hit": false,
+            "seen_in_history": true
+          }
+        ],
+        "ap5": 0.1
+      },
+      "Hybrid (LGBM)": {
+        "top5": [
+          {
+            "id": 12001682,
+            "title": "М/с 'Губка Боб Квадратные Штаны'.",
+            "category": "Детям",
+            "genre": "комедия",
+            "hit": true,
+            "seen_in_history": true
+          },
+          {
+            "id": 12001734,
+            "title": "М/с 'Волшебные покровители'.",
+            "category": "Детям",
+            "genre": "комедия",
+            "hit": false,
+            "seen_in_history": true
+          },
+          {
+            "id": 240081,
+            "title": "Факты.",
+            "category": "Инфо",
+            "genre": "общество и политика",
+            "hit": false,
+            "seen_in_history": true
+          },
+          {
+            "id": 12002856,
+            "title": "М/с 'Элвиннн!!! и бурундуки'.",
+            "category": "Детям",
+            "genre": "приключения",
+            "hit": false,
+            "seen_in_history": true
+          },
+          {
+            "id": 12002806,
+            "title": "М/с 'Октонавты', 1 сезон.",
+            "category": "Детям",
+            "genre": "приключения",
+            "hit": false,
+            "seen_in_history": true
+          }
+        ],
+        "ap5": 0.2
+      }
+    },
+    "test_31_42_final_top5": [
+      {
+        "id": 12002809,
+        "title": "М/с 'Ниндзяго: Мастера Кружитцу'.",
+        "category": "Детям",
+        "genre": "приключения",
+        "familiar": true
+      },
+      {
+        "id": 12001682,
+        "title": "М/с 'Губка Боб Квадратные Штаны'.",
+        "category": "Детям",
+        "genre": "комедия",
+        "familiar": true
+      },
+      {
+        "id": 12002262,
+        "title": "М/с 'Бен 10'.",
+        "category": "Детям",
+        "genre": "боевик",
+        "familiar": true
+      },
+      {
+        "id": 12001734,
+        "title": "М/с 'Волшебные покровители'.",
+        "category": "Детям",
+        "genre": "комедия",
+        "familiar": true
+      },
+      {
+        "id": 12002378,
+        "title": "М/с 'Удивительный мир Гамбола'.",
+        "category": "Детям",
+        "genre": "комедия",
+        "familiar": true
+      }
+    ]
+  },
+  "novelty_by_method_sub_users_F1": {
+    "POP": {
+      "share_new_in_top5": 0.3597,
+      "precision_of_new_items": 0.135
+    },
+    "REPEAT": {
+      "share_new_in_top5": 0.0216,
+      "precision_of_new_items": 0.2578
+    },
+    "CBF": {
+      "share_new_in_top5": 0.426,
+      "precision_of_new_items": 0.0317
+    },
+    "AR": {
+      "share_new_in_top5": 0.2973,
+      "precision_of_new_items": 0.1702
+    },
+    "MF (ALS)": {
+      "share_new_in_top5": 0.0543,
+      "precision_of_new_items": 0.1429
+    },
+    "PPR": {
+      "share_new_in_top5": 0.031,
+      "precision_of_new_items": 0.2554
+    },
+    "Hybrid (LGBM)": {
+      "share_new_in_top5": 0.1826,
+      "precision_of_new_items": 0.2752
+    }
+  }
+}
