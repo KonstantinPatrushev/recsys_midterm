@@ -471,9 +471,21 @@ and Kaggle-practice search and for an independent review of the submission plan.
 <p><b>How AI was used.</b> Code generation (matching, methods, ranker, diagnostics, report builder); data analysis and debugging;
 search and verification of references through Crossref, OpenAlex and the publishers' pages; Kaggle submissions through the API;
 draft of this report, rendered from <code>evidence/</code> by <code>src/build_report.py</code>.</p>
-<p><b>What I personally verified.</b> <span class="todo">[to be completed by the student &mdash; keep only checks actually done, e.g. the
-hand computation in Sec. 4.3, Tables 1&ndash;2 against <code>evidence/</code>, the screenshot.]</span></p>
-<p><b>What I trusted without verification.</b> <span class="todo">[to be completed by the student.]</span></p>
+<p><b>What I personally verified.</b></p>
+<ul>
+  <li>The target: I read the competition's data page (<code>evidence/kaggle_meta/pages.txt</code>) and checked that Sec. 1 and the matching
+  rule in Sec. 3 follow it (screen time &ge; 0.8, top five by count, <code>tv_show_id = 0</code> removed).</li>
+  <li>The scores: I compared Table 2 with my Kaggle Submissions page (Fig. 2b); all five public/private pairs match, and the designated
+  final submission is <code>{FINAL}.csv</code> with private {f5(prv[FINAL])}.</li>
+  <li>One metric value by hand: for household u{hab['u']} the final model's list has hits at ranks {', '.join(map(str, hit_ranks))}, so AP@5 =
+  ({ap_terms})/5 = {f3(hab['methods']['Hybrid (LGBM)']['ap5'])}, the value in Table 3.</li>
+  <li>The repository opens at the link above and contains the code and <code>submissions/{FINAL}.csv</code>; I checked that the two users
+  in Table 3 are the same for every method.</li>
+</ul>
+<p><b>What I trusted without verification.</b> The correctness of LightGBM, implicit and polars; the literature search and the
+reference checks done by the sub-agents beyond the DOIs I opened; the reading of screen time as seconds summed over sessions and
+the ascending-id tie-break, both undocumented by the organisers; the cost figures, which are single runs on one laptop; the
+submission plan proposed by the independent review, which I approved.</p>
 <p><b>Session log.</b> <code>patrushev_konstantin_midterm_session.json</code> is the unmodified Claude Code session export.</p>
 
 <h2>References</h2>
