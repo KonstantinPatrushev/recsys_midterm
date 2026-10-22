@@ -1,0 +1,85 @@
+{
+  "source": "Kaggle API competition_leaderboard_view, evidence/kaggle_meta/topics_leaderboard.txt",
+  "top": [
+    {
+      "team": "Magic City",
+      "private_score": 0.42912
+    },
+    {
+      "team": "Nikita Melentev",
+      "private_score": 0.42905
+    },
+    {
+      "team": "AfterParty",
+      "private_score": 0.42674
+    },
+    {
+      "team": "Too much ...",
+      "private_score": 0.42544
+    },
+    {
+      "team": "x0x0w1",
+      "private_score": 0.42533
+    },
+    {
+      "team": "it is the way",
+      "private_score": 0.4138
+    },
+    {
+      "team": "Tymur Prorochenko",
+      "private_score": 0.41332
+    },
+    {
+      "team": "chikibambino",
+      "private_score": 0.41155
+    },
+    {
+      "team": "Vladimir",
+      "private_score": 0.41102
+    },
+    {
+      "team": "Gornyaki",
+      "private_score": 0.40861
+    },
+    {
+      "team": "Andriy Samoshyn",
+      "private_score": 0.40846
+    },
+    {
+      "team": "yvtkff",
+      "private_score": 0.40597
+    },
+    {
+      "team": "[Deleted] f120bcfd-f63f-46ee-877f-9367780d83e1",
+      "private_score": 0.40551
+    },
+    {
+      "team": "nazar grycshuk",
+      "private_score": 0.40062
+    },
+    {
+      "team": "Hanna Pylieva",
+      "private_score": 0.39739
+    },
+    {
+      "team": "Sergey Mischenko",
+      "private_score": 0.39736
+    },
+    {
+      "team": "Oleksandr Dudnev",
+      "private_score": 0.39618
+    },
+    {
+      "team": "Rudy",
+      "private_score": 0.39618
+    },
+    {
+      "team": "Reign of Machines",
+      "private_score": 0.39279
+    },
+    {
+      "team": "monkey_head",
+      "private_score": 0.391
+    }
+  ]
+}
